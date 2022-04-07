@@ -1,15 +1,20 @@
 import { BigNumber } from '@ethersproject/bignumber'
-import { JsonRpcProvider, TransactionResponse } from '@ethersproject/providers'
+import { JsonRpcProvider, TransactionResponse, Web3Provider } from '@ethersproject/providers'
 // eslint-disable-next-line no-restricted-imports
 import { t, Trans } from '@lingui/macro'
 import { Trade } from '@uniswap/router-sdk'
-import { Currency, TradeType } from '@uniswap/sdk-core'
+import { Currency, MaxUint256, Token, TradeType } from '@uniswap/sdk-core'
 import { Trade as V2Trade } from '@uniswap/v2-sdk'
 import { Trade as V3Trade } from '@uniswap/v3-sdk'
+import WalletConnectProvider from '@walletconnect/ethereum-provider'
 import { useMemo } from 'react'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
 import isZero from 'utils/isZero'
 import { swapErrorToUserReadableMessage } from 'utils/swapErrorToUserReadableMessage'
+
+import { useTokenContract } from '../../../hooks/useContract'
+import useIsAmbireWC from '../../../hooks/useIsAmbireWC'
+import { ApprovalState } from '../useApproval'
 
 type AnyTrade =
   | V2Trade<Currency, Currency, TradeType>
@@ -42,8 +47,13 @@ export default function useSendSwapTransaction(
   chainId: number | undefined,
   library: JsonRpcProvider | undefined,
   trade: AnyTrade | undefined, // trade to execute, required
+  approvalState: ApprovalState | undefined,
   swapCalls: SwapCall[]
 ): { callback: null | (() => Promise<TransactionResponse>) } {
+  const tokenAddress = trade?.inputAmount.currency.isToken ? (trade?.inputAmount.currency as Token)?.address : undefined
+  const tokenContract = useTokenContract(tokenAddress)
+  const isAmbireWC = useIsAmbireWC()
+
   return useMemo(() => {
     if (!trade || !library || !account || !chainId) {
       return { callback: null }
@@ -110,9 +120,41 @@ export default function useSendSwapTransaction(
           call: { address, calldata, value },
         } = bestCallOption
 
-        return library
-          .getSigner()
-          .sendTransaction({
+        let txResponse
+
+        if (isAmbireWC && approvalState === ApprovalState.NOT_APPROVED) {
+          const routerAddress = `${calldata.substring(0, 42)}`
+          const data = tokenContract?.interface?.encodeFunctionData('approve', [routerAddress, MaxUint256.toString()])
+
+          const swapData = `0x${calldata.substring(42)}`
+
+          const params = [
+            {
+              to: tokenContract?.address,
+              data,
+            },
+            {
+              to: routerAddress,
+              data: swapData,
+            },
+          ]
+
+          const web3Provider = library as Web3Provider
+          const wcProvider = web3Provider.provider as WalletConnectProvider
+
+          txResponse = new Promise<TransactionResponse>((resolve, reject) => {
+            wcProvider.connector
+              .sendCustomRequest({
+                method: 'ambire_sendBatchTransaction',
+                params,
+              })
+              .then((res) => {
+                resolve({ hash: res } as TransactionResponse)
+              })
+              .catch(reject)
+          })
+        } else {
+          txResponse = library.getSigner().sendTransaction({
             from: account,
             to: address,
             data: calldata,
@@ -120,6 +162,9 @@ export default function useSendSwapTransaction(
             ...('gasEstimate' in bestCallOption ? { gasLimit: calculateGasMargin(bestCallOption.gasEstimate) } : {}),
             ...(value && !isZero(value) ? { value } : {}),
           })
+        }
+
+        return txResponse
           .then((response) => {
             return response
           })
@@ -136,5 +181,5 @@ export default function useSendSwapTransaction(
           })
       },
     }
-  }, [account, chainId, library, swapCalls, trade])
+  }, [account, approvalState, chainId, isAmbireWC, library, swapCalls, tokenContract, trade])
 }

@@ -8,10 +8,12 @@ import useActiveWeb3React from 'hooks/useActiveWeb3React'
 import { useMemo } from 'react'
 import approveAmountCalldata from 'utils/approveAmountCalldata'
 
+import { ApprovalState, useApproveCallbackFromTrade } from './useApproveCallback'
 import { useArgentWalletContract } from './useArgentWalletContract'
 import { useV2RouterContract } from './useContract'
 import useENS from './useENS'
 import { SignatureData } from './useERC20Permit'
+import useIsAmbireWC from './useIsAmbireWC'
 
 export type AnyTrade =
   | V2Trade<Currency, Currency, TradeType>
@@ -44,7 +46,10 @@ export function useSwapCallArguments(
   const { address: recipientAddress } = useENS(recipientAddressOrName)
   const recipient = recipientAddressOrName === null ? account : recipientAddress
   const routerContract = useV2RouterContract()
+  const isAmbireWC = useIsAmbireWC()
   const argentWalletContract = useArgentWalletContract()
+
+  const [approvalState] = useApproveCallbackFromTrade(trade as Trade<Currency, Currency, TradeType>, allowedSlippage)
 
   return useMemo(() => {
     if (!trade || !recipient || !library || !account || !chainId || !deadline) return []
@@ -73,7 +78,16 @@ export function useSwapCallArguments(
         )
       }
       return swapMethods.map(({ methodName, args, value }) => {
-        if (argentWalletContract && trade.inputAmount.currency.isToken) {
+        if (isAmbireWC && trade.inputAmount.currency.isToken && approvalState === ApprovalState.NOT_APPROVED) {
+          // Sending to ZERO_ADDR as a byproduct to pass swap Calldata but avoid gas + simulation fail if not token is not approved as this transaction will not fail
+          const swapData = routerContract.interface.encodeFunctionData(methodName, args)
+
+          return {
+            address: '0x0000000000000000000000000000000000000000',
+            calldata: routerContract.address + swapData.substring(2),
+            value: '0x0',
+          }
+        } else if (argentWalletContract && trade.inputAmount.currency.isToken) {
           return {
             address: argentWalletContract.address,
             calldata: argentWalletContract.interface.encodeFunctionData('wc_multiCall', [
@@ -142,7 +156,16 @@ export function useSwapCallArguments(
               deadlineOrPreviousBlockhash: deadline.toString(),
             })
 
-      if (argentWalletContract && trade.inputAmount.currency.isToken) {
+      if (isAmbireWC && trade.inputAmount.currency.isToken && approvalState === ApprovalState.NOT_APPROVED) {
+        // Sending to ZERO_ADDR as a byproduct to pass swap Calldata but avoid gas + simulation fail if not token is not approved as this transaction will not fail
+        return [
+          {
+            address: '0x0000000000000000000000000000000000000000',
+            calldata: swapRouterAddress + calldata.substring(2),
+            value: '0x0',
+          },
+        ]
+      } else if (argentWalletContract && trade.inputAmount.currency.isToken) {
         return [
           {
             address: argentWalletContract.address,
@@ -171,7 +194,9 @@ export function useSwapCallArguments(
   }, [
     account,
     allowedSlippage,
+    isAmbireWC,
     argentWalletContract,
+    approvalState,
     chainId,
     deadline,
     feeOptions,
