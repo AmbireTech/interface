@@ -74,6 +74,13 @@ export const USDC_POLYGON = new Token(
   'USDC',
   'USD//C'
 )
+export const USDC_AVALANCHE = new Token(
+  SupportedChainId.AVALANCHE,
+  '0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664',
+  6,
+  'USDC',
+  'USD//C'
+)
 export const USDC_POLYGON_MUMBAI = new Token(
   SupportedChainId.POLYGON_MUMBAI,
   '0xe11a86849d99f524cac3e7a0ec1241828e332c62',
@@ -137,6 +144,7 @@ export const USDC: { [chainId in SupportedChainId]: Token } = {
   [SupportedChainId.RINKEBY]: USDC_RINKEBY,
   [SupportedChainId.KOVAN]: USDC_KOVAN,
   [SupportedChainId.ROPSTEN]: USDC_ROPSTEN,
+  [SupportedChainId.AVALANCHE]: USDC_AVALANCHE,
 }
 export const DAI_POLYGON = new Token(
   SupportedChainId.POLYGON,
@@ -402,6 +410,13 @@ export const WRAPPED_NATIVE_CURRENCY: { [chainId: number]: Token | undefined } =
     'CELO',
     'Celo native asset'
   ),
+  [SupportedChainId.AVALANCHE]: new Token(
+    SupportedChainId.AVALANCHE,
+    '0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7',
+    18,
+    'WAVAX',
+    'Wrapped AVAX'
+  ),
 }
 
 export function isCelo(chainId: number): chainId is SupportedChainId.CELO | SupportedChainId.CELO_ALFAJORES {
@@ -484,5 +499,6 @@ export const TOKEN_SHORTHANDS: { [shorthand: string]: { [chainId in SupportedCha
     [SupportedChainId.RINKEBY]: USDC_RINKEBY.address,
     [SupportedChainId.KOVAN]: USDC_KOVAN.address,
     [SupportedChainId.ROPSTEN]: USDC_ROPSTEN.address,
+    [SupportedChainId.AVALANCHE]: USDC_AVALANCHE.address,
   },
 }

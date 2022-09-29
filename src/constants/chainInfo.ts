@@ -216,6 +216,16 @@ const CHAIN_INFO: ChainInfoMap = {
     nativeCurrency: { name: 'Celo', symbol: 'CELO', decimals: 18 },
     defaultListUrl: CELO_LIST,
   },
+  [SupportedChainId.AVALANCHE]: {
+    networkType: NetworkType.L1,
+    docs: 'https://docs.uniswap.org/',
+    explorer: 'https://snowtrace.io/',
+    infoLink: 'https://info.uniswap.org/#/',
+    label: 'Avalanche',
+    logoUrl: ethereumLogoUrl,
+    nativeCurrency: { name: 'Avax', symbol: 'AVAX', decimals: 18 },
+    color: colorsDark.chain_1,
+  },
 }
 
 export function getChainInfo(chainId: SupportedL1ChainId): L1ChainInfo
