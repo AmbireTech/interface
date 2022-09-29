@@ -1,3 +1,4 @@
+import avalancheLogo from 'assets/images/avalanche.png'
 import celoCircleLogoUrl from 'assets/images/celoCircle.png'
 import ethereumLogoUrl from 'assets/images/ethereum-logo.png'
 import optimismCircleLogoUrl from 'assets/images/optimismCircle.png'
@@ -222,9 +223,10 @@ const CHAIN_INFO: ChainInfoMap = {
     explorer: 'https://snowtrace.io/',
     infoLink: 'https://info.uniswap.org/#/',
     label: 'Avalanche',
-    logoUrl: ethereumLogoUrl,
+    logoUrl: avalancheLogo,
     nativeCurrency: { name: 'Avax', symbol: 'AVAX', decimals: 18 },
-    color: colorsDark.chain_1,
+    color: colorsDark.chain_10,
+    backgroundColor: colorsDark.chain_10_background,
   },
 }
 
