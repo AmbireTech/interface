@@ -11,7 +11,7 @@ import ms from 'ms.macro'
 import { colorsDark } from 'theme/colors'
 
 import { SupportedChainId, SupportedL1ChainId, SupportedL2ChainId } from './chains'
-import { ARBITRUM_LIST, CELO_LIST, OPTIMISM_LIST } from './lists'
+import { ARBITRUM_LIST, AVAX_TRADER_JOE_LIST, CELO_LIST, OPTIMISM_LIST } from './lists'
 
 export enum NetworkType {
   L1,
@@ -227,6 +227,7 @@ const CHAIN_INFO: ChainInfoMap = {
     nativeCurrency: { name: 'Avax', symbol: 'AVAX', decimals: 18 },
     color: colorsDark.chain_10,
     backgroundColor: colorsDark.chain_10_background,
+    defaultListUrl: AVAX_TRADER_JOE_LIST,
   },
 }
 
