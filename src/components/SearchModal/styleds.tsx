@@ -42,6 +42,7 @@ export const SearchInput = styled.input<{ redesignFlag?: boolean }>`
   background-image: url(${searchIcon});
   background-size: 20px 20px;
   background-position: 12px center;
+  background-image-color: #6770b3;
   position: relative;
   display: flex;
   padding: 16px;
@@ -53,8 +54,8 @@ export const SearchInput = styled.input<{ redesignFlag?: boolean }>`
   background-color: ${({ theme, redesignFlag }) => redesignFlag && theme.backgroundModule};
   border: none;
   outline: none;
-  border-radius: ${({ redesignFlag }) => (redesignFlag ? '12px' : '20px')};
-  color: ${({ theme }) => theme.deprecated_text1};
+  border-radius: 12px;
+  color: #ebecff;
   border-style: solid;
   border: 1px solid ${({ theme, redesignFlag }) => (redesignFlag ? theme.backgroundOutline : theme.deprecated_bg3)};
   -webkit-appearance: none;
@@ -62,13 +63,12 @@ export const SearchInput = styled.input<{ redesignFlag?: boolean }>`
   font-size: ${({ redesignFlag }) => (redesignFlag ? '16px' : '18px')};
 
   ::placeholder {
-    color: ${({ theme, redesignFlag }) => (redesignFlag ? theme.textTertiary : theme.deprecated_text3)};
+    color: #6770b3;
     font-size: ${({ redesignFlag }) => redesignFlag && '16px'};
   }
   transition: border 100ms;
   :focus {
-    border: 1px solid
-      ${({ theme, redesignFlag }) => (redesignFlag ? theme.accentActiveSoft : theme.deprecated_primary1)};
+    border: 1px solid #6770b3;
     background-color: ${({ theme, redesignFlag }) => redesignFlag && theme.backgroundSurface};
     outline: none;
   }
