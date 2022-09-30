@@ -24,7 +24,6 @@ export const BaseButton = styled(RebassButton)<
   text-align: center;
   border-radius: ${({ $borderRadius }) => $borderRadius ?? '12px'};
   outline: none;
-  border: 1px solid transparent;
   color: ${({ theme }) => theme.deprecated_text1};
   text-decoration: none;
   display: flex;
@@ -72,7 +71,6 @@ export const ButtonPrimary = styled(BaseButton)<{ redesignFlag?: boolean }>`
     opacity: 0.2;
     cursor: auto;
     box-shadow: none;
-    border: 1px solid transparent;
     outline: none;
   }
 `

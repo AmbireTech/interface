@@ -28,7 +28,7 @@ import { FiatValue } from './FiatValue'
 const InputPanel = styled.div<{ hideInput?: boolean; redesignFlag: boolean }>`
   ${({ theme }) => theme.flexColumnNoWrap}
   position: relative;
-  border-radius: ${({ hideInput }) => (hideInput ? '16px' : '20px')};
+  border-radius: 12px;
   background-color: ${({ theme, redesignFlag, hideInput }) =>
     redesignFlag ? 'transparent' : hideInput ? 'transparent' : theme.deprecated_bg2};
   z-index: 1;
@@ -41,7 +41,7 @@ const FixedContainer = styled.div<{ redesignFlag: boolean }>`
   width: 100%;
   height: 100%;
   position: absolute;
-  border-radius: 20px;
+  border-radius: 12px;
   background-color: ${({ theme, redesignFlag }) => (redesignFlag ? 'transparent' : theme.deprecated_bg2)};
   display: flex;
   align-items: center;
@@ -51,7 +51,7 @@ const FixedContainer = styled.div<{ redesignFlag: boolean }>`
 
 const Container = styled.div<{ hideInput: boolean; disabled: boolean; redesignFlag: boolean }>`
   min-height: ${({ redesignFlag }) => redesignFlag && '69px'};
-  border-radius: ${({ hideInput }) => (hideInput ? '16px' : '20px')};
+  border-radius: 12px;
   border: 1px solid ${({ theme, redesignFlag }) => (redesignFlag ? 'transparent' : theme.deprecated_bg0)};
   background-color: ${({ theme, redesignFlag }) => (redesignFlag ? 'transparent' : theme.deprecated_bg1)};
   width: ${({ hideInput }) => (hideInput ? '100%' : 'initial')};
@@ -87,7 +87,7 @@ const CurrencySelect = styled(ButtonGray)<{
   color: ${({ selected, theme }) => (selected ? theme.deprecated_text1 : theme.deprecated_white)};
   cursor: pointer;
   height: ${({ hideInput, redesignFlag }) => (redesignFlag ? 'unset' : hideInput ? '2.8rem' : '2.4rem')};
-  border-radius: 16px;
+  border-radius: 12px;
   outline: none;
   user-select: none;
   border: none;

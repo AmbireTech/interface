@@ -26,7 +26,7 @@ export const PageWrapper = styled.div<{ redesignFlag: boolean; navBarFlag: boole
 export const SwapWrapper = styled.main<{ margin?: string; maxWidth?: string; redesignFlag: boolean }>`
   position: relative;
   background: ${({ theme, redesignFlag }) => (redesignFlag ? theme.backgroundSurface : theme.deprecated_bg0)};
-  border-radius: ${({ redesignFlag }) => (redesignFlag ? '16px' : '24px')};
+  border-radius: 12px;
   border: 1px solid ${({ theme, redesignFlag }) => (redesignFlag ? theme.backgroundOutline : 'transparent')};
   padding: 8px;
   z-index: ${Z_INDEX.deprecated_content};
