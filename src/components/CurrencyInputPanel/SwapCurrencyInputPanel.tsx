@@ -53,7 +53,7 @@ const Container = styled.div<{ hideInput: boolean; disabled: boolean; redesignFl
   min-height: ${({ redesignFlag }) => redesignFlag && '69px'};
   border-radius: 12px;
   border: 1px solid ${({ theme, redesignFlag }) => (redesignFlag ? 'transparent' : theme.deprecated_bg0)};
-  background-color: ${({ theme, redesignFlag }) => (redesignFlag ? 'transparent' : theme.deprecated_bg1)};
+  background-color: #2d314d;
   width: ${({ hideInput }) => (hideInput ? '100%' : 'initial')};
   ${({ theme, hideInput, disabled, redesignFlag }) =>
     !redesignFlag &&
