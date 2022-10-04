@@ -3,18 +3,9 @@ import { localPoint } from '@visx/event'
 import { EventType } from '@visx/event/lib/types'
 import { GlyphCircle } from '@visx/glyph'
 import { Line } from '@visx/shape'
+import AnimatedInLineChart from 'components/Charts/AnimatedInLineChart'
 import { filterTimeAtom } from 'components/Tokens/state'
-import {
-  bisect,
-  curveCardinal,
-  NumberValue,
-  scaleLinear,
-  timeDay,
-  timeHour,
-  timeMinute,
-  timeMonth,
-  timeTicks,
-} from 'd3'
+import { bisect, curveCardinal, NumberValue, scaleLinear, timeDay, timeHour, timeMinute, timeMonth } from 'd3'
 import { PricePoint } from 'graphql/data/Token'
 import { TimePeriod } from 'graphql/data/util'
 import { useActiveLocale } from 'hooks/useActiveLocale'
@@ -28,11 +19,9 @@ import {
   monthDayFormatter,
   monthTickFormatter,
   monthYearDayFormatter,
-  monthYearFormatter,
   weekFormatter,
 } from 'utils/formatChartTimes'
 
-import LineChart from '../../Charts/LineChart'
 import { MEDIUM_MEDIA_BREAKPOINT } from '../constants'
 import { DISPLAYS, ORDERED_TIMES } from '../TokenTable/TimeSelector'
 
@@ -221,12 +210,6 @@ export function PriceChart({ width, height, prices }: PriceChartProps) {
           monthYearDayFormatter(locale),
           timeMonth.range(startDateWithOffset, endDateWithOffset, 2).map((x) => x.valueOf() / 1000),
         ]
-      case TimePeriod.ALL:
-        return [
-          monthYearFormatter(locale),
-          monthYearDayFormatter(locale),
-          timeTicks(startDateWithOffset, endDateWithOffset, 6).map((x) => x.valueOf() / 1000),
-        ]
     }
   }
 
@@ -276,8 +259,12 @@ export function PriceChart({ width, height, prices }: PriceChartProps) {
   const crosshairEdgeMax = width * 0.85
   const crosshairAtEdge = !!crosshair && crosshair > crosshairEdgeMax
 
-  /* Default curve doesn't look good for the HOUR/ALL chart */
-  const curveTension = timePeriod === TimePeriod.ALL ? 0.75 : timePeriod === TimePeriod.HOUR ? 1 : 0.9
+  /*
+   * Default curve doesn't look good for the HOUR chart.
+   * Higher values make the curve more rigid, lower values smooth the curve but make it less "sticky" to real data points,
+   * making it unacceptable for shorter durations / smaller variances.
+   */
+  const curveTension = timePeriod === TimePeriod.HOUR ? 1 : 0.9
 
   return (
     <>
@@ -288,7 +275,7 @@ export function PriceChart({ width, height, prices }: PriceChartProps) {
           <ArrowCell>{arrow}</ArrowCell>
         </DeltaContainer>
       </ChartHeader>
-      <LineChart
+      <AnimatedInLineChart
         data={prices}
         getX={(p: PricePoint) => timeScale(p.timestamp)}
         getY={(p: PricePoint) => rdScale(p.value)}
@@ -357,7 +344,7 @@ export function PriceChart({ width, height, prices }: PriceChartProps) {
           onMouseMove={handleHover}
           onMouseLeave={resetDisplay}
         />
-      </LineChart>
+      </AnimatedInLineChart>
       <TimeOptionsWrapper>
         <TimeOptionsContainer>
           {ORDERED_TIMES.map((time) => (
