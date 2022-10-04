@@ -423,6 +423,10 @@ export function isCelo(chainId: number): chainId is SupportedChainId.CELO | Supp
   return chainId === SupportedChainId.CELO_ALFAJORES || chainId === SupportedChainId.CELO
 }
 
+export function isAvax(chainId: number): chainId is SupportedChainId.AVALANCHE {
+  return chainId === SupportedChainId.AVALANCHE
+}
+
 function getCeloNativeCurrency(chainId: number) {
   switch (chainId) {
     case SupportedChainId.CELO_ALFAJORES:
@@ -456,6 +460,24 @@ class MaticNativeCurrency extends NativeCurrency {
   }
 }
 
+class AvaxNativeCurrency extends NativeCurrency {
+  equals(other: Currency): boolean {
+    return other.isNative && other.chainId === this.chainId
+  }
+
+  get wrapped(): Token {
+    if (!isAvax(this.chainId)) throw new Error('Not avax')
+    const wrapped = WRAPPED_NATIVE_CURRENCY[this.chainId]
+    invariant(wrapped instanceof Token)
+    return wrapped
+  }
+
+  public constructor(chainId: number) {
+    if (!isAvax(chainId)) throw new Error('Not avax')
+    super(chainId, 18, 'AVAX', 'Avalanche AVAX')
+  }
+}
+
 export class ExtendedEther extends Ether {
   public get wrapped(): Token {
     const wrapped = WRAPPED_NATIVE_CURRENCY[this.chainId]
@@ -478,6 +500,8 @@ export function nativeOnChain(chainId: number): NativeCurrency | Token {
     nativeCurrency = new MaticNativeCurrency(chainId)
   } else if (isCelo(chainId)) {
     nativeCurrency = getCeloNativeCurrency(chainId)
+  } else if (isAvax(chainId)) {
+    nativeCurrency = new AvaxNativeCurrency(chainId)
   } else {
     nativeCurrency = ExtendedEther.onChain(chainId)
   }
