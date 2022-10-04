@@ -27,8 +27,8 @@ export const SwapWrapper = styled.main<{ margin?: string; maxWidth?: string; red
   position: relative;
   background: #24263d;
   border-radius: 12px;
-  border: 1px solid #3e436b;
-  padding: 8px;
+  // border: 1px solid #3e436b;
+  padding: 12px;
   z-index: ${Z_INDEX.deprecated_content};
   box-shadow: ${({ redesignFlag }) =>
     !redesignFlag &&
@@ -45,9 +45,9 @@ export const ArrowWrapper = styled.div<{ clickable: boolean; redesignFlag: boole
   margin-bottom: ${({ redesignFlag }) => (redesignFlag ? '-18px' : '-14px')};
   left: calc(50% - 16px);
   /* transform: rotate(90deg); */
-  background-color: ${({ theme, redesignFlag }) => (redesignFlag ? theme.backgroundInteractive : theme.deprecated_bg1)};
-  border: 4px solid;
-  border-color: ${({ theme, redesignFlag }) => (redesignFlag ? theme.backgroundSurface : theme.deprecated_bg0)};
+  background-color: #1e2033;
+  // border: 4px solid;
+  // border-color: ${({ theme, redesignFlag }) => (redesignFlag ? theme.backgroundSurface : theme.deprecated_bg0)};
 
   z-index: 2;
   ${({ clickable }) =>

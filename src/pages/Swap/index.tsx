@@ -540,7 +540,7 @@ export default function Swap() {
               fiatValueOutput={fiatValueOutput}
             />
 
-            <AutoColumn gap={'0px'}>
+            <AutoColumn gap={'4px'}>
               <div style={{ display: 'relative' }}>
                 <InputWrapper redesignFlag={redesignFlagEnabled}>
                   <Trace section={SectionName.CURRENCY_INPUT_PANEL}>
@@ -605,7 +605,7 @@ export default function Swap() {
                 </ArrowWrapper>
               </div>
               <div>
-                <AutoColumn gap={redesignFlagEnabled ? '12px' : '8px'}>
+                <AutoColumn gap={'8px'}>
                   <InputWrapper redesignFlag={redesignFlagEnabled}>
                     <Trace section={SectionName.CURRENCY_OUTPUT_PANEL}>
                       <SwapCurrencyInputPanel

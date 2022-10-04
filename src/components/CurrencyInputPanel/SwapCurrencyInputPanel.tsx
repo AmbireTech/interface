@@ -52,16 +52,18 @@ const FixedContainer = styled.div<{ redesignFlag: boolean }>`
 const Container = styled.div<{ hideInput: boolean; disabled: boolean; redesignFlag: boolean }>`
   min-height: ${({ redesignFlag }) => redesignFlag && '69px'};
   border-radius: 12px;
-  border: 1px solid ${({ theme, redesignFlag }) => (redesignFlag ? 'transparent' : theme.deprecated_bg0)};
+  // border: 1px solid ${({ theme, redesignFlag }) => (redesignFlag ? 'transparent' : theme.deprecated_bg0)};
   background-color: #2d314d;
   width: ${({ hideInput }) => (hideInput ? '100%' : 'initial')};
+  opacity: 0.9;
   ${({ theme, hideInput, disabled, redesignFlag }) =>
     !redesignFlag &&
     !disabled &&
     `
     :focus,
     :hover {
-      border: 1px solid ${hideInput ? ' transparent' : theme.deprecated_bg3};
+      // border: 1px solid ${hideInput ? ' transparent' : theme.deprecated_bg3};
+      opacity: 1;
     }
   `}
 `
@@ -74,9 +76,9 @@ const CurrencySelect = styled(ButtonGray)<{
   redesignFlag: boolean
 }>`
   align-items: center;
-  background-color: ${({ selected, theme, redesignFlag }) => (selected ? theme.stateOverlayPressed : '#904DFF')};
+  background-color: transparent;
   opacity: ${({ disabled }) => (!disabled ? 1 : 0.4)};
-  box-shadow: ${({ selected }) => (selected ? 'none' : '0px 6px 10px rgba(0, 0, 0, 0.075)')};
+  box-shadow: none;
   color: ${({ selected, theme }) => (selected ? theme.deprecated_text1 : theme.deprecated_white)};
   cursor: pointer;
   height: ${({ hideInput, redesignFlag }) => (redesignFlag ? 'unset' : hideInput ? '2.8rem' : '2.4rem')};
@@ -94,13 +96,11 @@ const CurrencySelect = styled(ButtonGray)<{
   margin-left: ${({ hideInput }) => (hideInput ? '0' : '12px')};
 
   &:hover {
-    background-color: ${({ selected, theme, redesignFlag }) =>
-      !selected ? darken(0.05, '#904DFF') : theme.stateOverlayHover};
+    background-color: ${({ selected, theme, redesignFlag }) => theme.stateOverlayHover};
   }
 
   &:active {
-    background-color: ${({ selected, theme, redesignFlag }) =>
-      !selected ? darken(0.05, theme.deprecated_primary1) : theme.stateOverlayPressed};
+    background-color: ${({ selected, theme, redesignFlag }) => theme.stateOverlayHover};
   }
 
   visibility: ${({ visible }) => (visible ? 'visible' : 'hidden')};
