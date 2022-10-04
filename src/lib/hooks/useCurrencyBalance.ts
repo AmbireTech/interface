@@ -71,15 +71,6 @@ export function useTokenBalancesWithLoadingIndicator(
     tokenBalancesGasRequirement
   )
 
-  const test = useMultipleContractSingleData(
-    ['0x59414b3089ce2AF0010e7523Dea7E2b35d776ec7', '0x8729438EB15e2C8B576fCc6AeCdA6A148776C0F5'],
-    ERC20Interface,
-    'balanceOf',
-    useMemo(() => [address], [address]),
-    { gasRequired: 185_000 }
-  )
-  console.log(test)
-
   const anyLoading: boolean = useMemo(() => balances.some((callState) => callState.loading), [balances])
 
   return useMemo(
