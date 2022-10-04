@@ -85,8 +85,8 @@ const StyledMenu = styled.div`
 
 const MenuFlyout = styled.span<{ redesignFlag: boolean }>`
   min-width: 20.125rem;
-  background-color: ${({ theme, redesignFlag }) => (redesignFlag ? theme.backgroundSurface : theme.deprecated_bg2)};
-  border: 1px solid ${({ theme, redesignFlag }) => (redesignFlag ? theme.backgroundOutline : theme.deprecated_bg3)};
+  background-color: #24263d;
+  border: 1px solid #3e436b;
   box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.01), 0px 4px 8px rgba(0, 0, 0, 0.04), 0px 16px 24px rgba(0, 0, 0, 0.04),
     0px 24px 32px rgba(0, 0, 0, 0.01);
   border-radius: 12px;
@@ -220,6 +220,7 @@ export default function SettingsTab({ placeholderSlippage }: { placeholderSlippa
                 <Toggle
                   id="toggle-optimized-router-button"
                   isActive={!clientSideRouter}
+                  bgColor={'#6000FF'}
                   toggle={() => {
                     sendEvent({
                       category: 'Routing',
@@ -244,6 +245,7 @@ export default function SettingsTab({ placeholderSlippage }: { placeholderSlippa
               <Toggle
                 id="toggle-expert-mode-button"
                 isActive={expertMode}
+                bgColor={'#6000FF'}
                 toggle={
                   expertMode
                     ? () => {
