@@ -11,7 +11,7 @@ import { RedesignVariant, useRedesignFlag } from 'featureFlags/flags/redesign'
 import { darken } from 'polished'
 import { ReactNode, useCallback, useState } from 'react'
 import { Lock } from 'react-feather'
-import styled, { useTheme } from 'styled-components/macro'
+import styled, { css, useTheme } from 'styled-components/macro'
 import { formatCurrencyAmount } from 'utils/formatCurrencyAmount'
 
 import { ReactComponent as DropDown } from '../../assets/images/dropdown.svg'
@@ -102,6 +102,47 @@ const CurrencySelect = styled(ButtonGray)<{
   &:active {
     background-color: ${({ selected, theme, redesignFlag }) => theme.stateOverlayHover};
   }
+  ${({ redesignFlag, selected }) =>
+    !redesignFlag &&
+    css`
+      &:hover {
+        background-color: ${({ theme }) => (selected ? darken(0.05, theme.deprecated_primary1) : theme.deprecated_bg3)};
+      }
+
+      &:active {
+        background-color: ${({ theme }) => (selected ? darken(0.05, theme.deprecated_primary1) : theme.deprecated_bg3)};
+      }
+    `}
+
+  ${({ redesignFlag, selected }) =>
+    redesignFlag &&
+    css`
+      &:hover,
+      &:active {
+        background-color: ${({ theme }) => (selected ? theme.backgroundInteractive : theme.accentAction)};
+      }
+
+      &:before {
+        background-size: 100%;
+        border-radius: inherit;
+
+        position: absolute;
+        top: 0;
+        left: 0;
+
+        width: 100%;
+        height: 100%;
+        content: '';
+      }
+
+      &:hover:before {
+        background-color: ${({ theme }) => theme.stateOverlayHover};
+      }
+
+      &:active:before {
+        background-color: ${({ theme }) => theme.stateOverlayPressed};
+      }
+    `}
 
   visibility: ${({ visible }) => (visible ? 'visible' : 'hidden')};
 `
@@ -120,7 +161,7 @@ const LabelRow = styled.div<{ redesignFlag: boolean }>`
   color: ${({ theme, redesignFlag }) => (redesignFlag ? theme.textSecondary : theme.deprecated_text1)};
   font-size: 0.75rem;
   line-height: 1rem;
-  padding: 0 1rem 1rem;
+  padding: ${({ redesignFlag }) => (redesignFlag ? '0px' : '0 1rem 1rem')};
 
   span:hover {
     cursor: pointer;
@@ -130,8 +171,8 @@ const LabelRow = styled.div<{ redesignFlag: boolean }>`
 
 const FiatRow = styled(LabelRow)<{ redesignFlag: boolean }>`
   justify-content: flex-end;
-  min-height: ${({ redesignFlag }) => redesignFlag && '32px'};
-  padding: ${({ redesignFlag }) => redesignFlag && '8px 0px'};
+  min-height: ${({ redesignFlag }) => redesignFlag && '20px'};
+  padding: ${({ redesignFlag }) => redesignFlag && '8px 0px 0px 0px'};
   height: ${({ redesignFlag }) => !redesignFlag && '24px'};
 `
 
@@ -155,7 +196,7 @@ const StyledDropDown = styled(DropDown)<{ selected: boolean; redesignFlag: boole
 
 const StyledTokenName = styled.span<{ active?: boolean; redesignFlag: boolean }>`
   ${({ active }) => (active ? '  margin: 0 0.25rem 0 0.25rem;' : '  margin: 0 0.25rem 0 0.25rem;')}
-  font-size:  ${({ active }) => (active ? '18px' : '18px')};
+  font-size: ${({ redesignFlag }) => (redesignFlag ? '20px' : '18px')};
   font-weight: ${({ redesignFlag }) => (redesignFlag ? '600' : '500')};
 `
 
