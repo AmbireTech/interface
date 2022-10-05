@@ -48,7 +48,7 @@ const Option = styled(FancyButton)<{ active: boolean; redesignFlag: boolean }>`
   :hover {
     cursor: pointer;
   }
-  background-color: ${({ active, theme }) => active && theme.deprecated_primary1};
+  background-color: #6000ff;
   color: ${({ active, theme }) => (active ? theme.deprecated_white : theme.deprecated_text1)};
 `
 

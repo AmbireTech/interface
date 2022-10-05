@@ -13,7 +13,6 @@ import {
   getTokenAddress,
 } from 'analytics/utils'
 import { sendEvent } from 'components/analytics'
-import { NetworkAlert } from 'components/NetworkAlert/NetworkAlert'
 import PriceImpactWarning from 'components/swap/PriceImpactWarning'
 import SwapDetailsDropdown from 'components/swap/SwapDetailsDropdown'
 import UnsupportedCurrencyFooter from 'components/swap/UnsupportedCurrencyFooter'
@@ -35,6 +34,7 @@ import { InterfaceTrade } from 'state/routing/types'
 import { TradeState } from 'state/routing/types'
 import styled, { css, useTheme } from 'styled-components/macro'
 
+import { ReactComponent as Switch } from '../../assets/svg/switch-ambire.svg'
 import AddressInputPanel from '../../components/AddressInputPanel'
 import { ButtonConfirmed, ButtonError, ButtonLight, ButtonPrimary } from '../../components/Button'
 import { GreyCard } from '../../components/Card'
@@ -616,8 +616,8 @@ export default function Swap() {
                     }}
                     color={theme.textPrimary}
                   >
-                    <ArrowDown
-                      size="16"
+                    <Switch
+                      // size="16"
                       color={
                         currencies[Field.INPUT] && currencies[Field.OUTPUT]
                           ? theme.deprecated_text1
@@ -829,7 +829,7 @@ export default function Swap() {
               </div>
             </AutoColumn>
           </SwapWrapper>
-          <NetworkAlert />
+          {/* <NetworkAlert /> */}
         </PageWrapper>
         <SwitchLocaleLink />
         {!swapIsUnsupported ? null : (

@@ -33,8 +33,8 @@ export const TraceEvent = memo((props: PropsWithChildren<TraceEventProps>) => {
 
             // For each child, augment event handlers defined in `events` with event tracing.
             return cloneElement(
-              child,
-              getEventHandlers(child, traceContext, events, name, properties, shouldLogImpression)
+              child
+              // getEventHandlers(child, traceContext, events, name, properties, shouldLogImpression)
             )
           })
         }

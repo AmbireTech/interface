@@ -40,7 +40,7 @@ const FixedContainer = styled.div`
   width: 100%;
   height: 100%;
   position: absolute;
-  border-radius: 20px;
+  border-radius: 12px;
   background-color: ${({ theme }) => theme.deprecated_bg2};
   display: flex;
   align-items: center;

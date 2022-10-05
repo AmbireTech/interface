@@ -8,7 +8,7 @@ export const BodyWrapper = styled.main<{ margin?: string; maxWidth?: string; red
   margin-top: ${({ margin }) => margin ?? '0px'};
   max-width: ${({ maxWidth, redesignFlag }) => maxWidth ?? (redesignFlag ? '420px' : '480px')};
   width: 100%;
-  background: ${({ theme, redesignFlag }) => (redesignFlag ? theme.backgroundSurface : theme.deprecated_bg0)};
+  background: transparent;
   border-radius: ${({ redesignFlag }) => (redesignFlag ? '16px' : '24px')};
   border: 1px solid ${({ theme, redesignFlag }) => (redesignFlag ? theme.backgroundOutline : 'transparent')};
   margin-top: 1rem;

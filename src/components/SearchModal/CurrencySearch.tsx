@@ -39,11 +39,11 @@ const ContentWrapper = styled(Column)<{ redesignFlag?: boolean }>`
 
 const Footer = styled.div`
   width: 100%;
-  border-radius: 20px;
+  border-radius: 12px;
   padding: 20px;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
-  background-color: ${({ theme }) => theme.deprecated_bg1};
+  background-color: #24263d;
   border-top: 1px solid ${({ theme }) => theme.deprecated_bg2};
 `
 
@@ -277,10 +277,10 @@ export function CurrencySearch({
                 className="list-token-manage-button"
               >
                 <RowFixed>
-                  <IconWrapper size="16px" marginRight="6px" stroke={theme.deprecated_primaryText1}>
+                  <IconWrapper size="16px" marginRight="6px" stroke={'#6770B3'}>
                     <Edit />
                   </IconWrapper>
-                  <ThemedText.DeprecatedMain color={theme.deprecated_primaryText1}>
+                  <ThemedText.DeprecatedMain color={'#6770B3'}>
                     <Trans>Manage Token Lists</Trans>
                   </ThemedText.DeprecatedMain>
                 </RowFixed>
