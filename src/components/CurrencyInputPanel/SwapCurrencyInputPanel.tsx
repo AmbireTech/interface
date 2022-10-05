@@ -102,17 +102,6 @@ const CurrencySelect = styled(ButtonGray)<{
   &:active {
     background-color: ${({ selected, theme, redesignFlag }) => theme.stateOverlayHover};
   }
-  ${({ redesignFlag, selected }) =>
-    !redesignFlag &&
-    css`
-      &:hover {
-        background-color: ${({ theme }) => (selected ? darken(0.05, theme.deprecated_primary1) : theme.deprecated_bg3)};
-      }
-
-      &:active {
-        background-color: ${({ theme }) => (selected ? darken(0.05, theme.deprecated_primary1) : theme.deprecated_bg3)};
-      }
-    `}
 
   ${({ redesignFlag, selected }) =>
     redesignFlag &&

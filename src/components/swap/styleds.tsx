@@ -40,9 +40,9 @@ export const ArrowWrapper = styled.div<{ clickable: boolean; redesignFlag: boole
   height: ${({ redesignFlag }) => (redesignFlag ? '40px' : '32px')};
   width: ${({ redesignFlag }) => (redesignFlag ? '40px' : '32px')};
   position: relative;
-  margin-top: ${({ redesignFlag }) => (redesignFlag ? '-18px' : '-14px')};
-  margin-bottom: ${({ redesignFlag }) => (redesignFlag ? '-18px' : '-14px')};
-  left: calc(50% - 16px);
+  margin-top: -12px;
+  margin-bottom: -12px;
+  // left: calc(50% - 16px);
   /* transform: rotate(90deg); */
   background-color: #1e2033;
   // border: 4px solid;
