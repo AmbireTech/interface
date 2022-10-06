@@ -3,6 +3,7 @@ import invariant from 'tiny-invariant'
 
 import { UNI_ADDRESS } from './addresses'
 import { SupportedChainId } from './chains'
+import { USDCSupportedChainId } from './chains'
 
 export const USDC_MAINNET = new Token(
   SupportedChainId.MAINNET,
@@ -130,7 +131,7 @@ export const DAI_OPTIMISM = new Token(
   'DAI',
   'Dai stable coin'
 )
-export const USDC: { [chainId in SupportedChainId]: Token } = {
+export const USDC: { [chainId in USDCSupportedChainId]: Token } = {
   [SupportedChainId.MAINNET]: USDC_MAINNET,
   [SupportedChainId.ARBITRUM_ONE]: USDC_ARBITRUM,
   [SupportedChainId.OPTIMISM]: USDC_OPTIMISM,
@@ -417,6 +418,13 @@ export const WRAPPED_NATIVE_CURRENCY: { [chainId: number]: Token | undefined } =
     'WAVAX',
     'Wrapped AVAX'
   ),
+  [SupportedChainId.BINANCE]: new Token(
+    SupportedChainId.BINANCE,
+    '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c',
+    18,
+    'WBNB',
+    'Wrapped BNB'
+  ),
 }
 
 export function isCelo(chainId: number): chainId is SupportedChainId.CELO | SupportedChainId.CELO_ALFAJORES {
@@ -425,6 +433,10 @@ export function isCelo(chainId: number): chainId is SupportedChainId.CELO | Supp
 
 export function isAvax(chainId: number): chainId is SupportedChainId.AVALANCHE {
   return chainId === SupportedChainId.AVALANCHE
+}
+
+export function isBNB(chainId: number): chainId is SupportedChainId.BINANCE {
+  return chainId === SupportedChainId.BINANCE
 }
 
 function getCeloNativeCurrency(chainId: number) {
@@ -478,6 +490,24 @@ class AvaxNativeCurrency extends NativeCurrency {
   }
 }
 
+class BnbNativeCurrency extends NativeCurrency {
+  equals(other: Currency): boolean {
+    return other.isNative && other.chainId === this.chainId
+  }
+
+  get wrapped(): Token {
+    if (!isBNB(this.chainId)) throw new Error('Not bnb')
+    const wrapped = WRAPPED_NATIVE_CURRENCY[this.chainId]
+    invariant(wrapped instanceof Token)
+    return wrapped
+  }
+
+  public constructor(chainId: number) {
+    if (!isBNB(chainId)) throw new Error('Not bnb')
+    super(chainId, 18, 'BNB', 'Binance BNB')
+  }
+}
+
 export class ExtendedEther extends Ether {
   public get wrapped(): Token {
     const wrapped = WRAPPED_NATIVE_CURRENCY[this.chainId]
@@ -502,6 +532,8 @@ export function nativeOnChain(chainId: number): NativeCurrency | Token {
     nativeCurrency = getCeloNativeCurrency(chainId)
   } else if (isAvax(chainId)) {
     nativeCurrency = new AvaxNativeCurrency(chainId)
+  } else if (isBNB(chainId)) {
+    nativeCurrency = new BnbNativeCurrency(chainId)
   } else {
     nativeCurrency = ExtendedEther.onChain(chainId)
   }

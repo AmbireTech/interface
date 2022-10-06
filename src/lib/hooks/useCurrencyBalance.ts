@@ -47,7 +47,6 @@ export function useNativeCurrencyBalances(uncheckedAddresses?: (string | undefin
 }
 
 const ERC20Interface = new Interface(ERC20ABI) as Erc20Interface
-console.log(ERC20Interface)
 const tokenBalancesGasRequirement = { gasRequired: 185_000 }
 
 /**

@@ -9,7 +9,6 @@ import NonfungiblePositionManagerJson from '@uniswap/v3-periphery/artifacts/cont
 import V3MigratorJson from '@uniswap/v3-periphery/artifacts/contracts/V3Migrator.sol/V3Migrator.json'
 import { useWeb3React } from '@web3-react/core'
 import ARGENT_WALLET_DETECTOR_ABI from 'abis/argent-wallet-detector.json'
-import AVALANCHE_MULTICALL from 'abis/avalanche-multicall.json'
 import EIP_2612 from 'abis/eip_2612.json'
 import ENS_PUBLIC_RESOLVER_ABI from 'abis/ens-public-resolver.json'
 import ENS_ABI from 'abis/ens-registrar.json'
@@ -17,6 +16,7 @@ import ERC20_ABI from 'abis/erc20.json'
 import ERC20_BYTES32_ABI from 'abis/erc20_bytes32.json'
 import ERC721_ABI from 'abis/erc721.json'
 import ERC1155_ABI from 'abis/erc1155.json'
+import MULTICALL_ABI from 'abis/multicall.json'
 import { ArgentWalletDetector, EnsPublicResolver, EnsRegistrar, Erc20, Erc721, Erc1155, Weth } from 'abis/types'
 import WETH_ABI from 'abis/weth.json'
 import {
@@ -125,8 +125,8 @@ export function useV2RouterContract(): Contract | null {
 export function useInterfaceMulticall() {
   const { chainId } = useWeb3React()
   let abi = MulticallABI
-  if (chainId === SupportedChainId.AVALANCHE) {
-    abi = AVALANCHE_MULTICALL
+  if (chainId === SupportedChainId.AVALANCHE || chainId === SupportedChainId.BINANCE) {
+    abi = MULTICALL_ABI
   }
   return useContract<UniswapInterfaceMulticall>(MULTICALL_ADDRESS, abi, false) as UniswapInterfaceMulticall
 }
