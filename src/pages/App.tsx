@@ -4,7 +4,6 @@ import { Trace } from 'analytics/Trace'
 import Loader from 'components/Loader'
 import TopLevelModals from 'components/TopLevelModals'
 import { useFeatureFlagsIsLoaded } from 'featureFlags'
-import { useNavBarFlag } from 'featureFlags/flags/navBar'
 import { NftVariant, useNftFlag } from 'featureFlags/flags/nft'
 import { RedesignVariant, useRedesignFlag } from 'featureFlags/flags/redesign'
 import { TokensVariant, useTokensFlag } from 'featureFlags/flags/tokens'
@@ -112,7 +111,7 @@ const LazyLoadSpinner = () => (
 export default function App() {
   const isLoaded = useFeatureFlagsIsLoaded()
   const tokensFlag = useTokensFlag()
-  const navBarFlag = useNavBarFlag()
+  // const navBarFlag = useNavBarFlag()
   const nftFlag = useNftFlag()
   const redesignFlagEnabled = useRedesignFlag() === RedesignVariant.Enabled
 
