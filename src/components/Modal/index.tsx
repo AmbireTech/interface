@@ -20,8 +20,8 @@ const StyledDialogOverlay = styled(AnimatedDialogOverlay)<{ redesignFlag?: boole
     align-items: center;
     overflow-y: ${({ scrollOverlay }) => scrollOverlay && 'scroll'};
     justify-content: center;
-
-    background-color: ${({ theme, redesignFlag }) => (redesignFlag ? theme.backgroundScrim : theme.deprecated_modalBG)};
+    // Because of the gradient Ambire wallet background it will not work with background
+    backdrop-filter: blur(3px);
   }
 `
 
