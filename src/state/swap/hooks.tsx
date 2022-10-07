@@ -2,7 +2,8 @@ import { Trans } from '@lingui/macro'
 import { Currency, CurrencyAmount, Percent, TradeType } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 import useAutoSlippageTolerance from 'hooks/useAutoSlippageTolerance'
-import { useBestTrade } from 'hooks/useBestTrade'
+// import { useBestTrade } from 'hooks/useBestTrade'
+import { useBestTradeByJoe } from 'hooks/useBestTradeTraderJoe'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { ParsedQs } from 'qs'
 import { ReactNode, useCallback, useEffect, useMemo } from 'react'
@@ -113,7 +114,7 @@ export function useDerivedSwapInfo(): {
     [inputCurrency, isExactIn, outputCurrency, typedValue]
   )
 
-  const trade = useBestTrade(
+  const trade = useBestTradeByJoe(
     isExactIn ? TradeType.EXACT_INPUT : TradeType.EXACT_OUTPUT,
     parsedAmount,
     (isExactIn ? outputCurrency : inputCurrency) ?? undefined
