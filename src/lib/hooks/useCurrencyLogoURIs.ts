@@ -7,6 +7,7 @@ import { WrappedTokenInfo } from 'state/lists/wrappedTokenInfo'
 import EthereumLogo from '../../assets/images/ethereum-logo.png'
 import AvaxLogo from '../../assets/svg/avalanche-avax-logo.svg'
 import BinanceLogo from '../../assets/svg/bnb-logo.svg'
+import MoonbeamLogo from '../../assets/svg/moonbeam-token.svg'
 import CeloLogo from '../../assets/svg/celo_logo.svg'
 import MaticLogo from '../../assets/svg/matic-token-icon.svg'
 import { isCelo, nativeOnChain } from '../../constants/tokens'
@@ -44,6 +45,8 @@ export function getNativeLogoURI(chainId: SupportedChainId = SupportedChainId.MA
       return AvaxLogo
     case SupportedChainId.BINANCE:
       return BinanceLogo
+    case SupportedChainId.MOONBEAM:
+      return MoonbeamLogo
     default:
       return EthereumLogo
   }

@@ -28,6 +28,7 @@ import {
   USDC_ARBITRUM,
   USDC_AVALANCHE,
   USDC_MAINNET,
+  USDC_MOONBEAM,
   USDC_OPTIMISM,
   USDC_POLYGON,
   USDT,
@@ -89,6 +90,7 @@ export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
   [SupportedChainId.CELO]: [CUSD_CELO, CEUR_CELO, CMC02_CELO, PORTAL_USDC_CELO, PORTAL_ETH_CELO],
   [SupportedChainId.AVALANCHE]: [...WRAPPED_NATIVE_CURRENCIES_ONLY[SupportedChainId.AVALANCHE], USDC_AVALANCHE],
   [SupportedChainId.BINANCE]: [...WRAPPED_NATIVE_CURRENCIES_ONLY[SupportedChainId.BINANCE]],
+  [SupportedChainId.MOONBEAM]: [...WRAPPED_NATIVE_CURRENCIES_ONLY[SupportedChainId.MOONBEAM], USDC_MOONBEAM],
 }
 export const ADDITIONAL_BASES: { [chainId: number]: { [tokenAddress: string]: Token[] } } = {
   [SupportedChainId.MAINNET]: {
@@ -196,6 +198,11 @@ export const COMMON_BASES: ChainCurrencyList = {
   [SupportedChainId.BINANCE]: [
     nativeOnChain(SupportedChainId.BINANCE),
     WRAPPED_NATIVE_CURRENCY[SupportedChainId.BINANCE] as Token,
+  ],
+  [SupportedChainId.MOONBEAM]: [
+    nativeOnChain(SupportedChainId.MOONBEAM),
+    USDC_MOONBEAM,
+    WRAPPED_NATIVE_CURRENCY[SupportedChainId.MOONBEAM] as Token,
   ],
 }
 
