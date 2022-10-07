@@ -76,7 +76,8 @@ export const USDC_POLYGON = new Token(
 )
 export const USDC_AVALANCHE = new Token(
   SupportedChainId.AVALANCHE,
-  '0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664',
+  // '0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664', // bridged ethereum USDC
+  '0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E',
   6,
   'USDC',
   'USD//C'
