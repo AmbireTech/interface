@@ -4,6 +4,7 @@ export enum Currency {
   MATIC = 'MATIC',
   AVAX = 'AVAX',
   BNB = 'BNB',
+  MOONRIVER = 'MOVR',
 }
 
 export const fetchPrice = async (currency: Currency = Currency.ETH): Promise<number | undefined> => {

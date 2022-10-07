@@ -125,7 +125,11 @@ export function useV2RouterContract(): Contract | null {
 export function useInterfaceMulticall() {
   const { chainId } = useWeb3React()
   let abi = MulticallABI
-  if (chainId === SupportedChainId.AVALANCHE || chainId === SupportedChainId.BINANCE) {
+  if (
+    chainId === SupportedChainId.AVALANCHE
+    || chainId === SupportedChainId.BINANCE
+    || chainId === SupportedChainId.MOONRIVER
+  ) {
     abi = MULTICALL_ABI
   }
   return useContract<UniswapInterfaceMulticall>(MULTICALL_ADDRESS, abi, false) as UniswapInterfaceMulticall

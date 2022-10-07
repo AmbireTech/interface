@@ -1,5 +1,6 @@
 import avalancheLogo from 'assets/images/avalanche.png'
 import binanceLogo from 'assets/images/bnb-logo.png'
+import moonriverLogo from 'assets/images/moonriver-logo.png'
 import celoCircleLogoUrl from 'assets/images/celoCircle.png'
 import ethereumLogoUrl from 'assets/images/ethereum-logo.png'
 import optimismCircleLogoUrl from 'assets/images/optimismCircle.png'
@@ -12,7 +13,7 @@ import ms from 'ms.macro'
 import { colorsDark } from 'theme/colors'
 
 import { SupportedChainId, SupportedL1ChainId, SupportedL2ChainId } from './chains'
-import { ARBITRUM_LIST, AVAX_TRADER_JOE_LIST, BINANCE_PANCAKE_SWAP_LIST, CELO_LIST, OPTIMISM_LIST } from './lists'
+import { ARBITRUM_LIST, AVAX_TRADER_JOE_LIST, BINANCE_PANCAKE_SWAP_LIST, CELO_LIST, MOONRIVER_SUSHI_SWAP_LIST, OPTIMISM_LIST } from './lists'
 
 export enum NetworkType {
   L1,
@@ -239,6 +240,16 @@ const CHAIN_INFO: ChainInfoMap = {
     logoUrl: binanceLogo,
     nativeCurrency: { name: 'Binance', symbol: 'BNB', decimals: 18 },
     defaultListUrl: BINANCE_PANCAKE_SWAP_LIST,
+  },
+  [SupportedChainId.MOONRIVER]: {
+    networkType: NetworkType.L1,
+    docs: 'https://docs.uniswap.org/',
+    explorer: 'https://moonriver.moonscan.io/',
+    infoLink: 'https://info.uniswap.org/#/',
+    label: 'Moonriver',
+    logoUrl: moonriverLogo,
+    nativeCurrency: { name: 'Moonriver', symbol: 'MOVR', decimals: 18 },
+    defaultListUrl: MOONRIVER_SUSHI_SWAP_LIST,
   },
 }
 

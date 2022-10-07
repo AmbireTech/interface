@@ -22,6 +22,7 @@ export enum SupportedChainId {
 
   AVALANCHE = 43114,
   BINANCE = 56,
+  MOONRIVER = 1285,
 }
 
 export enum USDCSupportedChainId {
@@ -44,6 +45,7 @@ export enum USDCSupportedChainId {
   CELO_ALFAJORES = 44787,
 
   AVALANCHE = 43114,
+  MOONRIVER = 1285,
 }
 
 export const CHAIN_IDS_TO_NAMES = {
@@ -62,6 +64,7 @@ export const CHAIN_IDS_TO_NAMES = {
   [SupportedChainId.OPTIMISM_GOERLI]: 'optimism_goerli',
   [SupportedChainId.AVALANCHE]: 'avalanche',
   [SupportedChainId.BINANCE]: 'binance',
+  [SupportedChainId.MOONRIVER]: 'moonriver',
 }
 
 /**
@@ -83,6 +86,7 @@ export const SUPPORTED_GAS_ESTIMATE_CHAIN_IDS = [
   SupportedChainId.ARBITRUM_ONE,
   // SupportedChainId.AVALANCHE, ?
   // SupportedChainId.BINANCE, ?
+  // SupportedChainId.MOONRIVER, ?
 ]
 
 /**
