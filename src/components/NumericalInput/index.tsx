@@ -22,6 +22,12 @@ const StyledInput = styled.input<{ error?: boolean; fontSize?: string; align?: s
   -webkit-appearance: textfield;
   text-align: right;
   border-radius: 12px;
+  border-bottom: 2px solid transparent;
+
+  :focus,
+  :active {
+    border-bottom-color: #ebecff;
+  }
 
   ::-webkit-search-decoration {
     -webkit-appearance: none;
