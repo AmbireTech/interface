@@ -191,11 +191,10 @@ const StyledTokenName = styled.span<{ active?: boolean; redesignFlag: boolean }>
 
 const StyledBalanceMax = styled.button<{ disabled?: boolean; redesignFlag: boolean }>`
   background-color: transparent;
-  background-color: ${({ theme, redesignFlag }) => !redesignFlag && theme.deprecated_primary5};
-  border: none;
+  border: 1px solid #27e8a7;
   text-transform: ${({ redesignFlag }) => !redesignFlag && 'uppercase'};
-  border-radius: ${({ redesignFlag }) => !redesignFlag && '12px'};
-  color: ${({ theme, redesignFlag }) => (redesignFlag ? theme.accentAction : theme.deprecated_primary1)};
+  border-radius: 12px;
+  color: #27e8a7;
   cursor: pointer;
   font-size: ${({ redesignFlag }) => (redesignFlag ? '14px' : '11px')};
   font-weight: ${({ redesignFlag }) => (redesignFlag ? '600' : '500')};
