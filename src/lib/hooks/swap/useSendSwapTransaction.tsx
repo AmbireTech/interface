@@ -1,8 +1,10 @@
 import type { JsonRpcProvider, TransactionResponse } from '@ethersproject/providers'
 // eslint-disable-next-line no-restricted-imports
+import { t } from '@lingui/macro'
 import { Trade } from '@uniswap/router-sdk'
 import { Currency, TradeType } from '@uniswap/sdk-core'
 import { useMemo } from 'react'
+import { swapErrorToUserReadableMessage } from 'utils/swapErrorToUserReadableMessage'
 
 interface SwapCall {
   address: string
@@ -112,16 +114,28 @@ export default function useSendSwapTransaction(
         //   call: { address, calldata, value },
         // } = bestCallOption
 
-        const signer = provider.getSigner()
-        let lastTx = signer.sendTransaction(toTxArgs(swapCalls[0], account))
-        // // try {
-        for (let index = 1; index < swapCalls.length; index++) {
-          await timeout(420)
-          const tx = signer.sendTransaction(toTxArgs(swapCalls[index], account))
-          lastTx = tx
-        }
+        try {
+          const signer = provider.getSigner()
+          let lastTx = signer.sendTransaction(toTxArgs(swapCalls[0], account))
+          // // try {
+          for (let index = 1; index < swapCalls.length; index++) {
+            await timeout(420)
+            const tx = signer.sendTransaction(toTxArgs(swapCalls[index], account))
+            lastTx = tx
+          }
 
-        return lastTx
+          return lastTx
+        } catch (error) {
+          // if the user rejected the tx, pass this along
+          if (error?.code === 4001) {
+            throw new Error(t`Transaction rejected`)
+          } else {
+            // otherwise, the error was unexpected and we need to convey that
+            console.error(`Swap failed`, error)
+
+            throw new Error(t`Swap failed: ${swapErrorToUserReadableMessage(error)}`)
+          }
+        }
 
         // return provider
         //   .getSigner()
