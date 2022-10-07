@@ -12,11 +12,15 @@ export const V2_FACTORY_ADDRESSES: AddressMap = {
   ...constructSameAddressMap(V2_FACTORY_ADDRESS),
   [SupportedChainId.AVALANCHE]: '0x9Ad6C38BE94206cA50bb0d90783181662f0Cfa10', // JoeFactory (https://docs.traderjoexyz.com/en/security-and-contracts/contracts)
   [SupportedChainId.BINANCE]: '0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73', // PancakeFactory (https://docs.pancakeswap.finance/code/smart-contracts/pancakeswap-exchange/router-v2)
+  [SupportedChainId.MOONBEAM]: '0x68A384D826D3678f78BB9FB1533c7E9577dACc0E', // StellaSwapFactory (https://docs.stellaswap.com/developers/smart-contracts)
 }
+
+
 export const V2_ROUTER_ADDRESS: AddressMap = {
   ...constructSameAddressMap('0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D'),
   [SupportedChainId.AVALANCHE]: '0x60aE616a2155Ee3d9A68541Ba4544862310933d4', // JoeRouter (https://docs.traderjoexyz.com/en/security-and-contracts/contracts)
   [SupportedChainId.BINANCE]: '0x10ED43C718714eb63d5aA57B78B54704E256024E', // PancakeRouter (https://docs.pancakeswap.finance/code/smart-contracts/pancakeswap-exchange/router-v2)
+  [SupportedChainId.MOONBEAM]: '0x70085a09D30D6f8C4ecF6eE10120d1847383BB57', // StellaSwapRouter (https://docs.stellaswap.com/developers/smart-contracts)
 }
 
 // celo v3 addresses

@@ -2,6 +2,7 @@ import avalancheLogo from 'assets/images/avalanche.png'
 import binanceLogo from 'assets/images/bnb-logo.png'
 import celoCircleLogoUrl from 'assets/images/celoCircle.png'
 import ethereumLogoUrl from 'assets/images/ethereum-logo.png'
+import moonbeamLogo from 'assets/images/moonbeam-logo.png'
 import optimismCircleLogoUrl from 'assets/images/optimismCircle.png'
 import polygonCircleLogoUrl from 'assets/images/polygonCircle.png'
 import { default as arbitrumCircleLogoUrl, default as arbitrumLogoUrl } from 'assets/svg/arbitrum_logo.svg'
@@ -238,6 +239,16 @@ const CHAIN_INFO: ChainInfoMap = {
     label: 'Binance',
     logoUrl: binanceLogo,
     nativeCurrency: { name: 'Binance', symbol: 'BNB', decimals: 18 },
+    defaultListUrl: BINANCE_PANCAKE_SWAP_LIST,
+  },
+  [SupportedChainId.MOONBEAM]: {
+    networkType: NetworkType.L1,
+    docs: 'https://docs.uniswap.org/',
+    explorer: 'https://moonbeam.moonscan.io/',
+    infoLink: 'https://info.uniswap.org/#/',
+    label: 'Moonbeam',
+    logoUrl: moonbeamLogo,
+    nativeCurrency: { name: 'Moonbeam', symbol: 'GLMR', decimals: 18 },
     defaultListUrl: BINANCE_PANCAKE_SWAP_LIST,
   },
 }
