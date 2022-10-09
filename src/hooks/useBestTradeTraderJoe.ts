@@ -1,16 +1,16 @@
-import { Currency as V2Currency, CurrencyAmount, NativeCurrency, Token as V2Token, TradeType } from '@uniswap/sdk-core'
-import { Pair as V2Pair, Route as V2Route } from '@uniswap/v2-sdk'
-import { useCallback, useEffect, useMemo, useState } from 'react'
-import { InterfaceTrade, TradeState } from 'state/routing/types'
-import useDebounce from './useDebounce'
-// import { ChainId, Pair, Route, Token, TokenAmount, Trade, TradeType } from '@traderjoe-xyz/sdk'
-import { ChainId, Pair, Route, Token, TokenAmount, Trade } from '@traderjoe-xyz/sdk'
-import uniswapV2Pair from '@uniswap/v2-core/build/IUniswapV2Pair.json'
 import { Contract } from '@ethersproject/contracts'
 import { parseUnits } from '@ethersproject/units'
+import { ChainId, Pair, Route, Token, TokenAmount, Trade } from '@traderjoe-xyz/sdk'
+import { Currency as V2Currency, CurrencyAmount, NativeCurrency, Token as V2Token, TradeType } from '@uniswap/sdk-core'
+import uniswapV2Pair from '@uniswap/v2-core/build/IUniswapV2Pair.json'
+import { Pair as V2Pair, Route as V2Route } from '@uniswap/v2-sdk'
 import { useWeb3React } from '@web3-react/core'
-import { WRAPPED_NATIVE_CURRENCY } from '../constants/tokens'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { InterfaceTrade, TradeState } from 'state/routing/types'
+
 import { SupportedChainId } from '../constants/chains'
+import { WRAPPED_NATIVE_CURRENCY } from '../constants/tokens'
+import useDebounce from './useDebounce'
 
 /**
  * Returns the best v2+v3 trade for a desired swap.
@@ -33,55 +33,85 @@ export function useBestTradeByJoe(
     200
   )
 
-  const inputCurrency = debouncedAmount?.currency instanceof NativeCurrency ? WRAPPED_NATIVE_CURRENCY[SupportedChainId.AVALANCHE] : debouncedAmount?.currency
+  const inputCurrency =
+    debouncedAmount?.currency instanceof NativeCurrency
+      ? WRAPPED_NATIVE_CURRENCY[SupportedChainId.AVALANCHE]
+      : debouncedAmount?.currency
+
   const inputAmountString: string = convertDecimalToActualAmount(debouncedAmount?.toExact() ?? '0', inputCurrency)
-  const outputCurrency = debouncedOtherCurrency instanceof NativeCurrency ? WRAPPED_NATIVE_CURRENCY[SupportedChainId.AVALANCHE] : debouncedOtherCurrency
+
+  const outputCurrency =
+    debouncedOtherCurrency instanceof NativeCurrency
+      ? WRAPPED_NATIVE_CURRENCY[SupportedChainId.AVALANCHE]
+      : debouncedOtherCurrency
 
   const pair = useGetPair(inputCurrency, outputCurrency)
 
   const tokenA = useMemo(
-    () => inputCurrency ? new Token(ChainId.AVALANCHE, inputCurrency.address, inputCurrency.decimals, inputCurrency.symbol, inputCurrency.name) : undefined,
+    () =>
+      inputCurrency
+        ? new Token(
+            ChainId.AVALANCHE,
+            inputCurrency.address,
+            inputCurrency.decimals,
+            inputCurrency.symbol,
+            inputCurrency.name
+          )
+        : undefined,
     [inputCurrency]
   )
   const tokenB = useMemo(
-    () => outputCurrency ? new Token(ChainId.AVALANCHE, outputCurrency.address, outputCurrency.decimals, outputCurrency.symbol, outputCurrency.name) : undefined,
+    () =>
+      outputCurrency
+        ? new Token(
+            ChainId.AVALANCHE,
+            outputCurrency.address,
+            outputCurrency.decimals,
+            outputCurrency.symbol,
+            outputCurrency.name
+          )
+        : undefined,
     [outputCurrency]
   )
   const bestTrade = useMemo(
-    () => (inputAmountString && tokenA && tokenB && pair) ? getTrade([pair], tokenA, tokenB, inputAmountString) : undefined,
+    () =>
+      inputAmountString && tokenA && tokenB && pair ? getTrade([pair], tokenA, tokenB, inputAmountString) : undefined,
     [inputAmountString, tokenA, tokenB, pair]
   )
 
-  const univ2Trade = useMemo(
-    () => {
-      if (!tokenA || !tokenB || !provider || !bestTrade) return undefined
+  const univ2Trade = useMemo(() => {
+    if (!tokenA || !tokenB || !provider || !bestTrade) return undefined
 
-      const currency1 = new V2Token(ChainId.AVALANCHE, tokenA.address, tokenA.decimals, tokenA.symbol, tokenA.name)
-      const currency2 = new V2Token(ChainId.AVALANCHE, tokenB.address, tokenB.decimals, tokenB.symbol, tokenB.name)
-      const currencyAmount1 = CurrencyAmount.fromRawAmount(currency1, convertDecimalToActualAmount(bestTrade.inputAmount.toExact(), currency1))
-      const currencyAmount2 = CurrencyAmount.fromRawAmount(currency2, convertDecimalToActualAmount(bestTrade.outputAmount.toExact(), currency2))
+    const currency1 = new V2Token(ChainId.AVALANCHE, tokenA.address, tokenA.decimals, tokenA.symbol, tokenA.name)
+    const currency2 = new V2Token(ChainId.AVALANCHE, tokenB.address, tokenB.decimals, tokenB.symbol, tokenB.name)
+    const currencyAmount1 = CurrencyAmount.fromRawAmount(
+      currency1,
+      convertDecimalToActualAmount(bestTrade.inputAmount.toExact(), currency1)
+    )
+    const currencyAmount2 = CurrencyAmount.fromRawAmount(
+      currency2,
+      convertDecimalToActualAmount(bestTrade.outputAmount.toExact(), currency2)
+    )
 
-      return new InterfaceTrade({
-        // v2Routes:
-        //   route
-        //     ?.filter((r): r is typeof route[0] & { routev2: NonNullable<typeof route[0]['routev2']> } => r.routev2 !== null)
-        //     .map(({ routev2, inputAmount, outputAmount }) => ({ routev2, inputAmount, outputAmount })) ?? [],
-        v2Routes: [
-          {
-            routev2: new V2Route([new V2Pair(currencyAmount1, currencyAmount2)], currency1, currency2),
-            inputAmount: currencyAmount1,
-            outputAmount: currencyAmount2
-          }
-        ],
-        v3Routes: [],
-        mixedRoutes: [],
-        tradeType,
-        gasUseEstimateUSD: undefined,
-        blockNumber: String(provider._lastBlockNumber),
-      })
-    },
-    [tradeType, tokenA, tokenB, provider, bestTrade]
-  )
+    return new InterfaceTrade({
+      // v2Routes:
+      //   route
+      //     ?.filter((r): r is typeof route[0] & { routev2: NonNullable<typeof route[0]['routev2']> } => r.routev2 !== null)
+      //     .map(({ routev2, inputAmount, outputAmount }) => ({ routev2, inputAmount, outputAmount })) ?? [],
+      v2Routes: [
+        {
+          routev2: new V2Route([new V2Pair(currencyAmount1, currencyAmount2)], currency1, currency2),
+          inputAmount: currencyAmount1,
+          outputAmount: currencyAmount2,
+        },
+      ],
+      v3Routes: [],
+      mixedRoutes: [],
+      tradeType,
+      gasUseEstimateUSD: undefined,
+      blockNumber: String(provider._lastBlockNumber),
+    })
+  }, [tradeType, tokenA, tokenB, provider, bestTrade])
 
   // // const inputAmount = new TokenAmount(tokenA, inputCurrencyAmount.toString())
   // // const inputAmount = new TokenAmount(tokenA, inputAmountString)
@@ -94,27 +124,24 @@ export function useBestTradeByJoe(
   // console.log(amountOut.toSignificant(outputCurrency.decimals))
 
   // only return gas estimate from api if routing api trade is used
-  return useMemo(
-    () => {
-      if (!univ2Trade) {
-        return {
-          trade: undefined,
-          state: TradeState.INVALID
-        }
-      }
-
+  return useMemo(() => {
+    if (!univ2Trade) {
       return {
-        trade: univ2Trade,
-        state: TradeState.VALID
+        trade: undefined,
+        state: TradeState.INVALID,
       }
-    },
-    [univ2Trade]
-  )
+    }
+
+    return {
+      trade: univ2Trade,
+      state: TradeState.VALID,
+    }
+  }, [univ2Trade])
 }
 
 function useGetPair(inputCurrency: any, outputCurrency: any) {
   const { provider } = useWeb3React()
-  const [pair, setPair] = useState<Pair|undefined>(undefined)
+  const [pair, setPair] = useState<Pair | undefined>(undefined)
 
   const getPairCallback = useCallback(async () => {
     if (!provider || !inputCurrency || !outputCurrency) return
