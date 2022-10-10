@@ -105,3 +105,12 @@ export class InterfaceTrade<
     this.gasUseEstimateUSD = gasUseEstimateUSD
   }
 }
+
+export type TradeHook = (
+  tradeType: TradeType,
+  amountSpecified?: CurrencyAmount<Currency>,
+  otherCurrency?: Currency
+) => {
+  state: TradeState
+  trade: InterfaceTrade<Currency, Currency, TradeType> | undefined
+}

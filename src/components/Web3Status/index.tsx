@@ -5,13 +5,17 @@ import { ElementName, Event, EventName } from 'analytics/constants'
 import { TraceEvent } from 'analytics/TraceEvent'
 import WalletDropdown from 'components/WalletDropdown'
 import { getConnection } from 'connection/utils'
+import { SupportedChainId } from 'constants/chains'
 import { NavBarVariant, useNavBarFlag } from 'featureFlags/flags/navBar'
+import { useBestTrade } from 'hooks/useBestTrade'
+import { useBestTradeByJoe } from 'hooks/useBestTradeTraderJoe'
 import { Portal } from 'nft/components/common/Portal'
 import { getIsValidSwapQuote } from 'pages/Swap'
 import { darken } from 'polished'
 import { useMemo, useRef } from 'react'
 import { AlertTriangle, ChevronDown, ChevronUp } from 'react-feather'
 import { useAppSelector } from 'state/hooks'
+import { TradeHook } from 'state/routing/types'
 import { useDerivedSwapInfo } from 'state/swap/hooks'
 import styled, { css, useTheme } from 'styled-components/macro'
 
@@ -182,13 +186,27 @@ const CHEVRON_PROPS = {
   width: 20,
 }
 
+function Web3StatusInnerDefault() {
+  return <BaseWeb3StatusInner useBestTradeHook={useBestTrade} />
+}
+
+function Web3StatusInnerAvalanche() {
+  return <BaseWeb3StatusInner useBestTradeHook={useBestTradeByJoe} />
+}
+
 function Web3StatusInner() {
+  const { chainId } = useWeb3React()
+
+  return <>{chainId === SupportedChainId.AVALANCHE ? <Web3StatusInnerAvalanche /> : <Web3StatusInnerDefault />}</>
+}
+
+function BaseWeb3StatusInner(props: { useBestTradeHook: TradeHook }) {
   const { account, connector, chainId, ENSName } = useWeb3React()
   const connectionType = getConnection(connector).type
   const {
     trade: { state: tradeState, trade },
     inputError: swapInputError,
-  } = useDerivedSwapInfo()
+  } = useDerivedSwapInfo(props.useBestTradeHook)
   const validSwapQuote = getIsValidSwapQuote(trade, tradeState, swapInputError)
   const navbarFlagEnabled = useNavBarFlag() === NavBarVariant.Enabled
   const theme = useTheme()

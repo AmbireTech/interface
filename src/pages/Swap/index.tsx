@@ -18,9 +18,11 @@ import SwapDetailsDropdown from 'components/swap/SwapDetailsDropdown'
 import UnsupportedCurrencyFooter from 'components/swap/UnsupportedCurrencyFooter'
 import TokenSafetyModal from 'components/TokenSafety/TokenSafetyModal'
 import { MouseoverTooltip } from 'components/Tooltip'
-import { isSupportedChain } from 'constants/chains'
+import { isSupportedChain, SupportedChainId } from 'constants/chains'
 import { NavBarVariant, useNavBarFlag } from 'featureFlags/flags/navBar'
 import { RedesignVariant, useRedesignFlag } from 'featureFlags/flags/redesign'
+import { useBestTrade } from 'hooks/useBestTrade'
+import { useBestTradeByJoe } from 'hooks/useBestTradeTraderJoe'
 import { useSwapCallback } from 'hooks/useSwapCallback'
 import useTransactionDeadline from 'hooks/useTransactionDeadline'
 import JSBI from 'jsbi'
@@ -31,6 +33,7 @@ import { useNavigate } from 'react-router-dom'
 import { Text } from 'rebass'
 import { useToggleWalletModal } from 'state/application/hooks'
 import { InterfaceTrade } from 'state/routing/types'
+import { TradeHook } from 'state/routing/types'
 import { TradeState } from 'state/routing/types'
 import styled, { css, useTheme } from 'styled-components/macro'
 
@@ -177,7 +180,21 @@ const formatSwapQuoteReceivedEventProperties = (
 
 const TRADE_STRING = 'SwapRouter'
 
+export function SwapDefault() {
+  return <BaseSwap useBestTradeHook={useBestTrade} />
+}
+
+export function SwapAvalanche() {
+  return <BaseSwap useBestTradeHook={useBestTradeByJoe} />
+}
+
 export default function Swap() {
+  const { chainId } = useWeb3React()
+
+  return <>{chainId === SupportedChainId.AVALANCHE ? <SwapAvalanche /> : <SwapDefault />}</>
+}
+
+export function BaseSwap(props: { useBestTradeHook: TradeHook }) {
   const navigate = useNavigate()
   const navBarFlag = useNavBarFlag()
   const navBarFlagEnabled = navBarFlag === NavBarVariant.Enabled
@@ -240,7 +257,7 @@ export default function Swap() {
     parsedAmount,
     currencies,
     inputError: swapInputError,
-  } = useDerivedSwapInfo()
+  } = useDerivedSwapInfo(props.useBestTradeHook)
 
   const {
     wrapType,
