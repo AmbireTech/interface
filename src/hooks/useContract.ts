@@ -130,7 +130,8 @@ export function useInterfaceMulticall() {
     chainId === SupportedChainId.BINANCE ||
     chainId === SupportedChainId.MOONBEAM ||
     chainId === SupportedChainId.MOONRIVER ||
-    chainId === SupportedChainId.FANTOM
+    chainId === SupportedChainId.FANTOM ||
+    chainId === SupportedChainId.ANDROMEDA
   ) {
     abi = MULTICALL_ABI
   }

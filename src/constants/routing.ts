@@ -25,6 +25,7 @@ import {
   sETH2,
   SWISE,
   TRIBE,
+  USDC_ANDROMEDA,
   USDC_ARBITRUM,
   USDC_AVALANCHE,
   USDC_BINANCE,
@@ -96,6 +97,7 @@ export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
   [SupportedChainId.BINANCE]: [...WRAPPED_NATIVE_CURRENCIES_ONLY[SupportedChainId.BINANCE], USDC_BINANCE],
   [SupportedChainId.MOONRIVER]: [...WRAPPED_NATIVE_CURRENCIES_ONLY[SupportedChainId.MOONRIVER], USDC_MOONRIVER],
   [SupportedChainId.FANTOM]: [...WRAPPED_NATIVE_CURRENCIES_ONLY[SupportedChainId.FANTOM], USDC_FANTOM],
+  [SupportedChainId.ANDROMEDA]: [...WRAPPED_NATIVE_CURRENCIES_ONLY[SupportedChainId.ANDROMEDA], USDC_ANDROMEDA],
 }
 export const ADDITIONAL_BASES: { [chainId: number]: { [tokenAddress: string]: Token[] } } = {
   [SupportedChainId.MAINNET]: {
@@ -219,6 +221,11 @@ export const COMMON_BASES: ChainCurrencyList = {
     nativeOnChain(SupportedChainId.FANTOM),
     USDC_FANTOM,
     WRAPPED_NATIVE_CURRENCY[SupportedChainId.FANTOM] as Token,
+  ],
+  [SupportedChainId.ANDROMEDA]: [
+    nativeOnChain(SupportedChainId.ANDROMEDA),
+    USDC_ANDROMEDA,
+    WRAPPED_NATIVE_CURRENCY[SupportedChainId.ANDROMEDA] as Token,
   ],
 }
 
