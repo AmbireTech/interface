@@ -44,6 +44,7 @@ export enum USDCSupportedChainId {
   CELO_ALFAJORES = 44787,
 
   AVALANCHE = 43114,
+  BINANCE = 56,
 }
 
 export const CHAIN_IDS_TO_NAMES = {

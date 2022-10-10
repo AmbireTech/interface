@@ -82,6 +82,13 @@ export const USDC_AVALANCHE = new Token(
   'USDC',
   'USD//C'
 )
+export const USDC_BINANCE = new Token(
+  SupportedChainId.BINANCE,
+  '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
+  6,
+  'USDC',
+  'USD//C'
+)
 export const USDC_POLYGON_MUMBAI = new Token(
   SupportedChainId.POLYGON_MUMBAI,
   '0xe11a86849d99f524cac3e7a0ec1241828e332c62',
@@ -146,6 +153,7 @@ export const USDC: { [chainId in USDCSupportedChainId]: Token } = {
   [SupportedChainId.KOVAN]: USDC_KOVAN,
   [SupportedChainId.ROPSTEN]: USDC_ROPSTEN,
   [SupportedChainId.AVALANCHE]: USDC_AVALANCHE,
+  [SupportedChainId.BINANCE]: USDC_BINANCE,
 }
 export const DAI_POLYGON = new Token(
   SupportedChainId.POLYGON,
@@ -556,5 +564,6 @@ export const TOKEN_SHORTHANDS: { [shorthand: string]: { [chainId in SupportedCha
     [SupportedChainId.KOVAN]: USDC_KOVAN.address,
     [SupportedChainId.ROPSTEN]: USDC_ROPSTEN.address,
     [SupportedChainId.AVALANCHE]: USDC_AVALANCHE.address,
+    [SupportedChainId.BINANCE]: USDC_BINANCE.address,
   },
 }
