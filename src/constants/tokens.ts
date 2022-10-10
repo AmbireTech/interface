@@ -458,7 +458,7 @@ export const WRAPPED_NATIVE_CURRENCY: { [chainId: number]: Token | undefined } =
   ),
   [SupportedChainId.MOONRIVER]: new Token(
     SupportedChainId.MOONRIVER,
-    '0x98878B06940aE243284CA214f92Bb71a2b032B8A',
+    '0xf50225a84382c74CbdeA10b0c176f71fc3DE0C4d',
     18,
     'WMOVR',
     'Wrapped MOVR'
