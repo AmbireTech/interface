@@ -23,10 +23,9 @@ export const BINANCE_PANCAKE_SWAP_LIST =
   'https://raw.githubusercontent.com/pancakeswap/token-list/main/lists/pancakeswap-extended.json'
 
 export const MOONBEAM_BEAMSWAP_LIST =
-  'https://raw.githubusercontent.com/BeamSwap/beamswap-tokenlist/main/tokenlist.json'
+  'https://raw.githubusercontent.com/borislav-itskov/moonriver-sushi-token-list/master/token-list.json'
 
-export const MOONRIVER_SUSHI_SWAP_LIST =
-  'https://raw.githubusercontent.com/sushiswap/list/master/lists/token-lists/default-token-list/tokens/moonriver.json'
+export const MOONRIVER_SUSHI_SWAP_LIST = 'constants/tokenLists/moonriver.tokenlist.json'
 
 export const UNSUPPORTED_LIST_URLS: string[] = [BA_LIST, UNI_UNSUPPORTED_LISTS]
 
