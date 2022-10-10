@@ -7,12 +7,12 @@ import { WrappedTokenInfo } from 'state/lists/wrappedTokenInfo'
 import EthereumLogo from '../../assets/images/ethereum-logo.png'
 import AvaxLogo from '../../assets/svg/avalanche-avax-logo.svg'
 import BinanceLogo from '../../assets/svg/bnb-logo.svg'
-import MoonbeamLogo from '../../assets/svg/moonbeam-token.svg'
 import CeloLogo from '../../assets/svg/celo_logo.svg'
 import MaticLogo from '../../assets/svg/matic-token-icon.svg'
+import MoonbeamLogo from '../../assets/svg/moonbeam-token.svg'
 import { isCelo, nativeOnChain } from '../../constants/tokens'
 
-type Network = 'ethereum' | 'arbitrum' | 'optimism' | 'polygon' | 'avalanche' | 'binance'
+type Network = 'ethereum' | 'arbitrum' | 'optimism' | 'polygon' | 'avalanche' | 'binance' | 'moonbeam'
 
 function chainIdToNetworkName(networkId: SupportedChainId): Network {
   switch (networkId) {
@@ -28,6 +28,8 @@ function chainIdToNetworkName(networkId: SupportedChainId): Network {
       return 'avalanche'
     case SupportedChainId.BINANCE:
       return 'binance'
+    case SupportedChainId.MOONBEAM:
+      return 'moonbeam'
     default:
       return 'ethereum'
   }

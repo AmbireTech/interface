@@ -84,7 +84,7 @@ export const USDC_AVALANCHE = new Token(
 )
 export const USDC_MOONBEAM = new Token(
   SupportedChainId.MOONBEAM,
-  '0x8f552a71EFE5eeFc207Bf75485b356A0b3f01eC9',
+  '0x818ec0A7Fe18Ff94269904fCED6AE3DaE6d6dC0b',
   6,
   'USDC',
   'USD//C'
