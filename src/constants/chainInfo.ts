@@ -13,7 +13,14 @@ import ms from 'ms.macro'
 import { colorsDark } from 'theme/colors'
 
 import { SupportedChainId, SupportedL1ChainId, SupportedL2ChainId } from './chains'
-import { ARBITRUM_LIST, AVAX_TRADER_JOE_LIST, BINANCE_PANCAKE_SWAP_LIST, CELO_LIST, OPTIMISM_LIST } from './lists'
+import {
+  ARBITRUM_LIST,
+  AVAX_TRADER_JOE_LIST,
+  BINANCE_PANCAKE_SWAP_LIST,
+  CELO_LIST,
+  MOONBEAM_BEAMSWAP_LIST,
+  OPTIMISM_LIST,
+} from './lists'
 
 export enum NetworkType {
   L1,
@@ -249,7 +256,7 @@ const CHAIN_INFO: ChainInfoMap = {
     label: 'Moonbeam',
     logoUrl: moonbeamLogo,
     nativeCurrency: { name: 'Moonbeam', symbol: 'GLMR', decimals: 18 },
-    defaultListUrl: BINANCE_PANCAKE_SWAP_LIST,
+    defaultListUrl: MOONBEAM_BEAMSWAP_LIST,
   },
 }
 
