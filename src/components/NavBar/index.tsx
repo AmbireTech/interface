@@ -1,7 +1,5 @@
 import { Trans } from '@lingui/macro'
 import Web3Status from 'components/Web3Status'
-import { NftVariant, useNftFlag } from 'featureFlags/flags/nft'
-import { useGlobalChainName } from 'graphql/data/util'
 import { Box } from 'nft/components/Box'
 import { Row } from 'nft/components/Flex'
 import { UniIcon } from 'nft/components/icons'
@@ -34,10 +32,10 @@ const MenuItem = ({ href, id, isActive, children }: MenuItemProps) => {
   )
 }
 
-const PageTabs = () => {
+export const PageTabs = () => {
   const { pathname } = useLocation()
-  const nftFlag = useNftFlag()
-  const chainName = useGlobalChainName()
+  // const nftFlag = useNftFlag()
+  // const chainName = useGlobalChainName()
 
   const isPoolActive =
     pathname.startsWith('/pool') ||
@@ -47,28 +45,32 @@ const PageTabs = () => {
     pathname.startsWith('/find')
 
   return (
-    <>
-      <MenuItem href="/swap" isActive={pathname.startsWith('/swap')}>
-        <Trans>Swap</Trans>
-      </MenuItem>
-      <MenuItem href={`/tokens/${chainName.toLowerCase()}`} isActive={pathname.startsWith('/tokens')}>
+    <nav className={styles.nav}>
+      <Box display="flex" height="full" flexWrap="nowrap" alignItems="stretch">
+        <Row gap="8" display={{ sm: 'flex' }}>
+          <MenuItem href="/swap" isActive={pathname.startsWith('/swap')}>
+            <Trans>Swap</Trans>
+          </MenuItem>
+          {/* <MenuItem href={`/tokens/${chainName.toLowerCase()}`} isActive={pathname.startsWith('/tokens')}>
         <Trans>Tokens</Trans>
-      </MenuItem>
-      {nftFlag === NftVariant.Enabled && (
+      </MenuItem> */}
+          {/* {nftFlag === NftVariant.Enabled && (
         <MenuItem href="/nfts" isActive={pathname.startsWith('/nfts')}>
           <Trans>NFTs</Trans>
         </MenuItem>
-      )}
-      <MenuItem href="/pool" id={'pool-nav-link'} isActive={isPoolActive}>
-        <Trans>Pool</Trans>
-      </MenuItem>
-    </>
+      )} */}
+          <MenuItem href="/pool" id={'pool-nav-link'} isActive={isPoolActive}>
+            <Trans>Pool</Trans>
+          </MenuItem>
+        </Row>
+      </Box>
+    </nav>
   )
 }
 
 const Navbar = () => {
   const { pathname } = useLocation()
-  const isNftPage = pathname.startsWith('/nfts')
+  const showShoppingBag = pathname.startsWith('/nfts') || pathname.startsWith('/profile')
 
   return (
     <>
@@ -96,7 +98,7 @@ const Navbar = () => {
               <Box display={{ sm: 'none', lg: 'flex' }}>
                 <MenuDropdown />
               </Box>
-              {isNftPage && <ShoppingBag />}
+              {showShoppingBag && <ShoppingBag />}
               <Box display={{ sm: 'none', lg: 'flex' }}>
                 <ChainSelector />
               </Box>

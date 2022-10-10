@@ -1,6 +1,5 @@
-import { Children, cloneElement, isValidElement, memo, PropsWithChildren, SyntheticEvent } from 'react'
+import { Children, cloneElement, isValidElement, memo, PropsWithChildren } from 'react'
 
-import { sendAnalyticsEvent } from '.'
 import { Event, EventName } from './constants'
 import { ITraceContext, Trace, TraceContext } from './Trace'
 
@@ -33,8 +32,8 @@ export const TraceEvent = memo((props: PropsWithChildren<TraceEventProps>) => {
 
             // For each child, augment event handlers defined in `events` with event tracing.
             return cloneElement(
-              child,
-              getEventHandlers(child, traceContext, events, name, properties, shouldLogImpression)
+              child
+              // getEventHandlers(child, traceContext, events, name, properties, shouldLogImpression)
             )
           })
         }
@@ -49,27 +48,27 @@ TraceEvent.displayName = 'TraceEvent'
  * Given a set of child element and event props, returns a spreadable
  * object of the event handlers augmented with analytics logging.
  */
-function getEventHandlers(
-  child: React.ReactElement,
-  traceContext: ITraceContext,
-  events: Event[],
-  name: EventName,
-  properties?: Record<string, unknown>,
-  shouldLogImpression = true
-) {
-  const eventHandlers: Partial<Record<Event, (e: SyntheticEvent<Element, Event>) => void>> = {}
+// function getEventHandlers(
+//   child: React.ReactElement,
+//   traceContext: ITraceContext,
+//   events: Event[],
+//   name: EventName,
+//   properties?: Record<string, unknown>,
+//   shouldLogImpression = true
+// ) {
+//   const eventHandlers: Partial<Record<Event, (e: SyntheticEvent<Element, Event>) => void>> = {}
 
-  for (const event of events) {
-    eventHandlers[event] = (eventHandlerArgs: unknown) => {
-      // call child event handler with original arguments, must be in array
-      const args = Array.isArray(eventHandlerArgs) ? eventHandlerArgs : [eventHandlerArgs]
-      child.props[event]?.apply(child, args)
+//   for (const event of events) {
+//     eventHandlers[event] = (eventHandlerArgs: unknown) => {
+//       // call child event handler with original arguments, must be in array
+//       const args = Array.isArray(eventHandlerArgs) ? eventHandlerArgs : [eventHandlerArgs]
+//       child.props[event]?.apply(child, args)
 
-      // augment handler with analytics logging
-      if (shouldLogImpression) sendAnalyticsEvent(name, { ...traceContext, ...properties, action: event })
-    }
-  }
+//       // augment handler with analytics logging
+//       if (shouldLogImpression) sendAnalyticsEvent(name, { ...traceContext, ...properties, action: event })
+//     }
+//   }
 
-  // return a spreadable event handler object
-  return eventHandlers
-}
+//   // return a spreadable event handler object
+//   return eventHandlers
+// }

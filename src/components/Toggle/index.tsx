@@ -13,7 +13,7 @@ const Wrapper = styled.button<{ isActive?: boolean; activeElement?: boolean; red
       : theme.deprecated_bg1};
   border: ${({ redesignFlag, theme, isActive }) =>
     redesignFlag && !isActive ? `1px solid ${theme.backgroundOutline}` : 'none'};
-  border-radius: 20px;
+  border-radius: 12px;
   cursor: pointer;
   display: flex;
   outline: none;

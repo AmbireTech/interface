@@ -40,7 +40,7 @@ const FixedContainer = styled.div`
   width: 100%;
   height: 100%;
   position: absolute;
-  border-radius: 20px;
+  border-radius: 12px;
   background-color: ${({ theme }) => theme.deprecated_bg2};
   display: flex;
   align-items: center;
@@ -140,7 +140,7 @@ const StyledDropDown = styled(DropDown)<{ selected: boolean }>`
 
 const StyledTokenName = styled.span<{ active?: boolean }>`
   ${({ active }) => (active ? '  margin: 0 0.25rem 0 0.25rem;' : '  margin: 0 0.25rem 0 0.25rem;')}
-  font-size:  ${({ active }) => (active ? '18px' : '18px')};
+  font-size: 20px;
 `
 
 const StyledBalanceMax = styled.button<{ disabled?: boolean }>`
