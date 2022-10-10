@@ -8,13 +8,22 @@ import EthereumLogo from '../../assets/images/ethereum-logo.png'
 import AvaxLogo from '../../assets/svg/avalanche-avax-logo.svg'
 import BinanceLogo from '../../assets/svg/bnb-logo.svg'
 import CeloLogo from '../../assets/svg/celo_logo.svg'
+import FantomLogo from '../../assets/svg/fantom-logo.svg'
 import MaticLogo from '../../assets/svg/matic-token-icon.svg'
 import MoonbeamLogo from '../../assets/svg/moonbeam-token.svg'
 import MoonriverLogo from '../../assets/svg/moonriver-logo.svg'
-import FantomLogo from '../../assets/svg/fantom-logo.svg'
 import { isCelo, nativeOnChain } from '../../constants/tokens'
 
-type Network = 'ethereum' | 'arbitrum' | 'optimism' | 'polygon' | 'avalanche' | 'binance' | 'moonbeam' | 'moonriver' | 'fantom'
+type Network =
+  | 'ethereum'
+  | 'arbitrum'
+  | 'optimism'
+  | 'polygon'
+  | 'avalanche'
+  | 'binance'
+  | 'moonbeam'
+  | 'moonriver'
+  | 'fantom'
 
 function chainIdToNetworkName(networkId: SupportedChainId): Network {
   switch (networkId) {
