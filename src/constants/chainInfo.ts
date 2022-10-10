@@ -2,6 +2,7 @@ import avalancheLogo from 'assets/images/avalanche.png'
 import binanceLogo from 'assets/images/bnb-logo.png'
 import celoCircleLogoUrl from 'assets/images/celoCircle.png'
 import ethereumLogoUrl from 'assets/images/ethereum-logo.png'
+import fantomLogo from 'assets/images/fantom-ftm-logo.png'
 import moonbeamLogo from 'assets/images/moonbeam-logo.png'
 import moonriverLogo from 'assets/images/moonriver-logo.png'
 import optimismCircleLogoUrl from 'assets/images/optimismCircle.png'
@@ -19,6 +20,7 @@ import {
   AVAX_TRADER_JOE_LIST,
   BINANCE_PANCAKE_SWAP_LIST,
   CELO_LIST,
+  FANTOM_SUSHI_SWAP_LIST,
   MOONBEAM_BEAMSWAP_LIST,
   MOONRIVER_SUSHI_SWAP_LIST,
   OPTIMISM_LIST,
@@ -269,6 +271,16 @@ const CHAIN_INFO: ChainInfoMap = {
     logoUrl: moonriverLogo,
     nativeCurrency: { name: 'Moonriver', symbol: 'MOVR', decimals: 18 },
     defaultListUrl: MOONRIVER_SUSHI_SWAP_LIST,
+  },
+  [SupportedChainId.FANTOM]: {
+    networkType: NetworkType.L1,
+    docs: 'https://docs.uniswap.org/',
+    explorer: 'https://ftmscan.com/',
+    infoLink: 'https://info.uniswap.org/#/',
+    label: 'Fantom',
+    logoUrl: fantomLogo,
+    nativeCurrency: { name: 'Fantom', symbol: 'FTM', decimals: 18 },
+    defaultListUrl: FANTOM_SUSHI_SWAP_LIST,
   },
 }
 

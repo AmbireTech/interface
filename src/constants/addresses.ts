@@ -14,6 +14,7 @@ export const V2_FACTORY_ADDRESSES: AddressMap = {
   [SupportedChainId.BINANCE]: '0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73', // PancakeFactory (https://docs.pancakeswap.finance/code/smart-contracts/pancakeswap-exchange/router-v2)
   [SupportedChainId.MOONRIVER]: '0xc35DADB65012eC5796536bD9864eD8773aBc74C4', // SushiSwapFactory (https://docs.sushi.com/docs/Developers/Deployment%20Addresses)
   [SupportedChainId.MOONBEAM]: '0x985BcA32293A7A496300a48081947321177a86FD', // BeamSwapFactory (https://docs.beamswap.io/contracts/beamswap-contracts
+  [SupportedChainId.FANTOM]: '0xc35DADB65012eC5796536bD9864eD8773aBc74C4', // SushiSwapFactory (https://docs.sushi.com/docs/Developers/Deployment%20Addresses)
 }
 
 export const V2_ROUTER_ADDRESS: AddressMap = {
@@ -22,6 +23,7 @@ export const V2_ROUTER_ADDRESS: AddressMap = {
   [SupportedChainId.BINANCE]: '0x10ED43C718714eb63d5aA57B78B54704E256024E', // PancakeRouter (https://docs.pancakeswap.finance/code/smart-contracts/pancakeswap-exchange/router-v2)
   [SupportedChainId.MOONRIVER]: '0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506', // SushiSwapRouter (https://docs.sushi.com/docs/Developers/Deployment%20Addresses)
   [SupportedChainId.MOONBEAM]: '0x96b244391D98B62D19aE89b1A4dCcf0fc56970C7', // BeamSwapRouter (https://docs.beamswap.io/contracts/beamswap-contracts
+  [SupportedChainId.FANTOM]: '0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506', // SushiSwapRouter (https://docs.sushi.com/docs/Developers/Deployment%20Addresses)
 }
 
 // celo v3 addresses

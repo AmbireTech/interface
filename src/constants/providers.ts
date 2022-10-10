@@ -67,4 +67,5 @@ export const RPC_PROVIDERS: { [key in SupportedChainId]: StaticJsonRpcProvider }
   [SupportedChainId.BINANCE]: new AppJsonRpcProvider(RPC_URLS[SupportedChainId.BINANCE]),
   [SupportedChainId.MOONBEAM]: new AppJsonRpcProvider(RPC_URLS[SupportedChainId.MOONBEAM]),
   [SupportedChainId.MOONRIVER]: new AppJsonRpcProvider(RPC_URLS[SupportedChainId.MOONRIVER]),
+  [SupportedChainId.FANTOM]: new AppJsonRpcProvider(RPC_URLS[SupportedChainId.FANTOM]),
 }

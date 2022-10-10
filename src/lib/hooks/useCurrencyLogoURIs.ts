@@ -11,9 +11,10 @@ import CeloLogo from '../../assets/svg/celo_logo.svg'
 import MaticLogo from '../../assets/svg/matic-token-icon.svg'
 import MoonbeamLogo from '../../assets/svg/moonbeam-token.svg'
 import MoonriverLogo from '../../assets/svg/moonriver-logo.svg'
+import FantomLogo from '../../assets/svg/fantom-logo.svg'
 import { isCelo, nativeOnChain } from '../../constants/tokens'
 
-type Network = 'ethereum' | 'arbitrum' | 'optimism' | 'polygon' | 'avalanche' | 'binance' | 'moonbeam' | 'moonriver'
+type Network = 'ethereum' | 'arbitrum' | 'optimism' | 'polygon' | 'avalanche' | 'binance' | 'moonbeam' | 'moonriver' | 'fantom'
 
 function chainIdToNetworkName(networkId: SupportedChainId): Network {
   switch (networkId) {
@@ -33,6 +34,8 @@ function chainIdToNetworkName(networkId: SupportedChainId): Network {
       return 'moonbeam'
     case SupportedChainId.MOONRIVER:
       return 'moonriver'
+    case SupportedChainId.FANTOM:
+      return 'fantom'
     default:
       return 'ethereum'
   }
@@ -54,6 +57,8 @@ export function getNativeLogoURI(chainId: SupportedChainId = SupportedChainId.MA
       return MoonbeamLogo
     case SupportedChainId.MOONRIVER:
       return MoonriverLogo
+    case SupportedChainId.FANTOM:
+      return FantomLogo
     default:
       return EthereumLogo
   }

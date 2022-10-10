@@ -24,6 +24,7 @@ export enum SupportedChainId {
   BINANCE = 56,
   MOONBEAM = 1284,
   MOONRIVER = 1285,
+  FANTOM = 250,
 }
 
 export enum USDCSupportedChainId {
@@ -49,6 +50,7 @@ export enum USDCSupportedChainId {
   MOONBEAM = 1284,
   BINANCE = 56,
   MOONRIVER = 1285,
+  FANTOM = 250,
 }
 
 export const CHAIN_IDS_TO_NAMES = {
@@ -69,6 +71,7 @@ export const CHAIN_IDS_TO_NAMES = {
   [SupportedChainId.BINANCE]: 'binance',
   [SupportedChainId.MOONBEAM]: 'moonbeam',
   [SupportedChainId.MOONRIVER]: 'moonriver',
+  [SupportedChainId.FANTOM]: 'fantom',
 }
 
 /**
@@ -92,6 +95,7 @@ export const SUPPORTED_GAS_ESTIMATE_CHAIN_IDS = [
   // SupportedChainId.BINANCE, ?
   // SupportedChainId.MOONBEAM, ?
   // SupportedChainId.MOONRIVER, ?
+  // SupportedChainId.FANTOM, ?
 ]
 
 /**
@@ -131,6 +135,7 @@ export const L1_CHAIN_IDS = [
   SupportedChainId.AVALANCHE,
   SupportedChainId.BINANCE,
   SupportedChainId.MOONBEAM,
+  SupportedChainId.FANTOM,
 ] as const
 
 export type SupportedL1ChainId = typeof L1_CHAIN_IDS[number]
