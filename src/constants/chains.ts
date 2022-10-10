@@ -46,6 +46,7 @@ export enum USDCSupportedChainId {
 
   AVALANCHE = 43114,
   MOONBEAM = 1284,
+  BINANCE = 56,
 }
 
 export const CHAIN_IDS_TO_NAMES = {
