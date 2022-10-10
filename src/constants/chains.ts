@@ -22,6 +22,7 @@ export enum SupportedChainId {
 
   AVALANCHE = 43114,
   BINANCE = 56,
+  MOONBEAM = 1284,
   MOONRIVER = 1285,
 }
 
@@ -45,6 +46,8 @@ export enum USDCSupportedChainId {
   CELO_ALFAJORES = 44787,
 
   AVALANCHE = 43114,
+  MOONBEAM = 1284,
+  BINANCE = 56,
   MOONRIVER = 1285,
 }
 
@@ -64,6 +67,7 @@ export const CHAIN_IDS_TO_NAMES = {
   [SupportedChainId.OPTIMISM_GOERLI]: 'optimism_goerli',
   [SupportedChainId.AVALANCHE]: 'avalanche',
   [SupportedChainId.BINANCE]: 'binance',
+  [SupportedChainId.MOONBEAM]: 'moonbeam',
   [SupportedChainId.MOONRIVER]: 'moonriver',
 }
 
@@ -86,6 +90,7 @@ export const SUPPORTED_GAS_ESTIMATE_CHAIN_IDS = [
   SupportedChainId.ARBITRUM_ONE,
   // SupportedChainId.AVALANCHE, ?
   // SupportedChainId.BINANCE, ?
+  // SupportedChainId.MOONBEAM, ?
   // SupportedChainId.MOONRIVER, ?
 ]
 
@@ -125,6 +130,7 @@ export const L1_CHAIN_IDS = [
   SupportedChainId.CELO_ALFAJORES,
   SupportedChainId.AVALANCHE,
   SupportedChainId.BINANCE,
+  SupportedChainId.MOONBEAM,
 ] as const
 
 export type SupportedL1ChainId = typeof L1_CHAIN_IDS[number]

@@ -22,6 +22,9 @@ export const AVAX_TRADER_JOE_LIST =
 export const BINANCE_PANCAKE_SWAP_LIST =
   'https://raw.githubusercontent.com/pancakeswap/token-list/main/lists/pancakeswap-extended.json'
 
+export const MOONBEAM_BEAMSWAP_LIST =
+  'https://raw.githubusercontent.com/BeamSwap/beamswap-tokenlist/main/tokenlist.json'
+
 export const MOONRIVER_SUSHI_SWAP_LIST =
   'https://raw.githubusercontent.com/sushiswap/list/master/lists/token-lists/default-token-list/tokens/moonriver.json'
 
@@ -46,6 +49,7 @@ const DEFAULT_LIST_OF_LISTS_TO_DISPLAY: string[] = [
   CELO_LIST,
   AVAX_TRADER_JOE_LIST,
   BINANCE_PANCAKE_SWAP_LIST,
+  MOONBEAM_BEAMSWAP_LIST,
   MOONRIVER_SUSHI_SWAP_LIST,
 ]
 
@@ -60,5 +64,6 @@ export const DEFAULT_ACTIVE_LIST_URLS: string[] = [
   GEMINI_LIST,
   AVAX_TRADER_JOE_LIST,
   BINANCE_PANCAKE_SWAP_LIST,
+  MOONBEAM_BEAMSWAP_LIST,
   MOONRIVER_SUSHI_SWAP_LIST,
 ]

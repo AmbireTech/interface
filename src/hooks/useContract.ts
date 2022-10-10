@@ -126,9 +126,10 @@ export function useInterfaceMulticall() {
   const { chainId } = useWeb3React()
   let abi = MulticallABI
   if (
-    chainId === SupportedChainId.AVALANCHE
-    || chainId === SupportedChainId.BINANCE
-    || chainId === SupportedChainId.MOONRIVER
+    chainId === SupportedChainId.AVALANCHE ||
+    chainId === SupportedChainId.BINANCE ||
+    chainId === SupportedChainId.MOONBEAM ||
+    chainId === SupportedChainId.MOONRIVER
   ) {
     abi = MULTICALL_ABI
   }
