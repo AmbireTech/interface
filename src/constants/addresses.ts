@@ -16,6 +16,7 @@ export const V2_FACTORY_ADDRESSES: AddressMap = {
   [SupportedChainId.MOONBEAM]: '0x985BcA32293A7A496300a48081947321177a86FD', // BeamSwapFactory (https://docs.beamswap.io/contracts/beamswap-contracts
   [SupportedChainId.FANTOM]: '0xc35DADB65012eC5796536bD9864eD8773aBc74C4', // SushiSwapFactory (https://docs.sushi.com/docs/Developers/Deployment%20Addresses)
   [SupportedChainId.ANDROMEDA]: '0x70f51d68D16e8f9e418441280342BD43AC9Dff9f', // NetSwapFactory (https://docs.netswap.io/developer/smart-contracts)
+  [SupportedChainId.GNOSIS]: '0xc35DADB65012eC5796536bD9864eD8773aBc74C4', // SushiSwapFactory (https://docs.sushi.com/docs/Developers/Deployment%20Addresses)
 }
 
 export const V2_ROUTER_ADDRESS: AddressMap = {
@@ -26,6 +27,7 @@ export const V2_ROUTER_ADDRESS: AddressMap = {
   [SupportedChainId.MOONBEAM]: '0x96b244391D98B62D19aE89b1A4dCcf0fc56970C7', // BeamSwapRouter (https://docs.beamswap.io/contracts/beamswap-contracts
   [SupportedChainId.FANTOM]: '0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506', // SushiSwapRouter (https://docs.sushi.com/docs/Developers/Deployment%20Addresses)
   [SupportedChainId.ANDROMEDA]: '0x1E876cCe41B7b844FDe09E38Fa1cf00f213bFf56', // NetSwapRouter (https://docs.netswap.io/developer/smart-contracts)
+  [SupportedChainId.FANTOM]: '0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506', // SushiSwapRouter (https://docs.sushi.com/docs/Developers/Deployment%20Addresses)
 }
 
 // celo v3 addresses
