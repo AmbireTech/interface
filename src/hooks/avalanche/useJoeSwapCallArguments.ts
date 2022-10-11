@@ -11,18 +11,11 @@ import { useGetToken, useGetTrade } from 'hooks/avalanche/useJoeEntities'
 import useENS from 'hooks/useENS'
 import { SignatureData } from 'hooks/useERC20Permit'
 import { useMemo } from 'react'
+import { SwapCall } from 'state/routing/types'
 import { approveAmountAmbireWallet } from 'utils/approveAmountCalldata'
 import { convertDecimalToActualAmount } from 'utils/convertAmounts'
 
 import { ApprovalState, useApproveCallbackFromTrade } from '../useApproveCallback'
-
-interface SwapCall {
-  address: string
-  calldata: string
-  value: string
-  skipGasEstimation?: boolean
-  extra?: any
-}
 
 /**
  * Returns the swap calls that can be used to make the trade

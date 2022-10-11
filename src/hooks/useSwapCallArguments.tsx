@@ -5,19 +5,12 @@ import { FeeOptions } from '@uniswap/v3-sdk'
 import { useWeb3React } from '@web3-react/core'
 import { SWAP_ROUTER_ADDRESSES } from 'constants/addresses'
 import { useMemo } from 'react'
+import { SwapCall } from 'state/routing/types'
 import { approveAmountAmbireWallet } from 'utils/approveAmountCalldata'
 
 import { ApprovalState, useApproveCallbackFromTrade } from './useApproveCallback'
 import useENS from './useENS'
 import { SignatureData } from './useERC20Permit'
-
-interface SwapCall {
-  address: string
-  calldata: string
-  value: string
-  skipGasEstimation?: boolean
-  extra?: any
-}
 
 /**
  * Returns the swap calls that can be used to make the trade

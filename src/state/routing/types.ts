@@ -1,7 +1,9 @@
+import { BigNumber } from '@ethersproject/bignumber'
 import { MixedRouteSDK, Trade } from '@uniswap/router-sdk'
-import { Currency, CurrencyAmount, Token, TradeType } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Percent, Token, TradeType } from '@uniswap/sdk-core'
 import { Route as V2Route } from '@uniswap/v2-sdk'
-import { Route as V3Route } from '@uniswap/v3-sdk'
+import { FeeOptions, Route as V3Route } from '@uniswap/v3-sdk'
+import { SignatureData } from 'hooks/useERC20Permit'
 
 export enum TradeState {
   LOADING,
@@ -106,6 +108,14 @@ export class InterfaceTrade<
   }
 }
 
+export interface SwapCall {
+  address: string
+  calldata: string
+  value: string
+  skipGasEstimation?: boolean
+  extra?: any
+}
+
 export type TradeHook = (
   tradeType: TradeType,
   amountSpecified?: CurrencyAmount<Currency>,
@@ -114,3 +124,12 @@ export type TradeHook = (
   state: TradeState
   trade: InterfaceTrade<Currency, Currency, TradeType> | undefined
 }
+
+export type SwapCallArgumentsHook = (
+  trade: Trade<Currency, Currency, TradeType> | undefined,
+  allowedSlippage: Percent,
+  recipientAddressOrName: string | null | undefined,
+  signatureData: SignatureData | null | undefined,
+  deadline: BigNumber | undefined,
+  feeOptions: FeeOptions | undefined
+) => SwapCall[]

@@ -34,9 +34,7 @@ import { ArrowDown, CheckCircle, HelpCircle } from 'react-feather'
 import { useNavigate } from 'react-router-dom'
 import { Text } from 'rebass'
 import { useToggleWalletModal } from 'state/application/hooks'
-import { InterfaceTrade } from 'state/routing/types'
-import { TradeHook } from 'state/routing/types'
-import { TradeState } from 'state/routing/types'
+import { InterfaceTrade, SwapCallArgumentsHook, TradeHook, TradeState } from 'state/routing/types'
 import styled, { css, useTheme } from 'styled-components/macro'
 
 import { ReactComponent as Switch } from '../../assets/svg/switch-ambire.svg'
@@ -196,7 +194,7 @@ export default function Swap() {
   return <>{chainId === SupportedChainId.AVALANCHE ? <SwapAvalanche /> : <SwapDefault />}</>
 }
 
-export function BaseSwap(props: { useBestTradeHook: TradeHook; useSwapCallArgumentsHook: any }) {
+export function BaseSwap(props: { useBestTradeHook: TradeHook; useSwapCallArgumentsHook: SwapCallArgumentsHook }) {
   const navigate = useNavigate()
   const navBarFlag = useNavBarFlag()
   const navBarFlagEnabled = navBarFlag === NavBarVariant.Enabled
