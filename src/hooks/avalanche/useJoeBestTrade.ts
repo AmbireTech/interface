@@ -1,13 +1,13 @@
 import { Currency as V2Currency, CurrencyAmount, NativeCurrency, Token as V2Token, TradeType } from '@uniswap/sdk-core'
 import { Pair as V2Pair, Route as V2Route } from '@uniswap/v2-sdk'
 import { useWeb3React } from '@web3-react/core'
-import { useGetToken, useGetTrade} from 'hooks/avalanche/useJoeEntities'
+import { SupportedChainId } from 'constants/chains'
+import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
+import { useGetToken, useGetTrade } from 'hooks/avalanche/useJoeEntities'
+import useDebounce from 'hooks/useDebounce'
 import { useMemo } from 'react'
 import { InterfaceTrade, TradeState } from 'state/routing/types'
 import { convertDecimalToActualAmount } from 'utils/convertAmounts'
-import { SupportedChainId } from 'constants/chains'
-import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
-import useDebounce from 'hooks/useDebounce'
 
 /**
  * Returns the best v2+v3 trade for a desired swap.
@@ -49,8 +49,20 @@ export function useJoeBestTrade(
   const univ2Trade = useMemo(() => {
     if (!tokenA || !tokenB || !provider || !bestTrade) return undefined
 
-    const currency1 = new V2Token(SupportedChainId.AVALANCHE, tokenA.address, tokenA.decimals, tokenA.symbol, tokenA.name)
-    const currency2 = new V2Token(SupportedChainId.AVALANCHE, tokenB.address, tokenB.decimals, tokenB.symbol, tokenB.name)
+    const currency1 = new V2Token(
+      SupportedChainId.AVALANCHE,
+      tokenA.address,
+      tokenA.decimals,
+      tokenA.symbol,
+      tokenA.name
+    )
+    const currency2 = new V2Token(
+      SupportedChainId.AVALANCHE,
+      tokenB.address,
+      tokenB.decimals,
+      tokenB.symbol,
+      tokenB.name
+    )
     const currencyAmount1 = CurrencyAmount.fromRawAmount(
       currency1,
       convertDecimalToActualAmount(bestTrade.inputAmount.toExact(), currency1)

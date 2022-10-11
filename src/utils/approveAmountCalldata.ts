@@ -33,10 +33,10 @@ export default function approveAmountCalldata(
 }
 
 export function approveAmountAmbireWallet(
-  amount: CurrencyAmount<Currency>,
+  amount: any,
   spender: string
 ): { address: string; calldata: string; value: '0x0' } {
-  if (!amount.currency.isToken) throw new Error('Must call with an amount of token')
+  if (!amount?.currency?.address) throw new Error('Must call with an amount of token')
   const approveData = ERC20_INTERFACE.encodeFunctionData('approve', [spender, MaxUint256.toString()])
   return {
     address: amount.currency.address,

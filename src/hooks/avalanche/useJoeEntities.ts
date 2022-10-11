@@ -4,20 +4,20 @@ import uniswapV2Pair from '@uniswap/v2-core/build/IUniswapV2Pair.json'
 import { useWeb3React } from '@web3-react/core'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
-interface TokenObject {
-  address: string
-  decimals: number
-  symbol?: string
-  name?: string
-}
+// interface TokenObject {
+//   address: string
+//   decimals: number
+//   symbol?: string
+//   name?: string
+// }
 
 export function useGetToken(
   // tokenObject: TokenObject|undefined
   tokenObject: any
-): Token|undefined {
+): Token | undefined {
   return useMemo(
     () =>
-    tokenObject
+      tokenObject
         ? new Token(
             ChainId.AVALANCHE,
             tokenObject.address,
@@ -30,10 +30,7 @@ export function useGetToken(
   )
 }
 
-export function useGetPair(
-  inputCurrency: Token|undefined,
-  outputCurrency: Token|undefined
-): Pair|undefined {
+export function useGetPair(inputCurrency: Token | undefined, outputCurrency: Token | undefined): Pair | undefined {
   const { provider } = useWeb3React()
   const [pair, setPair] = useState<Pair | undefined>(undefined)
 
@@ -51,10 +48,10 @@ export function useGetPair(
 }
 
 export function useGetTrade(
-  tokenA: Token|undefined,
-  tokenB: Token|undefined,
-  inputAmountString: BigintIsh|undefined
-): Trade|undefined {
+  tokenA: Token | undefined,
+  tokenB: Token | undefined,
+  inputAmountString: BigintIsh | undefined
+): Trade | undefined {
   // TODO: get all intermediate pair via pre-defined stable tokens
   const pair = useGetPair(tokenA, tokenB)
 
