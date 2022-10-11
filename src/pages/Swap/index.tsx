@@ -21,8 +21,8 @@ import { MouseoverTooltip } from 'components/Tooltip'
 import { isSupportedChain, SupportedChainId } from 'constants/chains'
 import { NavBarVariant, useNavBarFlag } from 'featureFlags/flags/navBar'
 import { RedesignVariant, useRedesignFlag } from 'featureFlags/flags/redesign'
+import { useJoeBestTrade } from 'hooks/avalanche/useJoeBestTrade'
 import { useBestTrade } from 'hooks/useBestTrade'
-import { useBestTradeByJoe } from 'hooks/useBestTradeTraderJoe'
 import { useSwapCallback } from 'hooks/useSwapCallback'
 import useTransactionDeadline from 'hooks/useTransactionDeadline'
 import JSBI from 'jsbi'
@@ -124,7 +124,7 @@ const SwapSection = styled.div<{ redesignFlag: boolean }>`
     `}
 `
 
-const OutputSwapSection = styled(SwapSection)<{ showDetailsDropdown: boolean }>`
+const OutputSwapSection = styled(SwapSection) <{ showDetailsDropdown: boolean }>`
   border-bottom: ${({ theme, redesignFlag }) => redesignFlag && `1px solid ${theme.backgroundSurface}`};
   border-bottom-left-radius: ${({ redesignFlag, showDetailsDropdown }) => redesignFlag && showDetailsDropdown && '0'};
   border-bottom-right-radius: ${({ redesignFlag, showDetailsDropdown }) => redesignFlag && showDetailsDropdown && '0'};
@@ -185,7 +185,7 @@ export function SwapDefault() {
 }
 
 export function SwapAvalanche() {
-  return <BaseSwap useBestTradeHook={useBestTradeByJoe} />
+  return <BaseSwap useBestTradeHook={useJoeBestTrade} />
 }
 
 export default function Swap() {
@@ -271,13 +271,13 @@ export function BaseSwap(props: { useBestTradeHook: TradeHook }) {
     () =>
       showWrap
         ? {
-            [Field.INPUT]: parsedAmount,
-            [Field.OUTPUT]: parsedAmount,
-          }
+          [Field.INPUT]: parsedAmount,
+          [Field.OUTPUT]: parsedAmount,
+        }
         : {
-            [Field.INPUT]: independentField === Field.INPUT ? parsedAmount : trade?.inputAmount,
-            [Field.OUTPUT]: independentField === Field.OUTPUT ? parsedAmount : trade?.outputAmount,
-          },
+          [Field.INPUT]: independentField === Field.INPUT ? parsedAmount : trade?.inputAmount,
+          [Field.OUTPUT]: independentField === Field.OUTPUT ? parsedAmount : trade?.outputAmount,
+        },
     [independentField, parsedAmount, showWrap, trade]
   )
 
@@ -427,8 +427,8 @@ export function BaseSwap(props: { useBestTradeHook: TradeHook }) {
             recipient === null
               ? 'Swap w/o Send'
               : (recipientAddress ?? recipient) === account
-              ? 'Swap w/o Send + recipient'
-              : 'Swap w/ Send',
+                ? 'Swap w/o Send + recipient'
+                : 'Swap w/ Send',
           label: [TRADE_STRING, trade?.inputAmount?.currency?.symbol, trade?.outputAmount?.currency?.symbol, 'MH'].join(
             '/'
           ),
@@ -747,7 +747,7 @@ export function BaseSwap(props: { useBestTradeHook: TradeHook }) {
                           <span style={{ display: 'flex', alignItems: 'center' }}>
                             {/* we need to shorten this string on mobile */}
                             {approvalState === ApprovalState.APPROVED ||
-                            signatureState === UseERC20PermitState.SIGNED ? (
+                              signatureState === UseERC20PermitState.SIGNED ? (
                               <Trans>You can now trade {currencies[Field.INPUT]?.symbol}</Trans>
                             ) : (
                               <Trans>Allow the Uniswap Protocol to use your {currencies[Field.INPUT]?.symbol}</Trans>
