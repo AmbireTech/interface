@@ -3,7 +3,7 @@ import { Pair as V2Pair, Route as V2Route } from '@uniswap/v2-sdk'
 import { useWeb3React } from '@web3-react/core'
 import { SupportedChainId } from 'constants/chains'
 import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
-import { useGetToken, useGetTrade } from 'hooks/avalanche/useJoeEntities'
+import { useGetBestTrade, useGetToken } from 'hooks/avalanche/useJoeEntities'
 import useDebounce from 'hooks/useDebounce'
 import { useMemo } from 'react'
 import { InterfaceTrade, TradeState } from 'state/routing/types'
@@ -44,7 +44,7 @@ export function useJoeBestTrade(
 
   const tokenA = useGetToken(inputCurrency)
   const tokenB = useGetToken(outputCurrency)
-  const bestTrade = useGetTrade(tokenA, tokenB, inputAmountString)
+  const bestTrade = useGetBestTrade(tokenA, tokenB, inputAmountString)
 
   const univ2Trade = useMemo(() => {
     if (!tokenA || !tokenB || !provider || !bestTrade) return undefined
