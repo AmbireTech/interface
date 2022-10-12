@@ -126,6 +126,7 @@
     "@looksrare/sdk": "^0.7.1",
     "@metamask/jazzicon": "^2.0.0",
     "@opensea/seaport-js": "^1.0.2",
+    "@pancakeswap/sdk": "^2.4.5",
     "@popperjs/core": "^2.4.4",
     "@reach/dialog": "^0.10.3",
     "@reach/portal": "^0.10.3",

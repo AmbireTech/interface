@@ -23,6 +23,8 @@ import { NavBarVariant, useNavBarFlag } from 'featureFlags/flags/navBar'
 import { RedesignVariant, useRedesignFlag } from 'featureFlags/flags/redesign'
 import { useJoeBestTrade } from 'hooks/avalanche/useJoeBestTrade'
 import { useJoeSwapCallArguments } from 'hooks/avalanche/useJoeSwapCallArguments'
+import { usePancakeBestTrade } from 'hooks/binance/usePancakeBestTrade'
+import { usePancakeSwapCallArguments } from 'hooks/binance/usePancakeSwapCallArguments'
 import { useBestTrade } from 'hooks/useBestTrade'
 import { useSwapCallArguments } from 'hooks/useSwapCallArguments'
 import { useSwapCallback } from 'hooks/useSwapCallback'
@@ -188,10 +190,25 @@ export function SwapAvalanche() {
   return <BaseSwap useBestTradeHook={useJoeBestTrade} useSwapCallArgumentsHook={useJoeSwapCallArguments} />
 }
 
+export function SwapBinance() {
+  return <BaseSwap useBestTradeHook={usePancakeBestTrade} useSwapCallArgumentsHook={usePancakeSwapCallArguments} />
+}
+
 export default function Swap() {
   const { chainId } = useWeb3React()
 
-  return <>{chainId === SupportedChainId.AVALANCHE ? <SwapAvalanche /> : <SwapDefault />}</>
+  let swapComponent = <SwapDefault />
+
+  switch (chainId) {
+    case SupportedChainId.AVALANCHE:
+      swapComponent = <SwapAvalanche />
+      break
+    case SupportedChainId.BINANCE:
+      swapComponent = <SwapBinance />
+      break
+  }
+
+  return swapComponent
 }
 
 export function BaseSwap(props: { useBestTradeHook: TradeHook; useSwapCallArgumentsHook: SwapCallArgumentsHook }) {

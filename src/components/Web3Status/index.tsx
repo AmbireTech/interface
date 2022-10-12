@@ -8,6 +8,7 @@ import { getConnection } from 'connection/utils'
 import { SupportedChainId } from 'constants/chains'
 import { NavBarVariant, useNavBarFlag } from 'featureFlags/flags/navBar'
 import { useJoeBestTrade } from 'hooks/avalanche/useJoeBestTrade'
+import { usePancakeBestTrade } from 'hooks/binance/usePancakeBestTrade'
 import { useBestTrade } from 'hooks/useBestTrade'
 import { Portal } from 'nft/components/common/Portal'
 import { getIsValidSwapQuote } from 'pages/Swap'
@@ -194,10 +195,25 @@ function Web3StatusInnerAvalanche() {
   return <BaseWeb3StatusInner useBestTradeHook={useJoeBestTrade} />
 }
 
+function Web3StatusInnerBinance() {
+  return <BaseWeb3StatusInner useBestTradeHook={usePancakeBestTrade} />
+}
+
 function Web3StatusInner() {
   const { chainId } = useWeb3React()
 
-  return <>{chainId === SupportedChainId.AVALANCHE ? <Web3StatusInnerAvalanche /> : <Web3StatusInnerDefault />}</>
+  let statusInnerComponent = <Web3StatusInnerDefault />
+
+  switch (chainId) {
+    case SupportedChainId.AVALANCHE:
+      statusInnerComponent = <Web3StatusInnerAvalanche />
+      break
+    case SupportedChainId.BINANCE:
+      statusInnerComponent = <Web3StatusInnerBinance />
+      break
+  }
+
+  return statusInnerComponent
 }
 
 function BaseWeb3StatusInner(props: { useBestTradeHook: TradeHook }) {
