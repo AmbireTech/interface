@@ -4,6 +4,7 @@ import { Currency, Percent, TradeType } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 import { SwapCallbackState, useSwapCallback as useLibSwapCallBack } from 'lib/hooks/swap/useSwapCallback'
 import { ReactNode, useMemo } from 'react'
+import { SwapCallArgumentsHook } from 'state/routing/types'
 
 import { useTransactionAdder } from '../state/transactions/hooks'
 import { TransactionType } from '../state/transactions/types'
@@ -18,7 +19,8 @@ export function useSwapCallback(
   trade: Trade<Currency, Currency, TradeType> | undefined, // trade to execute, required
   allowedSlippage: Percent, // in bips
   recipientAddressOrName: string | null, // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
-  signatureData: SignatureData | undefined | null
+  signatureData: SignatureData | undefined | null,
+  useSwapCallArgumentsHook: SwapCallArgumentsHook
 ): { state: SwapCallbackState; callback: null | (() => Promise<string>); error: ReactNode | null } {
   const { account } = useWeb3React()
 
@@ -33,13 +35,16 @@ export function useSwapCallback(
     state,
     callback: libCallback,
     error,
-  } = useLibSwapCallBack({
-    trade,
-    allowedSlippage,
-    recipientAddressOrName: recipient,
-    signatureData,
-    deadline,
-  })
+  } = useLibSwapCallBack(
+    {
+      trade,
+      allowedSlippage,
+      recipientAddressOrName: recipient,
+      signatureData,
+      deadline,
+    },
+    useSwapCallArgumentsHook
+  )
 
   const callback = useMemo(() => {
     if (!libCallback || !trade) {

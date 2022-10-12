@@ -19,16 +19,8 @@ const MobileWrapper = styled(AutoColumn)`
 `
 
 const BaseWrapper = styled.div<{ disable?: boolean; redesignFlag?: boolean }>`
-  border: 1px solid
-    ${({ theme, disable, redesignFlag }) =>
-      disable
-        ? redesignFlag
-          ? theme.accentAction
-          : 'transparent'
-        : redesignFlag
-        ? theme.backgroundOutline
-        : theme.deprecated_bg3};
-  border-radius: ${({ redesignFlag }) => (redesignFlag ? '16px' : '10px')};
+  border: 1px solid ${({ theme, disable, redesignFlag }) => (disable ? 'transparent' : '#3E436B')};
+  border-radius: 12px;
   display: flex;
   padding: 6px;
   padding-right: 12px;
@@ -36,15 +28,13 @@ const BaseWrapper = styled.div<{ disable?: boolean; redesignFlag?: boolean }>`
   align-items: center;
   :hover {
     cursor: ${({ disable }) => !disable && 'pointer'};
-    background-color: ${({ theme, disable, redesignFlag }) =>
-      (redesignFlag && theme.hoverDefault) || (!disable && theme.deprecated_bg2)};
+    background-color: #3e436b;
   }
 
   color: ${({ theme, disable, redesignFlag }) =>
     disable && (redesignFlag ? theme.accentAction : theme.deprecated_text3)};
-  background-color: ${({ theme, disable, redesignFlag }) =>
-    disable && (redesignFlag ? theme.accentActionSoft : theme.deprecated_bg3)};
-  filter: ${({ disable, redesignFlag }) => disable && !redesignFlag && 'grayscale(1)'};
+  background-color: ${({ theme, disable, redesignFlag }) => disable && '#3E436B'};
+  filter: ${({ disable, redesignFlag }) => disable && 'opacity(0.8)'};
 `
 
 const formatAnalyticsEventProperties = (currency: Currency, searchQuery: string, isAddressSearch: string | false) => ({

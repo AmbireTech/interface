@@ -21,7 +21,7 @@ const CTASection = styled.section`
 
 const CTA1 = styled(ExternalLink)`
   padding: 16px;
-  border-radius: 20px;
+  border-radius: 12px;
   display: flex;
   flex-direction: column;
   position: relative;
@@ -49,7 +49,7 @@ const CTA2 = styled(ExternalLink)`
   position: relative;
   overflow: hidden;
   padding: 16px;
-  border-radius: 20px;
+  border-radius: 12px;
   display: flex;
   flex-direction: column;
   justify-content: center;

@@ -4,14 +4,16 @@ import { sendAnalyticsEvent } from 'analytics'
 import { EventName } from 'analytics/constants'
 import { formatPercentInBasisPointsNumber, formatToDecimal, getTokenAddress } from 'analytics/utils'
 import { DEFAULT_TXN_DISMISS_MS, L2_TXN_DISMISS_MS } from 'constants/misc'
+import { useJoeBestTrade } from 'hooks/avalanche/useJoeBestTrade'
+import { useBestTrade } from 'hooks/useBestTrade'
 import LibUpdater from 'lib/hooks/transactions/updater'
 import { useCallback, useMemo } from 'react'
 import { useAppDispatch, useAppSelector } from 'state/hooks'
-import { InterfaceTrade } from 'state/routing/types'
+import { InterfaceTrade, TradeHook } from 'state/routing/types'
 import { TransactionType } from 'state/transactions/types'
 import { computeRealizedPriceImpact } from 'utils/prices'
 
-import { L2_CHAIN_IDS } from '../../constants/chains'
+import { L2_CHAIN_IDS, SupportedChainId } from '../../constants/chains'
 import { useDerivedSwapInfo } from '../../state/swap/hooks'
 import { useAddPopup } from '../application/hooks'
 import { checkedTransaction, finalizeTransaction } from './reducer'
@@ -43,7 +45,21 @@ const formatAnalyticsEventProperties = ({ trade, hash, allowedSlippage, succeede
   succeeded,
 })
 
+export function UpdaterDefault() {
+  return <BaseUpdater useBestTradeHook={useBestTrade} />
+}
+
+export function UpdaterAvalanche() {
+  return <BaseUpdater useBestTradeHook={useJoeBestTrade} />
+}
+
 export default function Updater() {
+  const { chainId } = useWeb3React()
+
+  return <>{chainId === SupportedChainId.AVALANCHE ? <UpdaterAvalanche /> : <UpdaterDefault />}</>
+}
+
+export function BaseUpdater(props: { useBestTradeHook: TradeHook }) {
   const { chainId } = useWeb3React()
   const addPopup = useAddPopup()
   // speed up popup dismisall time if on L2
@@ -52,7 +68,7 @@ export default function Updater() {
   const {
     trade: { trade },
     allowedSlippage,
-  } = useDerivedSwapInfo()
+  } = useDerivedSwapInfo(props.useBestTradeHook)
 
   const dispatch = useAppDispatch()
   const onCheck = useCallback(
