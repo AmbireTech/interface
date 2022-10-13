@@ -2,6 +2,7 @@ import { Contract } from '@ethersproject/contracts'
 import { BigintIsh, ChainId, Pair, Route, Token, TokenAmount, Trade, TradeType } from '@pancakeswap/sdk'
 import uniswapV2Pair from '@uniswap/v2-core/build/IUniswapV2Pair.json'
 import { useWeb3React } from '@web3-react/core'
+import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 // interface TokenObject {
@@ -36,6 +37,18 @@ export function useGetPair(inputCurrency: Token | undefined, outputCurrency: Tok
 
   const getPairCallback = useCallback(async () => {
     if (!provider || !inputCurrency || !outputCurrency) return
+
+    // we do not make a pair if the tokens are native and wrapped
+    if (
+      (inputCurrency.address === WRAPPED_NATIVE_CURRENCY[ChainId.MAINNET]?.address &&
+        outputCurrency.address === WRAPPED_NATIVE_CURRENCY[ChainId.MAINNET]?.address) ||
+      (outputCurrency.address === WRAPPED_NATIVE_CURRENCY[ChainId.MAINNET]?.address &&
+        inputCurrency.address === WRAPPED_NATIVE_CURRENCY[ChainId.MAINNET]?.address)
+    ) {
+      setPair(undefined)
+      return
+    }
+
     const res = await getPair(provider, inputCurrency, outputCurrency)
     setPair(res)
   }, [provider, inputCurrency, outputCurrency])
