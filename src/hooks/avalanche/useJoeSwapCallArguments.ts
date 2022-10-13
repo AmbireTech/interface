@@ -7,7 +7,7 @@ import { FeeOptions } from '@uniswap/v3-sdk'
 import { useWeb3React } from '@web3-react/core'
 import AVALANCHE_JOE_ROUTER_ABI from 'abis/avalanche-joe-router.json'
 import { SWAP_ROUTER_ADDRESSES } from 'constants/addresses'
-import { useGetToken, useGetTrade } from 'hooks/avalanche/useJoeEntities'
+import { useGetBestTrade, useGetCurrency } from 'hooks/avalanche/useJoeEntities'
 import useENS from 'hooks/useENS'
 import { SignatureData } from 'hooks/useERC20Permit'
 import { useMemo } from 'react'
@@ -39,11 +39,11 @@ export function useJoeSwapCallArguments(
   const [approvalState] = useApproveCallbackFromTrade(trade as Trade<Currency, Currency, TradeType>, allowedSlippage)
 
   // convert trade to Joe Trade
-  const tokenA = useGetToken(trade?.inputAmount?.currency)
-  const tokenB = useGetToken(trade?.outputAmount?.currency)
-  const joeTrade = useGetTrade(
-    tokenA,
-    tokenB,
+  const joeInputCurrency = useGetCurrency(trade?.inputAmount?.currency)
+  const joeOutputCurrency = useGetCurrency(trade?.outputAmount?.currency)
+  const joeTrade = useGetBestTrade(
+    joeInputCurrency,
+    joeOutputCurrency,
     convertDecimalToActualAmount(trade?.inputAmount?.toExact() ?? '0', trade?.inputAmount?.currency)
   )
 
