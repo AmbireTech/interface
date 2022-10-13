@@ -1,7 +1,9 @@
 import { Contract } from '@ethersproject/contracts'
-import { BigintIsh, ChainId, Pair, Token, TokenAmount, Trade } from '@traderjoe-xyz/sdk'
+import { BigintIsh, ChainId, Currency, CurrencyAmount, Pair, Token, TokenAmount, Trade } from '@traderjoe-xyz/sdk'
+import { NativeCurrency as V2NativeCurrency, Token as V2Token } from '@uniswap/sdk-core'
 import uniswapV2Pair from '@uniswap/v2-core/build/IUniswapV2Pair.json'
 import { useWeb3React } from '@web3-react/core'
+import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 const swapHopAssets = [
@@ -11,38 +13,49 @@ const swapHopAssets = [
   { address: '0x63a72806098Bd3D9520cC43356dD78afe5D386D9', name: 'aave', symbol: 'AAVE', decimals: 18 },
 ]
 
-// interface TokenObject {
-//   address: string
-//   decimals: number
-//   symbol?: string
-//   name?: string
-// }
+export function useGetCurrency(v2currency: V2Token | V2NativeCurrency | undefined): Token | Currency | undefined {
+  return useMemo(() => {
+    if (!v2currency) return undefined
 
-export function useGetToken(
-  // tokenObject: TokenObject|undefined
-  tokenObject: any
-): Token | undefined {
-  return useMemo(
-    () =>
-      tokenObject
-        ? new Token(
-            ChainId.AVALANCHE,
-            tokenObject.address,
-            tokenObject.decimals,
-            tokenObject.symbol ?? '',
-            tokenObject.name ?? ''
-          )
-        : undefined,
-    [tokenObject]
-  )
+    return v2currency instanceof V2NativeCurrency
+      ? Currency.CAVAX
+      : new Token(
+          ChainId.AVALANCHE,
+          v2currency.address,
+          v2currency.decimals,
+          v2currency.symbol ?? '',
+          v2currency.name ?? ''
+        )
+  }, [v2currency])
 }
 
-export function useGetPairs(tokenA: Token | undefined, tokenB: Token | undefined, useHops = true): Pair[] {
+export function useGetPairs(
+  input: Token | Currency | undefined,
+  output: Token | Currency | undefined,
+  useHops = true
+): Pair[] {
   const { provider } = useWeb3React()
   const [pairs, setPairs] = useState<Pair[]>([])
 
   const getPairsCallback = useCallback(async () => {
-    if (!provider || !tokenA || !tokenB) return
+    if (!provider || !input || !output) return
+
+    const wrapped = WRAPPED_NATIVE_CURRENCY[ChainId.AVALANCHE] as V2Token
+
+    const tokenA =
+      input === Currency.CAVAX
+        ? new Token(ChainId.AVALANCHE, wrapped.address, wrapped.decimals, wrapped.symbol ?? '', wrapped.name ?? '')
+        : (input as Token)
+    const tokenB =
+      output === Currency.CAVAX
+        ? new Token(ChainId.AVALANCHE, wrapped.address, wrapped.decimals, wrapped.symbol ?? '', wrapped.name ?? '')
+        : (output as Token)
+
+    // we do not make a pair if the tokens are native and wrapped
+    if (tokenA.address === wrapped.address && tokenB.address === wrapped.address) {
+      setPairs([])
+      return
+    }
 
     // direct pair
     const pairsPromises = [getPair(provider, tokenA, tokenB)]
@@ -73,27 +86,31 @@ export function useGetPairs(tokenA: Token | undefined, tokenB: Token | undefined
 
     const resolvedPairs = await Promise.all(pairsPromises)
     setPairs(resolvedPairs.filter((p) => p) as Pair[])
-  }, [provider, tokenA, tokenB, useHops])
+  }, [provider, input, output, useHops])
 
   useEffect(() => {
     getPairsCallback()
-  }, [getPairsCallback, provider, tokenA, tokenB])
+  }, [getPairsCallback, provider, input, output])
 
   return pairs
 }
 
 export function useGetBestTrade(
-  tokenA: Token | undefined,
-  tokenB: Token | undefined,
+  input: Token | Currency | undefined,
+  output: Token | Currency | undefined,
   inputAmountString: BigintIsh | undefined,
   maxHops = 2
 ): Trade | undefined {
-  const pairs = useGetPairs(tokenA, tokenB)
+  const pairs = useGetPairs(input, output)
 
   return useMemo(() => {
-    if (!inputAmountString || !tokenA || !tokenB || pairs.length === 0) return undefined
+    if (!inputAmountString || !input || !output || pairs.length === 0) return undefined
 
-    const trades = Trade.bestTradeExactIn(pairs, new TokenAmount(tokenA, inputAmountString), tokenB, { maxHops })
+    // console.log(`pairs: ${pairs.map(p => p.token0.symbol)}`)
+
+    const amount =
+      input instanceof Token ? new TokenAmount(input, inputAmountString) : CurrencyAmount.ether(inputAmountString)
+    const trades = Trade.bestTradeExactIn(pairs, amount, output, { maxHops })
 
     if (trades.length === 0) return undefined
 
@@ -101,7 +118,7 @@ export function useGetBestTrade(
     // console.log(`best trade route: ${trades[0].route.path.map(t => t.symbol)}`)
 
     return trades[0]
-  }, [inputAmountString, tokenA, tokenB, pairs, maxHops])
+  }, [inputAmountString, input, output, pairs, maxHops])
 }
 
 async function getPair(provider: any, tokenA: Token, tokenB: Token): Promise<Pair | undefined> {
