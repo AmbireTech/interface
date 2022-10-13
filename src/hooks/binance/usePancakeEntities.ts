@@ -1,81 +1,127 @@
 import { Contract } from '@ethersproject/contracts'
-import { BigintIsh, ChainId, Pair, Route, Token, TokenAmount, Trade, TradeType } from '@pancakeswap/sdk'
+import { BigintIsh, ChainId, Currency, CurrencyAmount, Pair, Token, TokenAmount, Trade } from '@pancakeswap/sdk'
+import { NativeCurrency as V2NativeCurrency, Token as V2Token } from '@uniswap/sdk-core'
 import uniswapV2Pair from '@uniswap/v2-core/build/IUniswapV2Pair.json'
 import { useWeb3React } from '@web3-react/core'
 import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
-// interface TokenObject {
-//   address: string
-//   decimals: number
-//   symbol?: string
-//   name?: string
-// }
+const swapHopAssets = [
+  { address: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c', name: 'wavax', symbol: 'WAVAX', decimals: 18 },
+  { address: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d', name: 'usdc', symbol: 'USCD', decimals: 6 },
+  { address: '0x1AF3F329e8BE154074D8769D1FFa4eE058B1DBc3', name: 'dai', symbol: 'DAI', decimals: 18 },
+  { address: '0x55d398326f99059fF775485246999027B3197955', name: 'usdt', symbol: 'USDT', decimals: 6 },
+]
 
-export function useGetToken(
-  // tokenObject: TokenObject|undefined
-  tokenObject: any
-): Token | undefined {
-  return useMemo(
-    () =>
-      tokenObject
-        ? new Token(
-            ChainId.MAINNET,
-            tokenObject.address,
-            tokenObject.decimals,
-            tokenObject.symbol ?? '',
-            tokenObject.name ?? ''
-          )
-        : undefined,
-    [tokenObject]
-  )
+export function useGetCurrency(v2currency: V2Token | V2NativeCurrency | undefined): Token | Currency | undefined {
+  return useMemo(() => {
+    if (!v2currency) return undefined
+
+    return v2currency instanceof V2NativeCurrency
+      ? Currency.ETHER
+      : new Token(
+          ChainId.MAINNET,
+          v2currency.address,
+          v2currency.decimals,
+          v2currency.symbol ?? '',
+          v2currency.name ?? ''
+        )
+  }, [v2currency])
 }
 
-export function useGetPair(inputCurrency: Token | undefined, outputCurrency: Token | undefined): Pair | undefined {
+export function useGetPairs(
+  input: Token | Currency | undefined,
+  output: Token | Currency | undefined,
+  useHops = true
+): Pair[] {
   const { provider } = useWeb3React()
-  const [pair, setPair] = useState<Pair | undefined>(undefined)
+  const [pairs, setPairs] = useState<Pair[]>([])
 
-  const getPairCallback = useCallback(async () => {
-    if (!provider || !inputCurrency || !outputCurrency) return
+  const getPairsCallback = useCallback(async () => {
+    if (!provider || !input || !output) return
+
+    const wrapped = WRAPPED_NATIVE_CURRENCY[ChainId.MAINNET] as V2Token
+
+    const tokenA =
+      input === Currency.ETHER
+        ? new Token(ChainId.MAINNET, wrapped.address, wrapped.decimals, wrapped.symbol ?? '', wrapped.name ?? '')
+        : (input as Token)
+    const tokenB =
+      output === Currency.ETHER
+        ? new Token(ChainId.MAINNET, wrapped.address, wrapped.decimals, wrapped.symbol ?? '', wrapped.name ?? '')
+        : (output as Token)
 
     // we do not make a pair if the tokens are native and wrapped
-    if (
-      (inputCurrency.address === WRAPPED_NATIVE_CURRENCY[ChainId.MAINNET]?.address &&
-        outputCurrency.address === WRAPPED_NATIVE_CURRENCY[ChainId.MAINNET]?.address) ||
-      (outputCurrency.address === WRAPPED_NATIVE_CURRENCY[ChainId.MAINNET]?.address &&
-        inputCurrency.address === WRAPPED_NATIVE_CURRENCY[ChainId.MAINNET]?.address)
-    ) {
-      setPair(undefined)
+    if (tokenA.address === wrapped.address && tokenB.address === wrapped.address) {
+      setPairs([])
       return
     }
 
-    const res = await getPair(provider, inputCurrency, outputCurrency)
-    setPair(res)
-  }, [provider, inputCurrency, outputCurrency])
+    // direct pair
+    const pairsPromises = [getPair(provider, tokenA, tokenB)]
+
+    if (useHops) {
+      // convert hop assets to token objects
+      const hopTokens = swapHopAssets.map(
+        (asset) => new Token(ChainId.MAINNET, asset.address, asset.decimals, asset.symbol ?? '', asset.name ?? '')
+      )
+
+      // build hop pairs
+      hopTokens.map(async (hopToken1) => {
+        if (hopToken1.address === tokenA.address || hopToken1.address === tokenB.address) return
+        pairsPromises.push(getPair(provider, tokenA, hopToken1))
+        pairsPromises.push(getPair(provider, hopToken1, tokenB))
+
+        hopTokens.map(async (hopToken2) => {
+          if (
+            hopToken1.address === hopToken2.address ||
+            hopToken2.address === tokenA.address ||
+            hopToken2.address === tokenB.address
+          )
+            return
+          pairsPromises.push(getPair(provider, hopToken1, hopToken2))
+        })
+      })
+    }
+
+    const resolvedPairs = await Promise.all(pairsPromises)
+    setPairs(resolvedPairs.filter((p) => p) as Pair[])
+  }, [provider, input, output, useHops])
 
   useEffect(() => {
-    getPairCallback()
-  }, [getPairCallback, provider, inputCurrency, outputCurrency])
+    getPairsCallback()
+  }, [getPairsCallback, provider, input, output])
 
-  return pair
+  return pairs
 }
 
-export function useGetTrade(
-  tokenA: Token | undefined,
-  tokenB: Token | undefined,
-  inputAmountString: BigintIsh | undefined
+export function useGetBestTrade(
+  input: Token | Currency | undefined,
+  output: Token | Currency | undefined,
+  inputAmountString: BigintIsh | undefined,
+  maxHops = 2
 ): Trade | undefined {
-  // TODO: get all intermediate pair via pre-defined stable tokens
-  const pair = useGetPair(tokenA, tokenB)
+  const pairs = useGetPairs(input, output)
 
-  return useMemo(
-    () =>
-      inputAmountString && tokenA && tokenB && pair ? getTrade([pair], tokenA, tokenB, inputAmountString) : undefined,
-    [inputAmountString, tokenA, tokenB, pair]
-  )
+  return useMemo(() => {
+    if (!inputAmountString || !input || !output || pairs.length === 0) return undefined
+
+    // console.log(`pairs: ${pairs.map(p => p.token0.symbol)}`)
+
+    const amount =
+      input instanceof Token ? new TokenAmount(input, inputAmountString) : CurrencyAmount.ether(inputAmountString)
+    const trades = Trade.bestTradeExactIn(pairs, amount, output, { maxHops })
+
+    if (trades.length === 0) return undefined
+
+    // console.log(`trades: ${trades.map(tr => '[' + tr.route.path.map(t => t.symbol) + ' = ' + tr.outputAmount.toExact() + ']')}`)
+    // console.log(`best trade route: ${trades[0].route.path.map(t => t.symbol)}`)
+
+    return trades[0]
+  }, [inputAmountString, input, output, pairs, maxHops])
 }
 
-async function getPair(provider: any, tokenA: Token, tokenB: Token) {
+async function getPair(provider: any, tokenA: Token, tokenB: Token): Promise<Pair | undefined> {
   const pairAddress = Pair.getAddress(tokenA, tokenB)
   const uniV2PairContract = new Contract(pairAddress, uniswapV2Pair.abi, provider)
   try {
@@ -91,12 +137,18 @@ async function getPair(provider: any, tokenA: Token, tokenB: Token) {
   }
 }
 
-function getTrade(pairs: any, tokenA: any, tokenB: any, value: any) {
-  try {
-    const route = new Route(pairs, tokenA, tokenB)
-    const trade = new Trade(route, new TokenAmount(tokenA, value), TradeType.EXACT_INPUT)
-    return trade
-  } catch (e) {
-    return undefined
-  }
-}
+// function getTrade(pairs: any, tokenA: any, tokenB: any, value: any) {
+//   try {
+//     const route = new Route(pairs, tokenA, tokenB)
+//     const trade = new Trade(
+//       route,
+//       new TokenAmount(tokenA, value),
+//       // CurrencyAmount.fromRawAmount(tokenA, parseUnits(value.toString(), tokenA.decimals)),
+//       TradeType.EXACT_INPUT,
+//       ChainId.MAINNET
+//     )
+//     return trade
+//   } catch (e) {
+//     return undefined
+//   }
+// }
