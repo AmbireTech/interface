@@ -2,7 +2,7 @@ import { Currency as V2Currency, CurrencyAmount, Token as V2Token, TradeType } f
 import { Pair as V2Pair, Route as V2Route } from '@uniswap/v2-sdk'
 import { useWeb3React } from '@web3-react/core'
 import { SupportedChainId } from 'constants/chains'
-import { useGetBestTrade, useGetCurrency } from 'hooks/binance/usePancakeEntities'
+import { useGetBestTrade, useGetCurrency, useGetPairs } from 'hooks/binance/usePancakeEntities'
 import useDebounce from 'hooks/useDebounce'
 import { useMemo } from 'react'
 import { InterfaceTrade, TradeState } from 'state/routing/types'
@@ -33,12 +33,15 @@ export function usePancakeBestTrade(
   const outputCurrency = debouncedOtherCurrency
   const inputAmountString: string = convertDecimalToActualAmount(debouncedAmount?.toExact() ?? '0', inputCurrency)
 
-  const joeInputCurrency = useGetCurrency(inputCurrency)
-  const joeOutputCurrency = useGetCurrency(outputCurrency)
-  const bestTrade = useGetBestTrade(joeInputCurrency, joeOutputCurrency, inputAmountString)
+  const pancakeInputCurrency = useGetCurrency(inputCurrency)
+  const pancakeOutputCurrency = useGetCurrency(outputCurrency)
+  const pairs = useGetPairs(pancakeInputCurrency, pancakeOutputCurrency)
+  const bestTrade = useGetBestTrade(pancakeInputCurrency, pancakeOutputCurrency, pairs, inputAmountString)
 
   const univ2Trade = useMemo(() => {
-    if (!inputCurrency || !outputCurrency || !provider || !bestTrade) return undefined
+    if (!inputCurrency || !outputCurrency || !provider || !pairs) return TradeState.LOADING
+    if (pairs.length === 0) return TradeState.NO_ROUTE_FOUND
+    if (!bestTrade) return TradeState.INVALID
 
     const inputCurrencyAmont = CurrencyAmount.fromRawAmount(
       inputCurrency,
@@ -86,20 +89,20 @@ export function usePancakeBestTrade(
       gasUseEstimateUSD: undefined, // TODO
       blockNumber: String(provider._lastBlockNumber),
     })
-  }, [tradeType, inputCurrency, outputCurrency, provider, bestTrade])
+  }, [tradeType, inputCurrency, outputCurrency, provider, pairs, bestTrade])
 
   // only return gas estimate from api if routing api trade is used
   return useMemo(() => {
-    if (!univ2Trade) {
+    if (univ2Trade instanceof InterfaceTrade) {
       return {
-        trade: undefined,
-        state: TradeState.INVALID,
+        trade: univ2Trade,
+        state: TradeState.VALID,
       }
     }
 
     return {
-      trade: univ2Trade,
-      state: TradeState.VALID,
+      trade: undefined,
+      state: univ2Trade,
     }
   }, [univ2Trade])
 }

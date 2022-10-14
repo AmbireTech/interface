@@ -7,7 +7,7 @@ import { FeeOptions } from '@uniswap/v3-sdk'
 import { useWeb3React } from '@web3-react/core'
 import BINANCE_PANCAKE_ROUTER_ABI from 'abis/binance-pancake-router.json'
 import { SWAP_ROUTER_ADDRESSES } from 'constants/addresses'
-import { useGetBestTrade, useGetCurrency } from 'hooks/binance/usePancakeEntities'
+import { useGetBestTrade, useGetCurrency, useGetPairs } from 'hooks/binance/usePancakeEntities'
 import useENS from 'hooks/useENS'
 import { SignatureData } from 'hooks/useERC20Permit'
 import { useMemo } from 'react'
@@ -39,16 +39,29 @@ export function usePancakeSwapCallArguments(
   const [approvalState] = useApproveCallbackFromTrade(trade as Trade<Currency, Currency, TradeType>, allowedSlippage)
 
   // convert trade to Pancake Trade
-  const PancakeInputCurrency = useGetCurrency(trade?.inputAmount?.currency)
-  const PancakeOutputCurrency = useGetCurrency(trade?.outputAmount?.currency)
+  const pancakeInputCurrency = useGetCurrency(trade?.inputAmount?.currency)
+  const pancakeOutputCurrency = useGetCurrency(trade?.outputAmount?.currency)
+  const pairs = useGetPairs(pancakeInputCurrency, pancakeOutputCurrency)
   const PancakeTrade = useGetBestTrade(
-    PancakeInputCurrency,
-    PancakeOutputCurrency,
+    pancakeInputCurrency,
+    pancakeOutputCurrency,
+    pairs,
     convertDecimalToActualAmount(trade?.inputAmount?.toExact() ?? '0', trade?.inputAmount?.currency)
   )
 
   return useMemo(() => {
-    if (!trade || !recipient || !provider || !account || !chainId || !deadline || !PancakeTrade) return []
+    if (
+      !trade ||
+      !recipient ||
+      !provider ||
+      !account ||
+      !chainId ||
+      !deadline ||
+      !pairs ||
+      !PancakeTrade ||
+      pairs.length === 0
+    )
+      return []
 
     const swapRouterAddress = chainId ? SWAP_ROUTER_ADDRESSES[chainId] : undefined
     if (!swapRouterAddress) return []
@@ -102,6 +115,7 @@ export function usePancakeSwapCallArguments(
     // signatureData,
     trade,
     approvalState,
+    pairs,
     PancakeTrade,
   ])
 }

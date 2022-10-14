@@ -7,7 +7,8 @@ import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 const swapHopAssets = [
-  { address: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c', name: 'wavax', symbol: 'WAVAX', decimals: 18 },
+  // { address: '0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9', name: 'aave', symbol: 'AAVE', decimals: 18 },
+  { address: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c', name: 'wbnb', symbol: 'WBNB', decimals: 18 },
   { address: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d', name: 'usdc', symbol: 'USCD', decimals: 6 },
   { address: '0x1AF3F329e8BE154074D8769D1FFa4eE058B1DBc3', name: 'dai', symbol: 'DAI', decimals: 18 },
   { address: '0x55d398326f99059fF775485246999027B3197955', name: 'usdt', symbol: 'USDT', decimals: 6 },
@@ -33,9 +34,9 @@ export function useGetPairs(
   input: Token | Currency | undefined,
   output: Token | Currency | undefined,
   useHops = true
-): Pair[] {
+): Pair[] | undefined {
   const { provider } = useWeb3React()
-  const [pairs, setPairs] = useState<Pair[]>([])
+  const [pairs, setPairs] = useState<Pair[] | undefined>(undefined)
 
   const getPairsCallback = useCallback(async () => {
     if (!provider || !input || !output) return
@@ -53,12 +54,14 @@ export function useGetPairs(
 
     // we do not make a pair if the tokens are native and wrapped
     if (tokenA.address === wrapped.address && tokenB.address === wrapped.address) {
-      setPairs([])
+      setPairs(undefined)
       return
     }
 
     // direct pair
+    // const pairsPromises = [getPair(provider, tokenA, tokenB)]
     const pairsPromises = [getPair(provider, tokenA, tokenB)]
+    pairsPromises.pop()
 
     if (useHops) {
       // convert hop assets to token objects
@@ -89,6 +92,7 @@ export function useGetPairs(
   }, [provider, input, output, useHops])
 
   useEffect(() => {
+    setPairs(undefined)
     getPairsCallback()
   }, [getPairsCallback, provider, input, output])
 
@@ -98,24 +102,18 @@ export function useGetPairs(
 export function useGetBestTrade(
   input: Token | Currency | undefined,
   output: Token | Currency | undefined,
+  pairs: Pair[] | undefined,
   inputAmountString: BigintIsh | undefined,
   maxHops = 2
 ): Trade | undefined {
-  const pairs = useGetPairs(input, output)
-
   return useMemo(() => {
-    if (!inputAmountString || !input || !output || pairs.length === 0) return undefined
-
-    // console.log(`pairs: ${pairs.map(p => p.token0.symbol)}`)
+    if (!inputAmountString || !input || !output || !pairs || pairs.length === 0) return undefined
 
     const amount =
       input instanceof Token ? new TokenAmount(input, inputAmountString) : CurrencyAmount.ether(inputAmountString)
     const trades = Trade.bestTradeExactIn(pairs, amount, output, { maxHops })
 
     if (trades.length === 0) return undefined
-
-    // console.log(`trades: ${trades.map(tr => '[' + tr.route.path.map(t => t.symbol) + ' = ' + tr.outputAmount.toExact() + ']')}`)
-    // console.log(`best trade route: ${trades[0].route.path.map(t => t.symbol)}`)
 
     return trades[0]
   }, [inputAmountString, input, output, pairs, maxHops])
