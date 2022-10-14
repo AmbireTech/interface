@@ -1,6 +1,6 @@
 import { Contract } from '@ethersproject/contracts'
 import { BigintIsh, ChainId, Currency, CurrencyAmount, Pair, Token, TokenAmount, Trade } from '@traderjoe-xyz/sdk'
-import { NativeCurrency as V2NativeCurrency, Token as V2Token } from '@uniswap/sdk-core'
+import { NativeCurrency as V2NativeCurrency, Token as V2Token, TradeType } from '@uniswap/sdk-core'
 import uniswapV2Pair from '@uniswap/v2-core/build/IUniswapV2Pair.json'
 import { useWeb3React } from '@web3-react/core'
 import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
@@ -98,27 +98,37 @@ export function useGetPairs(
 export function useGetBestTrade(
   input: Token | Currency | undefined,
   output: Token | Currency | undefined,
-  inputAmountString: BigintIsh | undefined,
+  amountString: BigintIsh | undefined,
+  tradeType: TradeType | undefined,
   maxHops = 2
 ): Trade | undefined {
   const pairs = useGetPairs(input, output)
 
   return useMemo(() => {
-    if (!inputAmountString || !input || !output || pairs.length === 0) return undefined
+    if (tradeType === undefined || amountString === undefined || !input || !output || pairs.length === 0)
+      return undefined
 
+    // console.log(`trade type: ${tradeType}`)
     // console.log(`pairs: ${pairs.map(p => p.token0.symbol)}`)
 
-    const amount =
-      input instanceof Token ? new TokenAmount(input, inputAmountString) : CurrencyAmount.ether(inputAmountString)
-    const trades = Trade.bestTradeExactIn(pairs, amount, output, { maxHops })
+    let trades: Trade[] = []
+    if (tradeType === TradeType.EXACT_INPUT) {
+      const inputAmount =
+        input instanceof Token ? new TokenAmount(input, amountString) : CurrencyAmount.ether(amountString)
+      trades = Trade.bestTradeExactIn(pairs, inputAmount, output, { maxHops })
+    } else {
+      const outputAmount =
+        output instanceof Token ? new TokenAmount(output, amountString) : CurrencyAmount.ether(amountString)
+      trades = Trade.bestTradeExactOut(pairs, input, outputAmount, { maxHops })
+    }
 
     if (trades.length === 0) return undefined
 
-    // console.log(`trades: ${trades.map(tr => '[' + tr.route.path.map(t => t.symbol) + ' = ' + tr.outputAmount.toExact() + ']')}`)
+    // console.log(`trades: ${trades.map(tr => `\n[${tr.inputAmount.toExact()} - ${tr.route.path.map(t => t.symbol)} - ${tr.outputAmount.toExact()}]`)}`)
     // console.log(`best trade route: ${trades[0].route.path.map(t => t.symbol)}`)
 
     return trades[0]
-  }, [inputAmountString, input, output, pairs, maxHops])
+  }, [tradeType, amountString, input, output, pairs, maxHops])
 }
 
 async function getPair(provider: any, tokenA: Token, tokenB: Token): Promise<Pair | undefined> {

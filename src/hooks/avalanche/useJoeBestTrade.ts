@@ -29,13 +29,19 @@ export function useJoeBestTrade(
     200
   )
 
-  const inputCurrency = debouncedAmount?.currency
-  const outputCurrency = debouncedOtherCurrency
-  const inputAmountString: string = convertDecimalToActualAmount(debouncedAmount?.toExact() ?? '0', inputCurrency)
+  const [inputCurrency, outputCurrency, amountString] = useMemo(() => {
+    if (!debouncedAmount || !debouncedOtherCurrency) return [undefined, undefined, undefined]
+
+    const inputCurrency = tradeType === TradeType.EXACT_INPUT ? debouncedAmount.currency : debouncedOtherCurrency
+    const outputCurrency = tradeType === TradeType.EXACT_INPUT ? debouncedOtherCurrency : debouncedAmount.currency
+    const amountString: string = convertDecimalToActualAmount(debouncedAmount.toExact(), debouncedAmount.currency)
+
+    return [inputCurrency, outputCurrency, amountString]
+  }, [tradeType, debouncedAmount, debouncedOtherCurrency])
 
   const joeInputCurrency = useGetCurrency(inputCurrency)
   const joeOutputCurrency = useGetCurrency(outputCurrency)
-  const bestTrade = useGetBestTrade(joeInputCurrency, joeOutputCurrency, inputAmountString)
+  const bestTrade = useGetBestTrade(joeInputCurrency, joeOutputCurrency, amountString, tradeType)
 
   const univ2Trade = useMemo(() => {
     if (!inputCurrency || !outputCurrency || !provider || !bestTrade) return undefined

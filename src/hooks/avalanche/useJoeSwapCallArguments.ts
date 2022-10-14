@@ -38,14 +38,23 @@ export function useJoeSwapCallArguments(
   const recipient = recipientAddressOrName === null ? account : recipientAddress
   const [approvalState] = useApproveCallbackFromTrade(trade as Trade<Currency, Currency, TradeType>, allowedSlippage)
 
+  const [inputCurrency, outputCurrency, amountString] = useMemo(() => {
+    if (!trade) return [undefined, undefined, undefined]
+
+    const inputCurrency = trade.inputAmount.currency
+    const outputCurrency = trade.outputAmount.currency
+    const amountString =
+      trade.tradeType === TradeType.EXACT_INPUT
+        ? convertDecimalToActualAmount(trade.inputAmount.toExact(), trade.inputAmount.currency)
+        : convertDecimalToActualAmount(trade.outputAmount.toExact(), trade.outputAmount.currency)
+
+    return [inputCurrency, outputCurrency, amountString]
+  }, [trade])
+
   // convert trade to Joe Trade
-  const joeInputCurrency = useGetCurrency(trade?.inputAmount?.currency)
-  const joeOutputCurrency = useGetCurrency(trade?.outputAmount?.currency)
-  const joeTrade = useGetBestTrade(
-    joeInputCurrency,
-    joeOutputCurrency,
-    convertDecimalToActualAmount(trade?.inputAmount?.toExact() ?? '0', trade?.inputAmount?.currency)
-  )
+  const joeInputCurrency = useGetCurrency(inputCurrency)
+  const joeOutputCurrency = useGetCurrency(outputCurrency)
+  const joeTrade = useGetBestTrade(joeInputCurrency, joeOutputCurrency, amountString, trade?.tradeType)
 
   return useMemo(() => {
     if (!trade || !recipient || !provider || !account || !chainId || !deadline || !joeTrade) return []
