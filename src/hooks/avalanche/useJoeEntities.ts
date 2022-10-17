@@ -33,9 +33,9 @@ export function useGetPairs(
   input: Token | Currency | undefined,
   output: Token | Currency | undefined,
   useHops = true
-): Pair[] {
+): Pair[] | undefined {
   const { provider } = useWeb3React()
-  const [pairs, setPairs] = useState<Pair[]>([])
+  const [pairs, setPairs] = useState<Pair[] | undefined>(undefined)
 
   const getPairsCallback = useCallback(async () => {
     if (!provider || !input || !output) return
@@ -53,7 +53,7 @@ export function useGetPairs(
 
     // we do not make a pair if the tokens are native and wrapped
     if (tokenA.address === wrapped.address && tokenB.address === wrapped.address) {
-      setPairs([])
+      setPairs(undefined)
       return
     }
 
@@ -89,6 +89,7 @@ export function useGetPairs(
   }, [provider, input, output, useHops])
 
   useEffect(() => {
+    setPairs(undefined)
     getPairsCallback()
   }, [getPairsCallback, provider, input, output])
 
@@ -98,14 +99,13 @@ export function useGetPairs(
 export function useGetBestTrade(
   input: Token | Currency | undefined,
   output: Token | Currency | undefined,
+  pairs: Pair[] | undefined,
   amountString: BigintIsh | undefined,
   tradeType: TradeType | undefined,
-  maxHops = 2
+  maxHops = 3
 ): Trade | undefined {
-  const pairs = useGetPairs(input, output)
-
   return useMemo(() => {
-    if (tradeType === undefined || amountString === undefined || !input || !output || pairs.length === 0)
+    if (tradeType === undefined || amountString === undefined || !input || !output || !pairs || pairs.length === 0)
       return undefined
 
     // console.log(`trade type: ${tradeType}`)

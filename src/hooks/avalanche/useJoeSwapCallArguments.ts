@@ -7,7 +7,7 @@ import { FeeOptions } from '@uniswap/v3-sdk'
 import { useWeb3React } from '@web3-react/core'
 import AVALANCHE_JOE_ROUTER_ABI from 'abis/avalanche-joe-router.json'
 import { SWAP_ROUTER_ADDRESSES } from 'constants/addresses'
-import { useGetBestTrade, useGetCurrency } from 'hooks/avalanche/useJoeEntities'
+import { useGetBestTrade, useGetCurrency, useGetPairs } from 'hooks/avalanche/useJoeEntities'
 import useENS from 'hooks/useENS'
 import { SignatureData } from 'hooks/useERC20Permit'
 import { useMemo } from 'react'
@@ -54,7 +54,8 @@ export function useJoeSwapCallArguments(
   // convert trade to Joe Trade
   const joeInputCurrency = useGetCurrency(inputCurrency)
   const joeOutputCurrency = useGetCurrency(outputCurrency)
-  const joeTrade = useGetBestTrade(joeInputCurrency, joeOutputCurrency, amountString, trade?.tradeType)
+  const joePairs = useGetPairs(joeInputCurrency, joeOutputCurrency)
+  const joeTrade = useGetBestTrade(joeInputCurrency, joeOutputCurrency, joePairs, amountString, trade?.tradeType)
 
   return useMemo(() => {
     if (!trade || !recipient || !provider || !account || !chainId || !deadline || !joeTrade) return []
