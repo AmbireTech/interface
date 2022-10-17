@@ -8,10 +8,11 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 
 const swapHopAssets = [
   { address: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c', name: 'wbnb', symbol: 'WBNB', decimals: 18 },
-  { address: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d', name: 'usdc', symbol: 'USCD', decimals: 6 },
+  { address: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d', name: 'usdc', symbol: 'USCD', decimals: 18 },
   { address: '0x1AF3F329e8BE154074D8769D1FFa4eE058B1DBc3', name: 'dai', symbol: 'DAI', decimals: 18 },
   { address: '0x2170Ed0880ac9A755fd29B2688956BD959F933F8', name: 'eth', symbol: 'ETH', decimals: 18 },
   { address: '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56', name: 'busd', symbol: 'BUSD', decimals: 18 },
+  { address: '0x55d398326f99059fF775485246999027B3197955', name: 'USDT', symbol: 'USDT', decimals: 18 },
 ]
 
 export function useGetCurrency(v2currency: V2Token | V2NativeCurrency | undefined): Token | Currency | undefined {
@@ -59,9 +60,7 @@ export function useGetPairs(
     }
 
     // direct pair
-    // const pairsPromises = [getPair(provider, tokenA, tokenB)]
     const pairsPromises = [getPair(provider, tokenA, tokenB)]
-    pairsPromises.pop()
 
     if (useHops) {
       // convert hop assets to token objects
@@ -123,6 +122,13 @@ export function useGetBestTrade(
     }
 
     if (trades.length === 0) return undefined
+
+    // console.log(
+    //   `trades: ${trades.map(
+    //     (tr) => `\n[${tr.inputAmount.toExact()} - ${tr.route.path.map((t) => t.symbol)} - ${tr.outputAmount.toExact()}]`
+    //   )}`
+    // )
+    // console.log(`best trade route: ${trades[0].route.path.map((t) => t.symbol)}`)
 
     return trades[0]
   }, [tradeType, amountString, input, output, pairs, maxHops])
