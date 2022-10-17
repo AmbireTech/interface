@@ -5,6 +5,7 @@ import { EventName } from 'analytics/constants'
 import { formatPercentInBasisPointsNumber, formatToDecimal, getTokenAddress } from 'analytics/utils'
 import { DEFAULT_TXN_DISMISS_MS, L2_TXN_DISMISS_MS } from 'constants/misc'
 import { useJoeBestTrade } from 'hooks/avalanche/useJoeBestTrade'
+import { usePancakeBestTrade } from 'hooks/binance/usePancakeBestTrade'
 import { useBestTrade } from 'hooks/useBestTrade'
 import LibUpdater from 'lib/hooks/transactions/updater'
 import { useCallback, useMemo } from 'react'
@@ -53,10 +54,25 @@ export function UpdaterAvalanche() {
   return <BaseUpdater useBestTradeHook={useJoeBestTrade} />
 }
 
+export function UpdaterBinance() {
+  return <BaseUpdater useBestTradeHook={usePancakeBestTrade} />
+}
+
 export default function Updater() {
   const { chainId } = useWeb3React()
 
-  return <>{chainId === SupportedChainId.AVALANCHE ? <UpdaterAvalanche /> : <UpdaterDefault />}</>
+  let updaterComponent = <UpdaterDefault />
+
+  switch (chainId) {
+    case SupportedChainId.AVALANCHE:
+      updaterComponent = <UpdaterAvalanche />
+      break
+    case SupportedChainId.BINANCE:
+      updaterComponent = <UpdaterBinance />
+      break
+  }
+
+  return updaterComponent
 }
 
 export function BaseUpdater(props: { useBestTradeHook: TradeHook }) {

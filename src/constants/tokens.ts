@@ -3,6 +3,7 @@ import invariant from 'tiny-invariant'
 
 import { UNI_ADDRESS } from './addresses'
 import { SupportedChainId } from './chains'
+import { USDCSupportedChainId } from './chains'
 
 export const USDC_MAINNET = new Token(
   SupportedChainId.MAINNET,
@@ -82,6 +83,13 @@ export const USDC_AVALANCHE = new Token(
   'USDC',
   'USD//C'
 )
+export const USDC_BINANCE = new Token(
+  SupportedChainId.BINANCE,
+  '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
+  6,
+  'USDC',
+  'USD//C'
+)
 export const USDC_POLYGON_MUMBAI = new Token(
   SupportedChainId.POLYGON_MUMBAI,
   '0xe11a86849d99f524cac3e7a0ec1241828e332c62',
@@ -131,7 +139,7 @@ export const DAI_OPTIMISM = new Token(
   'DAI',
   'Dai stable coin'
 )
-export const USDC: { [chainId in SupportedChainId]: Token } = {
+export const USDC: { [chainId in USDCSupportedChainId]: Token } = {
   [SupportedChainId.MAINNET]: USDC_MAINNET,
   [SupportedChainId.ARBITRUM_ONE]: USDC_ARBITRUM,
   [SupportedChainId.OPTIMISM]: USDC_OPTIMISM,
@@ -146,6 +154,7 @@ export const USDC: { [chainId in SupportedChainId]: Token } = {
   [SupportedChainId.KOVAN]: USDC_KOVAN,
   [SupportedChainId.ROPSTEN]: USDC_ROPSTEN,
   [SupportedChainId.AVALANCHE]: USDC_AVALANCHE,
+  [SupportedChainId.BINANCE]: USDC_BINANCE,
 }
 export const DAI_POLYGON = new Token(
   SupportedChainId.POLYGON,
@@ -418,6 +427,13 @@ export const WRAPPED_NATIVE_CURRENCY: { [chainId: number]: Token | undefined } =
     'WAVAX',
     'Wrapped AVAX'
   ),
+  [SupportedChainId.BINANCE]: new Token(
+    SupportedChainId.BINANCE,
+    '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c',
+    18,
+    'WBNB',
+    'Wrapped BNB'
+  ),
 }
 
 export function isCelo(chainId: number): chainId is SupportedChainId.CELO | SupportedChainId.CELO_ALFAJORES {
@@ -426,6 +442,10 @@ export function isCelo(chainId: number): chainId is SupportedChainId.CELO | Supp
 
 export function isAvax(chainId: number): chainId is SupportedChainId.AVALANCHE {
   return chainId === SupportedChainId.AVALANCHE
+}
+
+export function isBNB(chainId: number): chainId is SupportedChainId.BINANCE {
+  return chainId === SupportedChainId.BINANCE
 }
 
 function getCeloNativeCurrency(chainId: number) {
@@ -479,6 +499,24 @@ class AvaxNativeCurrency extends NativeCurrency {
   }
 }
 
+class BnbNativeCurrency extends NativeCurrency {
+  equals(other: Currency): boolean {
+    return other.isNative && other.chainId === this.chainId
+  }
+
+  get wrapped(): Token {
+    if (!isBNB(this.chainId)) throw new Error('Not bnb')
+    const wrapped = WRAPPED_NATIVE_CURRENCY[this.chainId]
+    invariant(wrapped instanceof Token)
+    return wrapped
+  }
+
+  public constructor(chainId: number) {
+    if (!isBNB(chainId)) throw new Error('Not bnb')
+    super(chainId, 18, 'BNB', 'Binance BNB')
+  }
+}
+
 export class ExtendedEther extends Ether {
   public get wrapped(): Token {
     const wrapped = WRAPPED_NATIVE_CURRENCY[this.chainId]
@@ -503,6 +541,8 @@ export function nativeOnChain(chainId: number): NativeCurrency | Token {
     nativeCurrency = getCeloNativeCurrency(chainId)
   } else if (isAvax(chainId)) {
     nativeCurrency = new AvaxNativeCurrency(chainId)
+  } else if (isBNB(chainId)) {
+    nativeCurrency = new BnbNativeCurrency(chainId)
   } else {
     nativeCurrency = ExtendedEther.onChain(chainId)
   }
@@ -525,5 +565,6 @@ export const TOKEN_SHORTHANDS: { [shorthand: string]: { [chainId in SupportedCha
     [SupportedChainId.KOVAN]: USDC_KOVAN.address,
     [SupportedChainId.ROPSTEN]: USDC_ROPSTEN.address,
     [SupportedChainId.AVALANCHE]: USDC_AVALANCHE.address,
+    [SupportedChainId.BINANCE]: USDC_BINANCE.address,
   },
 }
