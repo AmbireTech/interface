@@ -44,7 +44,7 @@ export function usePancakeBestTrade(
   const pairs = useGetPairs(pancakeInputCurrency, pancakeOutputCurrency)
   const bestTrade = useGetBestTrade(pancakeInputCurrency, pancakeOutputCurrency, pairs, amountString, tradeType)
 
-  const univ2Trade = useMemo(() => {
+  const univ2TradeOrEnumState = useMemo(() => {
     if (!inputCurrency || !outputCurrency || !provider || !pairs) return TradeState.LOADING
     if (pairs.length === 0) return TradeState.NO_ROUTE_FOUND
     if (!bestTrade) return TradeState.INVALID
@@ -99,16 +99,16 @@ export function usePancakeBestTrade(
 
   // only return gas estimate from api if routing api trade is used
   return useMemo(() => {
-    if (univ2Trade instanceof InterfaceTrade) {
+    if (univ2TradeOrEnumState instanceof InterfaceTrade) {
       return {
-        trade: univ2Trade,
+        trade: univ2TradeOrEnumState,
         state: TradeState.VALID,
       }
     }
 
     return {
       trade: undefined,
-      state: univ2Trade,
+      state: univ2TradeOrEnumState,
     }
-  }, [univ2Trade])
+  }, [univ2TradeOrEnumState])
 }
