@@ -7,11 +7,11 @@ import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 const swapHopAssets = [
-  // { address: '0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9', name: 'aave', symbol: 'AAVE', decimals: 18 },
   { address: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c', name: 'wbnb', symbol: 'WBNB', decimals: 18 },
   { address: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d', name: 'usdc', symbol: 'USCD', decimals: 6 },
   { address: '0x1AF3F329e8BE154074D8769D1FFa4eE058B1DBc3', name: 'dai', symbol: 'DAI', decimals: 18 },
-  { address: '0x55d398326f99059fF775485246999027B3197955', name: 'usdt', symbol: 'USDT', decimals: 6 },
+  { address: '0x2170Ed0880ac9A755fd29B2688956BD959F933F8', name: 'eth', symbol: 'ETH', decimals: 18 },
+  { address: '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56', name: 'busd', symbol: 'BUSD', decimals: 18 },
 ]
 
 export function useGetCurrency(v2currency: V2Token | V2NativeCurrency | undefined): Token | Currency | undefined {
