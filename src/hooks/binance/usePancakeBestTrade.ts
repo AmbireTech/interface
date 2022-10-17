@@ -29,14 +29,20 @@ export function usePancakeBestTrade(
     200
   )
 
-  const inputCurrency = debouncedAmount?.currency
-  const outputCurrency = debouncedOtherCurrency
-  const inputAmountString: string = convertDecimalToActualAmount(debouncedAmount?.toExact() ?? '0', inputCurrency)
+  const [inputCurrency, outputCurrency, amountString] = useMemo(() => {
+    if (!debouncedAmount || !debouncedOtherCurrency) return [undefined, undefined, undefined]
+
+    const inputCurrency = tradeType === TradeType.EXACT_INPUT ? debouncedAmount.currency : debouncedOtherCurrency
+    const outputCurrency = tradeType === TradeType.EXACT_INPUT ? debouncedOtherCurrency : debouncedAmount.currency
+    const amountString: string = convertDecimalToActualAmount(debouncedAmount.toExact(), debouncedAmount.currency)
+
+    return [inputCurrency, outputCurrency, amountString]
+  }, [tradeType, debouncedAmount, debouncedOtherCurrency])
 
   const pancakeInputCurrency = useGetCurrency(inputCurrency)
   const pancakeOutputCurrency = useGetCurrency(outputCurrency)
   const pairs = useGetPairs(pancakeInputCurrency, pancakeOutputCurrency)
-  const bestTrade = useGetBestTrade(pancakeInputCurrency, pancakeOutputCurrency, pairs, inputAmountString)
+  const bestTrade = useGetBestTrade(pancakeInputCurrency, pancakeOutputCurrency, pairs, amountString, tradeType)
 
   const univ2Trade = useMemo(() => {
     if (!inputCurrency || !outputCurrency || !provider || !pairs) return TradeState.LOADING

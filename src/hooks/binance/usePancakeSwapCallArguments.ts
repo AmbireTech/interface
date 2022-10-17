@@ -38,15 +38,28 @@ export function usePancakeSwapCallArguments(
   const recipient = recipientAddressOrName === null ? account : recipientAddress
   const [approvalState] = useApproveCallbackFromTrade(trade as Trade<Currency, Currency, TradeType>, allowedSlippage)
 
-  // convert trade to Pancake Trade
-  const pancakeInputCurrency = useGetCurrency(trade?.inputAmount?.currency)
-  const pancakeOutputCurrency = useGetCurrency(trade?.outputAmount?.currency)
+  const [inputCurrency, outputCurrency, amountString] = useMemo(() => {
+    if (!trade) return [undefined, undefined, undefined]
+
+    const inputCurrency = trade.inputAmount.currency
+    const outputCurrency = trade.outputAmount.currency
+    const amountString =
+      trade.tradeType === TradeType.EXACT_INPUT
+        ? convertDecimalToActualAmount(trade.inputAmount.toExact(), trade.inputAmount.currency)
+        : convertDecimalToActualAmount(trade.outputAmount.toExact(), trade.outputAmount.currency)
+
+    return [inputCurrency, outputCurrency, amountString]
+  }, [trade])
+
+  const pancakeInputCurrency = useGetCurrency(inputCurrency)
+  const pancakeOutputCurrency = useGetCurrency(outputCurrency)
   const pairs = useGetPairs(pancakeInputCurrency, pancakeOutputCurrency)
-  const PancakeTrade = useGetBestTrade(
+  const pancakeTrade = useGetBestTrade(
     pancakeInputCurrency,
     pancakeOutputCurrency,
     pairs,
-    convertDecimalToActualAmount(trade?.inputAmount?.toExact() ?? '0', trade?.inputAmount?.currency)
+    amountString,
+    trade?.tradeType
   )
 
   return useMemo(() => {
@@ -58,7 +71,7 @@ export function usePancakeSwapCallArguments(
       !chainId ||
       !deadline ||
       !pairs ||
-      !PancakeTrade ||
+      !pancakeTrade ||
       pairs.length === 0
     )
       return []
@@ -72,7 +85,7 @@ export function usePancakeSwapCallArguments(
       allowedSlippage.denominator.toString()
     )
 
-    const { methodName, args, value } = PancakeRouter.swapCallParameters(PancakeTrade, {
+    const { methodName, args, value } = PancakeRouter.swapCallParameters(pancakeTrade, {
       // fee: feeOptions,
       recipient,
       allowedSlippage: PancakeAllowedSlippage,
@@ -83,12 +96,12 @@ export function usePancakeSwapCallArguments(
     const calldata = PancakeRouterInterface.encodeFunctionData(methodName, args)
 
     if (
-      PancakeTrade.inputAmount instanceof PancakeTokenAmount &&
-      PancakeTrade.inputAmount.token.address &&
+      pancakeTrade.inputAmount instanceof PancakeTokenAmount &&
+      pancakeTrade.inputAmount.token.address &&
       approvalState === ApprovalState.NOT_APPROVED
     ) {
       return [
-        approveAmountAmbireWallet(PancakeTrade.maximumAmountIn(PancakeAllowedSlippage), swapRouterAddress),
+        approveAmountAmbireWallet(pancakeTrade.maximumAmountIn(PancakeAllowedSlippage), swapRouterAddress),
         {
           address: swapRouterAddress,
           calldata,
@@ -116,6 +129,6 @@ export function usePancakeSwapCallArguments(
     trade,
     approvalState,
     pairs,
-    PancakeTrade,
+    pancakeTrade,
   ])
 }

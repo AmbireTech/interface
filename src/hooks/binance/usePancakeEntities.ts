@@ -1,6 +1,6 @@
 import { Contract } from '@ethersproject/contracts'
 import { BigintIsh, ChainId, Currency, CurrencyAmount, Pair, Token, TokenAmount, Trade } from '@pancakeswap/sdk'
-import { NativeCurrency as V2NativeCurrency, Token as V2Token } from '@uniswap/sdk-core'
+import { NativeCurrency as V2NativeCurrency, Token as V2Token, TradeType } from '@uniswap/sdk-core'
 import uniswapV2Pair from '@uniswap/v2-core/build/IUniswapV2Pair.json'
 import { useWeb3React } from '@web3-react/core'
 import { WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
@@ -103,20 +103,29 @@ export function useGetBestTrade(
   input: Token | Currency | undefined,
   output: Token | Currency | undefined,
   pairs: Pair[] | undefined,
-  inputAmountString: BigintIsh | undefined,
+  amountString: BigintIsh | undefined,
+  tradeType: TradeType | undefined,
   maxHops = 2
 ): Trade | undefined {
   return useMemo(() => {
-    if (!inputAmountString || !input || !output || !pairs || pairs.length === 0) return undefined
+    if (tradeType === undefined || amountString === undefined || !input || !output || !pairs || pairs.length === 0)
+      return undefined
 
-    const amount =
-      input instanceof Token ? new TokenAmount(input, inputAmountString) : CurrencyAmount.ether(inputAmountString)
-    const trades = Trade.bestTradeExactIn(pairs, amount, output, { maxHops })
+    let trades: Trade[] = []
+    if (tradeType === TradeType.EXACT_INPUT) {
+      const inputAmount =
+        input instanceof Token ? new TokenAmount(input, amountString) : CurrencyAmount.ether(amountString)
+      trades = Trade.bestTradeExactIn(pairs, inputAmount, output, { maxHops })
+    } else {
+      const outputAmount =
+        output instanceof Token ? new TokenAmount(output, amountString) : CurrencyAmount.ether(amountString)
+      trades = Trade.bestTradeExactOut(pairs, input, outputAmount, { maxHops })
+    }
 
     if (trades.length === 0) return undefined
 
     return trades[0]
-  }, [inputAmountString, input, output, pairs, maxHops])
+  }, [tradeType, amountString, input, output, pairs, maxHops])
 }
 
 async function getPair(provider: any, tokenA: Token, tokenB: Token): Promise<Pair | undefined> {
