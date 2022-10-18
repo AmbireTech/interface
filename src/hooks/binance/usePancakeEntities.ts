@@ -34,7 +34,7 @@ export function useGetCurrency(v2currency: V2Token | V2NativeCurrency | undefine
 export function useGetPairs(
   input: Token | Currency | undefined,
   output: Token | Currency | undefined,
-  useHops = true
+  maxHops = 3
 ): Pair[] | undefined {
   const { provider } = useWeb3React()
   const [pairs, setPairs] = useState<Pair[] | undefined>(undefined)
@@ -60,35 +60,25 @@ export function useGetPairs(
     }
 
     // direct pair
-    const pairsPromises = [getPair(provider, tokenA, tokenB)]
 
-    if (useHops) {
-      // convert hop assets to token objects
-      const hopTokens = swapHopAssets.map(
-        (asset) => new Token(ChainId.MAINNET, asset.address, asset.decimals, asset.symbol ?? '', asset.name ?? '')
-      )
+    // convert hop assets to token objects
+    const hopTokens = swapHopAssets.map(
+      (asset) => new Token(ChainId.MAINNET, asset.address, asset.decimals, asset.symbol ?? '', asset.name ?? '')
+    )
 
-      // build hop pairs
-      hopTokens.map(async (hopToken1) => {
-        if (hopToken1.address === tokenA.address || hopToken1.address === tokenB.address) return
-        pairsPromises.push(getPair(provider, tokenA, hopToken1))
-        pairsPromises.push(getPair(provider, hopToken1, tokenB))
-
-        hopTokens.map(async (hopToken2) => {
-          if (
-            hopToken1.address === hopToken2.address ||
-            hopToken2.address === tokenA.address ||
-            hopToken2.address === tokenB.address
-          )
-            return
-          pairsPromises.push(getPair(provider, hopToken1, hopToken2))
-        })
-      })
-    }
+    const pairsPromises = addHops(
+      hopTokens,
+      [tokenA, tokenB],
+      null,
+      provider,
+      [getPair(provider, tokenA, tokenB)],
+      1,
+      maxHops
+    )
 
     const resolvedPairs = await Promise.all(pairsPromises)
     setPairs(resolvedPairs.filter((p) => p) as Pair[])
-  }, [provider, input, output, useHops])
+  }, [provider, input, output, maxHops])
 
   useEffect(() => {
     setPairs(undefined)
@@ -98,13 +88,46 @@ export function useGetPairs(
   return pairs
 }
 
+function addHops(
+  hopTokens: Token[],
+  passedTokens: Token[],
+  prevHop: Token | null,
+  provider: any,
+  pairsPromises: Promise<Pair | undefined>[],
+  currentHop: number,
+  maxHops: number
+) {
+  hopTokens.map(async (newHop) => {
+    const sameAddress = passedTokens.filter((passedToken) => passedToken.address === newHop.address).length
+    if (sameAddress) {
+      return
+    }
+
+    if (prevHop === null) {
+      pairsPromises.push(getPair(provider, passedTokens[0], newHop))
+      pairsPromises.push(getPair(provider, newHop, passedTokens[1]))
+    } else {
+      pairsPromises.push(getPair(provider, prevHop, newHop))
+    }
+
+    passedTokens.push(newHop)
+
+    if (currentHop < maxHops) {
+      addHops(hopTokens, passedTokens, newHop, provider, pairsPromises, currentHop++, maxHops)
+      passedTokens.pop()
+    }
+  })
+
+  return pairsPromises
+}
+
 export function useGetBestTrade(
   input: Token | Currency | undefined,
   output: Token | Currency | undefined,
   pairs: Pair[] | undefined,
   amountString: BigintIsh | undefined,
   tradeType: TradeType | undefined,
-  maxHops = 2
+  maxHops = 3
 ): Trade | undefined {
   return useMemo(() => {
     if (tradeType === undefined || amountString === undefined || !input || !output || !pairs || pairs.length === 0)
@@ -114,11 +137,11 @@ export function useGetBestTrade(
     if (tradeType === TradeType.EXACT_INPUT) {
       const inputAmount =
         input instanceof Token ? new TokenAmount(input, amountString) : CurrencyAmount.ether(amountString)
-      trades = Trade.bestTradeExactIn(pairs, inputAmount, output, { maxHops })
+      trades = Trade.bestTradeExactIn(pairs, inputAmount, output, { maxNumResults: 3, maxHops })
     } else {
       const outputAmount =
         output instanceof Token ? new TokenAmount(output, amountString) : CurrencyAmount.ether(amountString)
-      trades = Trade.bestTradeExactOut(pairs, input, outputAmount, { maxHops })
+      trades = Trade.bestTradeExactOut(pairs, input, outputAmount, { maxNumResults: 3, maxHops })
     }
 
     if (trades.length === 0) return undefined
