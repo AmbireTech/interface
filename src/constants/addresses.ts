@@ -8,6 +8,9 @@ type AddressMap = { [chainId: number]: string }
 
 export const UNI_ADDRESS: AddressMap = constructSameAddressMap('0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984')
 
+// other addresses
+const BINANCE_ROUTER_ADDRESS = '0x10ED43C718714eb63d5aA57B78B54704E256024E'
+
 export const V2_FACTORY_ADDRESSES: AddressMap = {
   ...constructSameAddressMap(V2_FACTORY_ADDRESS),
   [SupportedChainId.AVALANCHE]: '0x9Ad6C38BE94206cA50bb0d90783181662f0Cfa10', // JoeFactory (https://docs.traderjoexyz.com/en/security-and-contracts/contracts)
@@ -21,7 +24,7 @@ export const V2_FACTORY_ADDRESSES: AddressMap = {
 export const V2_ROUTER_ADDRESS: AddressMap = {
   ...constructSameAddressMap('0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D'),
   [SupportedChainId.AVALANCHE]: '0x60aE616a2155Ee3d9A68541Ba4544862310933d4', // JoeRouter (https://docs.traderjoexyz.com/en/security-and-contracts/contracts)
-  [SupportedChainId.BINANCE]: '0x10ED43C718714eb63d5aA57B78B54704E256024E', // PancakeRouter (https://docs.pancakeswap.finance/code/smart-contracts/pancakeswap-exchange/router-v2)
+  [SupportedChainId.BINANCE]: BINANCE_ROUTER_ADDRESS, // PancakeRouter (https://docs.pancakeswap.finance/code/smart-contracts/pancakeswap-exchange/router-v2)
   [SupportedChainId.MOONRIVER]: '0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506', // SushiSwapRouter (https://docs.sushi.com/docs/Developers/Deployment%20Addresses)
   [SupportedChainId.MOONBEAM]: '0x96b244391D98B62D19aE89b1A4dCcf0fc56970C7', // BeamSwapRouter (https://docs.beamswap.io/contracts/beamswap-contracts
   [SupportedChainId.FANTOM]: '0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506', // SushiSwapRouter (https://docs.sushi.com/docs/Developers/Deployment%20Addresses)
@@ -94,6 +97,8 @@ export const SWAP_ROUTER_ADDRESSES: AddressMap = {
   ]),
   [SupportedChainId.CELO]: CELO_ROUTER_ADDRESS,
   [SupportedChainId.CELO_ALFAJORES]: CELO_ROUTER_ADDRESS,
+  [SupportedChainId.AVALANCHE]: '0x60aE616a2155Ee3d9A68541Ba4544862310933d4',
+  [SupportedChainId.BINANCE]: BINANCE_ROUTER_ADDRESS,
 }
 
 /**

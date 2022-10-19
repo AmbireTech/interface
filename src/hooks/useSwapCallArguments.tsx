@@ -5,17 +5,12 @@ import { FeeOptions } from '@uniswap/v3-sdk'
 import { useWeb3React } from '@web3-react/core'
 import { SWAP_ROUTER_ADDRESSES } from 'constants/addresses'
 import { useMemo } from 'react'
-import approveAmountCalldata from 'utils/approveAmountCalldata'
+import { SwapCall } from 'state/routing/types'
+import { approveAmountAmbireWallet } from 'utils/approveAmountCalldata'
 
-import { useArgentWalletContract } from './useArgentWalletContract'
+import { ApprovalState, useApproveCallbackFromTrade } from './useApproveCallback'
 import useENS from './useENS'
 import { SignatureData } from './useERC20Permit'
-
-interface SwapCall {
-  address: string
-  calldata: string
-  value: string
-}
 
 /**
  * Returns the swap calls that can be used to make the trade
@@ -36,7 +31,8 @@ export function useSwapCallArguments(
 
   const { address: recipientAddress } = useENS(recipientAddressOrName)
   const recipient = recipientAddressOrName === null ? account : recipientAddress
-  const argentWalletContract = useArgentWalletContract()
+  // const argentWalletContract = useArgentWalletContract()
+  const [approvalState] = useApproveCallbackFromTrade(trade as Trade<Currency, Currency, TradeType>, allowedSlippage)
 
   return useMemo(() => {
     if (!trade || !recipient || !provider || !account || !chainId || !deadline) return []
@@ -72,24 +68,35 @@ export function useSwapCallArguments(
       deadlineOrPreviousBlockhash: deadline.toString(),
     })
 
-    if (argentWalletContract && trade.inputAmount.currency.isToken) {
+    if (trade.inputAmount.currency.isToken && approvalState === ApprovalState.NOT_APPROVED) {
       return [
+        approveAmountAmbireWallet(trade.maximumAmountIn(allowedSlippage), swapRouterAddress),
         {
-          address: argentWalletContract.address,
-          calldata: argentWalletContract.interface.encodeFunctionData('wc_multiCall', [
-            [
-              approveAmountCalldata(trade.maximumAmountIn(allowedSlippage), swapRouterAddress),
-              {
-                to: swapRouterAddress,
-                value,
-                data: calldata,
-              },
-            ],
-          ]),
-          value: '0x0',
+          address: swapRouterAddress,
+          calldata,
+          value,
         },
       ]
     }
+
+    // if (argentWalletContract && trade.inputAmount.currency.isToken) {
+    //   return [
+    //     {
+    //       address: argentWalletContract.address,
+    //       calldata: argentWalletContract.interface.encodeFunctionData('wc_multiCall', [
+    //         [
+    //           approveAmountCalldata(trade.maximumAmountIn(allowedSlippage), swapRouterAddress),
+    //           {
+    //             to: swapRouterAddress,
+    //             value,
+    //             data: calldata,
+    //           },
+    //         ],
+    //       ]),
+    //       value: '0x0',
+    //     },
+    //   ]
+    // }
     return [
       {
         address: swapRouterAddress,
@@ -100,7 +107,6 @@ export function useSwapCallArguments(
   }, [
     account,
     allowedSlippage,
-    argentWalletContract,
     chainId,
     deadline,
     feeOptions,
@@ -108,5 +114,6 @@ export function useSwapCallArguments(
     recipient,
     signatureData,
     trade,
+    approvalState,
   ])
 }

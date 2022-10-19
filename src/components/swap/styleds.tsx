@@ -25,10 +25,10 @@ export const PageWrapper = styled.div<{ redesignFlag: boolean; navBarFlag: boole
 // Mostly copied from `AppBody` but it was getting too hard to maintain backwards compatibility.
 export const SwapWrapper = styled.main<{ margin?: string; maxWidth?: string; redesignFlag: boolean }>`
   position: relative;
-  background: ${({ theme, redesignFlag }) => (redesignFlag ? theme.backgroundSurface : theme.deprecated_bg0)};
-  border-radius: ${({ redesignFlag }) => (redesignFlag ? '16px' : '24px')};
-  border: 1px solid ${({ theme, redesignFlag }) => (redesignFlag ? theme.backgroundOutline : 'transparent')};
-  padding: 8px;
+  background: #24263d;
+  border-radius: 12px;
+  // border: 1px solid #3e436b;
+  padding: 12px;
   z-index: ${Z_INDEX.deprecated_content};
   box-shadow: ${({ redesignFlag }) =>
     !redesignFlag &&
@@ -36,18 +36,19 @@ export const SwapWrapper = styled.main<{ margin?: string; maxWidth?: string; red
 `
 
 export const ArrowWrapper = styled.div<{ clickable: boolean; redesignFlag: boolean }>`
-  padding: 4px;
   border-radius: 12px;
   height: ${({ redesignFlag }) => (redesignFlag ? '40px' : '32px')};
   width: ${({ redesignFlag }) => (redesignFlag ? '40px' : '32px')};
   position: relative;
-  margin-top: ${({ redesignFlag }) => (redesignFlag ? '-18px' : '-14px')};
-  margin-bottom: ${({ redesignFlag }) => (redesignFlag ? '-18px' : '-14px')};
-  left: calc(50% - 16px);
+  margin-top: -12px;
+  margin-bottom: -12px;
+  // left: calc(50% - 16px);
   /* transform: rotate(90deg); */
-  background-color: ${({ theme, redesignFlag }) => (redesignFlag ? theme.backgroundInteractive : theme.deprecated_bg1)};
-  border: 4px solid;
-  border-color: ${({ theme, redesignFlag }) => (redesignFlag ? theme.backgroundSurface : theme.deprecated_bg0)};
+  background-color: #1e2033;
+  // border: 4px solid;
+  // border-color: ${({ theme, redesignFlag }) => (redesignFlag ? theme.backgroundSurface : theme.deprecated_bg0)};
+  margin-left: auto;
+  margin-right: auto;
 
   z-index: 2;
   ${({ clickable }) =>
