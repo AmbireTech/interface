@@ -9,6 +9,7 @@ import AvaxLogo from '../../assets/svg/avalanche-avax-logo.svg'
 import BinanceLogo from '../../assets/svg/bnb-logo.svg'
 import CeloLogo from '../../assets/svg/celo_logo.svg'
 import FantomLogo from '../../assets/svg/fantom-logo.svg'
+import GnosisLogo from '../../assets/svg/gnosis-logo.svg'
 import MaticLogo from '../../assets/svg/matic-token-icon.svg'
 import AndromedaLogo from '../../assets/svg/metis-logo.svg'
 import MoonbeamLogo from '../../assets/svg/moonbeam-token.svg'
@@ -26,6 +27,7 @@ type Network =
   | 'moonriver'
   | 'fantom'
   | 'andromeda'
+  | 'gnosis'
 
 function chainIdToNetworkName(networkId: SupportedChainId): Network {
   switch (networkId) {
@@ -49,6 +51,8 @@ function chainIdToNetworkName(networkId: SupportedChainId): Network {
       return 'fantom'
     case SupportedChainId.ANDROMEDA:
       return 'andromeda'
+    case SupportedChainId.GNOSIS:
+      return 'gnosis'
     default:
       return 'ethereum'
   }
@@ -74,6 +78,8 @@ export function getNativeLogoURI(chainId: SupportedChainId = SupportedChainId.MA
       return FantomLogo
     case SupportedChainId.ANDROMEDA:
       return AndromedaLogo
+    case SupportedChainId.GNOSIS:
+      return GnosisLogo
     default:
       return EthereumLogo
   }

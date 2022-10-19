@@ -69,4 +69,5 @@ export const RPC_PROVIDERS: { [key in SupportedChainId]: StaticJsonRpcProvider }
   [SupportedChainId.MOONRIVER]: new AppJsonRpcProvider(RPC_URLS[SupportedChainId.MOONRIVER]),
   [SupportedChainId.FANTOM]: new AppJsonRpcProvider(RPC_URLS[SupportedChainId.FANTOM]),
   [SupportedChainId.ANDROMEDA]: new AppJsonRpcProvider(RPC_URLS[SupportedChainId.ANDROMEDA]),
+  [SupportedChainId.GNOSIS]: new AppJsonRpcProvider(RPC_URLS[SupportedChainId.GNOSIS]),
 }
