@@ -145,5 +145,5 @@ export const RPC_URLS: { [key in SupportedChainId]: string[] } = {
   [SupportedChainId.MOONBEAM]: ['https://moonbeam.public.blastapi.io', ...FALLBACK_URLS[SupportedChainId.MOONBEAM]],
   [SupportedChainId.MOONRIVER]: ['https://moonriver.public.blastapi.io', ...FALLBACK_URLS[SupportedChainId.MOONRIVER]],
   [SupportedChainId.FANTOM]: ['https://rpc.ftm.tools/', ...FALLBACK_URLS[SupportedChainId.FANTOM]],
-  [SupportedChainId.ANDROMEDA]: ['wss://andromeda-ws.metis.io', ...FALLBACK_URLS[SupportedChainId.FANTOM]],
+  [SupportedChainId.ANDROMEDA]: ['wss://andromeda-ws.metis.io', ...FALLBACK_URLS[SupportedChainId.ANDROMEDA]],
 }
