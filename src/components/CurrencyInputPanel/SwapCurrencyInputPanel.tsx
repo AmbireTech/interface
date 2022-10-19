@@ -11,7 +11,7 @@ import { RedesignVariant, useRedesignFlag } from 'featureFlags/flags/redesign'
 import { darken } from 'polished'
 import { ReactNode, useCallback, useState } from 'react'
 import { Lock } from 'react-feather'
-import styled, { useTheme } from 'styled-components/macro'
+import styled, { css, useTheme } from 'styled-components/macro'
 import { formatCurrencyAmount } from 'utils/formatCurrencyAmount'
 
 import { ReactComponent as DropDown } from '../../assets/images/dropdown.svg'
@@ -28,7 +28,7 @@ import { FiatValue } from './FiatValue'
 const InputPanel = styled.div<{ hideInput?: boolean; redesignFlag: boolean }>`
   ${({ theme }) => theme.flexColumnNoWrap}
   position: relative;
-  border-radius: ${({ hideInput }) => (hideInput ? '16px' : '20px')};
+  border-radius: 12px;
   background-color: ${({ theme, redesignFlag, hideInput }) =>
     redesignFlag ? 'transparent' : hideInput ? 'transparent' : theme.deprecated_bg2};
   z-index: 1;
@@ -41,7 +41,7 @@ const FixedContainer = styled.div<{ redesignFlag: boolean }>`
   width: 100%;
   height: 100%;
   position: absolute;
-  border-radius: 20px;
+  border-radius: 12px;
   background-color: ${({ theme, redesignFlag }) => (redesignFlag ? 'transparent' : theme.deprecated_bg2)};
   display: flex;
   align-items: center;
@@ -51,17 +51,19 @@ const FixedContainer = styled.div<{ redesignFlag: boolean }>`
 
 const Container = styled.div<{ hideInput: boolean; disabled: boolean; redesignFlag: boolean }>`
   min-height: ${({ redesignFlag }) => redesignFlag && '69px'};
-  border-radius: ${({ hideInput }) => (hideInput ? '16px' : '20px')};
-  border: 1px solid ${({ theme, redesignFlag }) => (redesignFlag ? 'transparent' : theme.deprecated_bg0)};
-  background-color: ${({ theme, redesignFlag }) => (redesignFlag ? 'transparent' : theme.deprecated_bg1)};
+  border-radius: 12px;
+  // border: 1px solid ${({ theme, redesignFlag }) => (redesignFlag ? 'transparent' : theme.deprecated_bg0)};
+  background-color: #2d314d;
   width: ${({ hideInput }) => (hideInput ? '100%' : 'initial')};
+  opacity: 0.9;
   ${({ theme, hideInput, disabled, redesignFlag }) =>
     !redesignFlag &&
     !disabled &&
     `
     :focus,
     :hover {
-      border: 1px solid ${hideInput ? ' transparent' : theme.deprecated_bg3};
+      // border: 1px solid ${hideInput ? ' transparent' : theme.deprecated_bg3};
+      opacity: 1;
     }
   `}
 `
@@ -74,20 +76,13 @@ const CurrencySelect = styled(ButtonGray)<{
   redesignFlag: boolean
 }>`
   align-items: center;
-  background-color: ${({ selected, theme, redesignFlag }) =>
-    redesignFlag
-      ? selected
-        ? theme.stateOverlayPressed
-        : theme.accentAction
-      : selected
-      ? theme.deprecated_bg2
-      : theme.deprecated_primary1};
+  background-color: transparent;
   opacity: ${({ disabled }) => (!disabled ? 1 : 0.4)};
-  box-shadow: ${({ selected }) => (selected ? 'none' : '0px 6px 10px rgba(0, 0, 0, 0.075)')};
+  box-shadow: none;
   color: ${({ selected, theme }) => (selected ? theme.deprecated_text1 : theme.deprecated_white)};
   cursor: pointer;
   height: ${({ hideInput, redesignFlag }) => (redesignFlag ? 'unset' : hideInput ? '2.8rem' : '2.4rem')};
-  border-radius: 16px;
+  border-radius: 12px;
   outline: none;
   user-select: none;
   border: none;
@@ -101,22 +96,42 @@ const CurrencySelect = styled(ButtonGray)<{
   margin-left: ${({ hideInput }) => (hideInput ? '0' : '12px')};
 
   &:hover {
-    background-color: ${({ selected, theme, redesignFlag }) =>
-      redesignFlag
-        ? theme.stateOverlayHover
-        : selected
-        ? darken(0.05, theme.deprecated_primary1)
-        : theme.deprecated_bg3};
+    background-color: ${({ selected, theme, redesignFlag }) => theme.stateOverlayHover};
   }
 
   &:active {
-    background-color: ${({ selected, theme, redesignFlag }) =>
-      redesignFlag
-        ? theme.stateOverlayPressed
-        : selected
-        ? darken(0.05, theme.deprecated_primary1)
-        : theme.deprecated_bg3};
+    background-color: ${({ selected, theme, redesignFlag }) => theme.stateOverlayHover};
   }
+
+  ${({ redesignFlag, selected }) =>
+    redesignFlag &&
+    css`
+      &:hover,
+      &:active {
+        background-color: ${({ theme }) => (selected ? theme.backgroundInteractive : theme.accentAction)};
+      }
+
+      &:before {
+        background-size: 100%;
+        border-radius: inherit;
+
+        position: absolute;
+        top: 0;
+        left: 0;
+
+        width: 100%;
+        height: 100%;
+        content: '';
+      }
+
+      &:hover:before {
+        background-color: ${({ theme }) => theme.stateOverlayHover};
+      }
+
+      &:active:before {
+        background-color: ${({ theme }) => theme.stateOverlayPressed};
+      }
+    `}
 
   visibility: ${({ visible }) => (visible ? 'visible' : 'hidden')};
 `
@@ -135,7 +150,7 @@ const LabelRow = styled.div<{ redesignFlag: boolean }>`
   color: ${({ theme, redesignFlag }) => (redesignFlag ? theme.textSecondary : theme.deprecated_text1)};
   font-size: 0.75rem;
   line-height: 1rem;
-  padding: 0 1rem 1rem;
+  padding: ${({ redesignFlag }) => (redesignFlag ? '0px' : '0 1rem 1rem')};
 
   span:hover {
     cursor: pointer;
@@ -145,8 +160,8 @@ const LabelRow = styled.div<{ redesignFlag: boolean }>`
 
 const FiatRow = styled(LabelRow)<{ redesignFlag: boolean }>`
   justify-content: flex-end;
-  min-height: ${({ redesignFlag }) => redesignFlag && '32px'};
-  padding: ${({ redesignFlag }) => redesignFlag && '8px 0px'};
+  min-height: ${({ redesignFlag }) => redesignFlag && '20px'};
+  padding: ${({ redesignFlag }) => redesignFlag && '8px 0px 0px 0px'};
   height: ${({ redesignFlag }) => !redesignFlag && '24px'};
 `
 
@@ -170,17 +185,16 @@ const StyledDropDown = styled(DropDown)<{ selected: boolean; redesignFlag: boole
 
 const StyledTokenName = styled.span<{ active?: boolean; redesignFlag: boolean }>`
   ${({ active }) => (active ? '  margin: 0 0.25rem 0 0.25rem;' : '  margin: 0 0.25rem 0 0.25rem;')}
-  font-size:  ${({ active }) => (active ? '18px' : '18px')};
+  font-size: ${({ redesignFlag }) => (redesignFlag ? '20px' : '18px')};
   font-weight: ${({ redesignFlag }) => (redesignFlag ? '600' : '500')};
 `
 
 const StyledBalanceMax = styled.button<{ disabled?: boolean; redesignFlag: boolean }>`
   background-color: transparent;
-  background-color: ${({ theme, redesignFlag }) => !redesignFlag && theme.deprecated_primary5};
-  border: none;
+  border: 1px solid #27e8a7;
   text-transform: ${({ redesignFlag }) => !redesignFlag && 'uppercase'};
-  border-radius: ${({ redesignFlag }) => !redesignFlag && '12px'};
-  color: ${({ theme, redesignFlag }) => (redesignFlag ? theme.accentAction : theme.deprecated_primary1)};
+  border-radius: 12px;
+  color: #27e8a7;
   cursor: pointer;
   font-size: ${({ redesignFlag }) => (redesignFlag ? '14px' : '11px')};
   font-weight: ${({ redesignFlag }) => (redesignFlag ? '600' : '500')};

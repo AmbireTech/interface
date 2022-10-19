@@ -95,17 +95,22 @@ const baseMenuItem = style([
 
 export const menuItem = style([
   baseMenuItem,
-  sprinkles({
-    color: 'textSecondary',
-  }),
+  {
+    color: '#27e8a7',
+  },
 ])
 
 export const activeMenuItem = style([
   baseMenuItem,
   sprinkles({
-    color: 'textPrimary',
     background: 'backgroundFloating',
+    borderStyle: 'solid',
+    borderWidth: '2px',
   }),
+  {
+    color: '#27e8a7',
+    borderColor: '#27e8a7',
+  },
 ])
 
 export const mobileBottomBar = style([
