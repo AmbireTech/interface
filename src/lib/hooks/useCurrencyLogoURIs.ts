@@ -14,6 +14,7 @@ import MaticLogo from '../../assets/svg/matic-token-icon.svg'
 import AndromedaLogo from '../../assets/svg/metis-logo.svg'
 import MoonbeamLogo from '../../assets/svg/moonbeam-token.svg'
 import MoonriverLogo from '../../assets/svg/moonriver-logo.svg'
+import KuCoinLogo from '../../assets/svg/kucoin-logo.svg'
 import { isCelo, nativeOnChain } from '../../constants/tokens'
 
 type Network =
@@ -28,6 +29,7 @@ type Network =
   | 'fantom'
   | 'andromeda'
   | 'gnosis'
+  | 'kucoin'
 
 function chainIdToNetworkName(networkId: SupportedChainId): Network {
   switch (networkId) {
@@ -53,6 +55,8 @@ function chainIdToNetworkName(networkId: SupportedChainId): Network {
       return 'andromeda'
     case SupportedChainId.GNOSIS:
       return 'gnosis'
+    case SupportedChainId.KUCOIN:
+      return 'kucoin'
     default:
       return 'ethereum'
   }
@@ -80,6 +84,8 @@ export function getNativeLogoURI(chainId: SupportedChainId = SupportedChainId.MA
       return AndromedaLogo
     case SupportedChainId.GNOSIS:
       return GnosisLogo
+    case SupportedChainId.KUCOIN:
+      return KuCoinLogo
     default:
       return EthereumLogo
   }

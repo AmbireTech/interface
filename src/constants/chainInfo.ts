@@ -13,6 +13,7 @@ import { default as arbitrumCircleLogoUrl, default as arbitrumLogoUrl } from 'as
 import celoLogo from 'assets/svg/celo_logo.svg'
 import optimismLogoUrl from 'assets/svg/optimistic_ethereum.svg'
 import polygonMaticLogo from 'assets/svg/polygon-matic-logo.svg'
+import kuCoinLogo from 'assets/svg/kucoin-logo.svg'
 import ms from 'ms.macro'
 import { colorsDark } from 'theme/colors'
 
@@ -25,6 +26,7 @@ import {
   CELO_LIST,
   FANTOM_SUSHI_SWAP_LIST,
   GNOSIS_SUSHI_SWAP_LIST,
+  KUCOIN_LIST,
   MOONBEAM_BEAMSWAP_LIST,
   MOONRIVER_SUSHI_SWAP_LIST,
   OPTIMISM_LIST,
@@ -305,6 +307,16 @@ const CHAIN_INFO: ChainInfoMap = {
     logoUrl: gnosisLogo,
     nativeCurrency: { name: 'xDAI', symbol: 'xDAI', decimals: 18 },
     defaultListUrl: GNOSIS_SUSHI_SWAP_LIST,
+  },
+  [SupportedChainId.KUCOIN]: {
+    networkType: NetworkType.L1,
+    docs: 'https://docs.uniswap.org/',
+    explorer: 'https://explorer.kcc.io/',
+    infoLink: 'https://info.uniswap.org/#/',
+    label: 'KuCoin',
+    logoUrl: kuCoinLogo,
+    nativeCurrency: { name: 'KuCoin', symbol: 'KCS', decimals: 18 },
+    defaultListUrl: KUCOIN_LIST,
   },
 }
 

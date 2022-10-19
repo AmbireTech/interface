@@ -20,6 +20,7 @@ export const V2_FACTORY_ADDRESSES: AddressMap = {
   [SupportedChainId.FANTOM]: '0xc35DADB65012eC5796536bD9864eD8773aBc74C4', // SushiSwapFactory (https://docs.sushi.com/docs/Developers/Deployment%20Addresses)
   [SupportedChainId.ANDROMEDA]: '0x70f51d68D16e8f9e418441280342BD43AC9Dff9f', // NetSwapFactory (https://docs.netswap.io/developer/smart-contracts)
   [SupportedChainId.GNOSIS]: '0xc35DADB65012eC5796536bD9864eD8773aBc74C4', // SushiSwapFactory (https://docs.sushi.com/docs/Developers/Deployment%20Addresses)
+  [SupportedChainId.KUCOIN]: '0xAE46cBBCDFBa3bE0F02F463Ec5486eBB4e2e65Ae', // KuCoinFinanceFactory (https://docs.kuswap.finance/protocol/building-on-kuswap)
 }
 
 export const V2_ROUTER_ADDRESS: AddressMap = {
@@ -31,6 +32,7 @@ export const V2_ROUTER_ADDRESS: AddressMap = {
   [SupportedChainId.FANTOM]: '0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506', // SushiSwapRouter (https://docs.sushi.com/docs/Developers/Deployment%20Addresses)
   [SupportedChainId.ANDROMEDA]: '0x1E876cCe41B7b844FDe09E38Fa1cf00f213bFf56', // NetSwapRouter (https://docs.netswap.io/developer/smart-contracts)
   [SupportedChainId.FANTOM]: '0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506', // SushiSwapRouter (https://docs.sushi.com/docs/Developers/Deployment%20Addresses)
+  [SupportedChainId.KUCOIN]: '0xA58350d6dEE8441aa42754346860E3545cc83cdA', // KuCoinFinanceRouter (https://docs.kuswap.finance/protocol/building-on-kuswap)
 }
 
 // celo v3 addresses
