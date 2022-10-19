@@ -103,8 +103,7 @@ const CurrencySelect = styled(ButtonGray)<{
     background-color: ${({ selected, theme, redesignFlag }) => theme.stateOverlayHover};
   }
 
-  ${({ redesignFlag, selected }) =>
-    redesignFlag &&
+  ${({ selected }) =>
     css`
       &:hover,
       &:active {

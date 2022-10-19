@@ -11,7 +11,7 @@ import { RedesignVariant, useRedesignFlag } from 'featureFlags/flags/redesign'
 import { darken } from 'polished'
 import { ReactNode, useCallback, useState } from 'react'
 import { Lock } from 'react-feather'
-import styled, { useTheme } from 'styled-components/macro'
+import styled, { css, useTheme } from 'styled-components/macro'
 import { formatCurrencyAmount } from 'utils/formatCurrencyAmount'
 
 import { ReactComponent as DropDown } from '../../assets/images/dropdown.svg'
@@ -28,7 +28,7 @@ import { FiatValue } from './FiatValue'
 const InputPanel = styled.div<{ hideInput?: boolean }>`
   ${({ theme }) => theme.flexColumnNoWrap}
   position: relative;
-  border-radius: ${({ hideInput }) => (hideInput ? '16px' : '20px')};
+  border-radius: 12px;
   background-color: ${({ theme, hideInput }) => (hideInput ? 'transparent' : theme.deprecated_bg2)};
   z-index: 1;
   width: ${({ hideInput }) => (hideInput ? '100%' : 'initial')};
@@ -49,16 +49,17 @@ const FixedContainer = styled.div`
 `
 
 const Container = styled.div<{ hideInput: boolean; disabled: boolean }>`
-  border-radius: ${({ hideInput }) => (hideInput ? '16px' : '20px')};
-  border: 1px solid ${({ theme }) => theme.deprecated_bg0};
+  border-radius: 12px;
   background-color: ${({ theme }) => theme.deprecated_bg1};
   width: ${({ hideInput }) => (hideInput ? '100%' : 'initial')};
+  opacity: 0.9;
   ${({ theme, hideInput, disabled }) =>
     !disabled &&
     `
     :focus,
     :hover {
-      border: 1px solid ${hideInput ? ' transparent' : theme.deprecated_bg3};
+      // border: 1px solid ${hideInput ? ' transparent' : theme.deprecated_bg3};
+      opacity: 1;
     }
   `}
 `
@@ -70,13 +71,13 @@ const CurrencySelect = styled(ButtonGray)<{
   disabled?: boolean
 }>`
   align-items: center;
-  background-color: ${({ selected, theme }) => (selected ? theme.deprecated_bg2 : theme.deprecated_primary1)};
+  background-color: transparent;
   opacity: ${({ disabled }) => (!disabled ? 1 : 0.4)};
   box-shadow: ${({ selected }) => (selected ? 'none' : '0px 6px 10px rgba(0, 0, 0, 0.075)')};
   box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.075);
   color: ${({ selected, theme }) => (selected ? theme.deprecated_text1 : theme.deprecated_white)};
   cursor: pointer;
-  border-radius: 16px;
+  border-radius: 12px;
   outline: none;
   user-select: none;
   border: none;
@@ -87,11 +88,44 @@ const CurrencySelect = styled(ButtonGray)<{
   padding: 0 8px;
   justify-content: space-between;
   margin-left: ${({ hideInput }) => (hideInput ? '0' : '12px')};
-  :focus,
-  :hover {
-    background-color: ${({ selected, theme }) =>
-      selected ? theme.deprecated_bg3 : darken(0.05, theme.deprecated_primary1)};
+
+  &:hover {
+    background-color: ${({ theme }) => theme.stateOverlayHover};
   }
+
+  &:active {
+    background-color: ${({ theme }) => theme.stateOverlayHover};
+  }
+
+  ${({ selected }) =>
+    css`
+      &:hover,
+      &:active {
+        background-color: ${({ theme }) => (selected ? theme.backgroundInteractive : theme.accentAction)};
+      }
+
+      &:before {
+        background-size: 100%;
+        border-radius: inherit;
+
+        position: absolute;
+        top: 0;
+        left: 0;
+
+        width: 100%;
+        height: 100%;
+        content: '';
+      }
+
+      &:hover:before {
+        background-color: ${({ theme }) => theme.stateOverlayHover};
+      }
+
+      &:active:before {
+        background-color: ${({ theme }) => theme.stateOverlayPressed};
+      }
+    `}
+
   visibility: ${({ visible }) => (visible ? 'visible' : 'hidden')};
 `
 
