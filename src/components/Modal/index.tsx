@@ -10,7 +10,7 @@ import { isMobile } from '../../utils/userAgent'
 
 const AnimatedDialogOverlay = animated(DialogOverlay)
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const StyledDialogOverlay = styled(AnimatedDialogOverlay)<{ redesignFlag?: boolean }>`
+const StyledDialogOverlay = styled(AnimatedDialogOverlay)<{ redesignFlag?: boolean; scrollOverlay?: boolean }>`
   &[data-reach-dialog-overlay] {
     z-index: ${Z_INDEX.modalBackdrop};
     background-color: transparent;
@@ -18,16 +18,17 @@ const StyledDialogOverlay = styled(AnimatedDialogOverlay)<{ redesignFlag?: boole
 
     display: flex;
     align-items: center;
+    overflow-y: ${({ scrollOverlay }) => scrollOverlay && 'scroll'};
     justify-content: center;
-
-    background-color: ${({ theme, redesignFlag }) => (redesignFlag ? theme.backgroundScrim : theme.deprecated_modalBG)};
+    // Because of the gradient Ambire wallet background it will not work with background
+    backdrop-filter: blur(3px);
   }
 `
 
 const AnimatedDialogContent = animated(DialogContent)
 // destructure to not pass custom props to Dialog DOM element
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const StyledDialogContent = styled(({ minHeight, maxHeight, mobile, isOpen, redesignFlag, ...rest }) => (
+const StyledDialogContent = styled(({ minHeight, maxHeight, mobile, isOpen, redesignFlag, scrollOverlay, ...rest }) => (
   <AnimatedDialogContent {...rest} />
 )).attrs({
   'aria-label': 'dialog',
@@ -36,7 +37,7 @@ const StyledDialogContent = styled(({ minHeight, maxHeight, mobile, isOpen, rede
 
   &[data-reach-dialog-content] {
     margin: 0 0 2rem 0;
-    background-color: ${({ theme }) => theme.deprecated_bg0};
+    background-color: #24263d;
     border: 1px solid ${({ theme }) => theme.deprecated_bg1};
     box-shadow: ${({ theme, redesignFlag }) =>
       redesignFlag ? theme.deepShadow : `0 4px 8px 0 ${transparentize(0.95, theme.shadow1)}`};
@@ -45,7 +46,7 @@ const StyledDialogContent = styled(({ minHeight, maxHeight, mobile, isOpen, rede
     overflow-y: auto;
     overflow-x: hidden;
 
-    align-self: ${({ mobile }) => (mobile ? 'flex-end' : 'center')};
+    align-self: ${({ mobile }) => mobile && 'flex-end'};
 
     max-width: 420px;
     ${({ maxHeight }) =>
@@ -59,10 +60,10 @@ const StyledDialogContent = styled(({ minHeight, maxHeight, mobile, isOpen, rede
         min-height: ${minHeight}vh;
       `}
     display: flex;
-    border-radius: 20px;
-    ${({ theme }) => theme.deprecated_mediaWidth.deprecated_upToMedium`
+    border-radius: 12px;
+    ${({ theme, redesignFlag }) => theme.deprecated_mediaWidth.deprecated_upToMedium`
       width: 65vw;
-      margin: 0;
+      margin: ${redesignFlag ? 'auto' : '0'};
     `}
     ${({ theme, mobile }) => theme.deprecated_mediaWidth.deprecated_upToSmall`
       width:  85vw;
@@ -70,7 +71,7 @@ const StyledDialogContent = styled(({ minHeight, maxHeight, mobile, isOpen, rede
         mobile &&
         css`
           width: 100vw;
-          border-radius: 20px;
+          border-radius: 12px;
           border-bottom-left-radius: 0;
           border-bottom-right-radius: 0;
         `
@@ -87,6 +88,7 @@ interface ModalProps {
   initialFocusRef?: React.RefObject<any>
   children?: React.ReactNode
   redesignFlag?: boolean
+  scrollOverlay?: boolean
 }
 
 export default function Modal({
@@ -97,8 +99,9 @@ export default function Modal({
   initialFocusRef,
   children,
   redesignFlag,
+  scrollOverlay,
 }: ModalProps) {
-  const fadeTransition = useTransition(isOpen, null, {
+  const fadeTransition = useTransition(isOpen, {
     config: { duration: 200 },
     from: { opacity: 0 },
     enter: { opacity: 1 },
@@ -119,16 +122,17 @@ export default function Modal({
 
   return (
     <>
-      {fadeTransition.map(
-        ({ item, key, props }) =>
+      {fadeTransition(
+        ({ opacity }, item) =>
           item && (
             <StyledDialogOverlay
-              key={key}
-              style={props}
+              as={AnimatedDialogOverlay}
+              style={{ opacity: opacity.to({ range: [0.0, 1.0], output: [0, 1] }) }}
               onDismiss={onDismiss}
               initialFocusRef={initialFocusRef}
               unstable_lockFocusAcrossFrames={false}
               redesignFlag={redesignFlag}
+              scrollOverlay={scrollOverlay}
             >
               <StyledDialogContent
                 {...(isMobile
@@ -142,6 +146,7 @@ export default function Modal({
                 maxHeight={maxHeight}
                 mobile={isMobile}
                 redesignFlag={redesignFlag}
+                scrollOverlay={scrollOverlay}
               >
                 {/* prevents the automatic focusing of inputs on mobile by the reach dialog */}
                 {!initialFocusRef && isMobile ? <div tabIndex={1} /> : null}

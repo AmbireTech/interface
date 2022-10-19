@@ -14,7 +14,7 @@ const BalanceFooter = styled.div`
   height: fit-content;
   border: 1px solid ${({ theme }) => theme.backgroundOutline};
   background-color: ${({ theme }) => theme.backgroundSurface};
-  border-radius: 20px 20px 0px 0px;
+  border-radius: 12px 20px 0px 0px;
   padding: 12px 16px;
   font-weight: 500;
   font-size: 14px;
