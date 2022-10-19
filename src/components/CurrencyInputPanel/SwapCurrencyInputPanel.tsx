@@ -96,11 +96,11 @@ const CurrencySelect = styled(ButtonGray)<{
   margin-left: ${({ hideInput }) => (hideInput ? '0' : '12px')};
 
   &:hover {
-    background-color: ${({ selected, theme, redesignFlag }) => theme.stateOverlayHover};
+    background-color: ${({ theme }) => theme.stateOverlayHover};
   }
 
   &:active {
-    background-color: ${({ selected, theme, redesignFlag }) => theme.stateOverlayHover};
+    background-color: ${({ theme }) => theme.stateOverlayHover};
   }
 
   ${({ selected }) =>

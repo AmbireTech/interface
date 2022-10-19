@@ -50,7 +50,7 @@ const FixedContainer = styled.div`
 
 const Container = styled.div<{ hideInput: boolean; disabled: boolean }>`
   border-radius: 12px;
-  background-color: ${({ theme }) => theme.deprecated_bg1};
+  background-color: transparent;
   width: ${({ hideInput }) => (hideInput ? '100%' : 'initial')};
   opacity: 0.9;
   ${({ theme, hideInput, disabled }) =>
@@ -99,11 +99,6 @@ const CurrencySelect = styled(ButtonGray)<{
 
   ${({ selected }) =>
     css`
-      &:hover,
-      &:active {
-        background-color: ${({ theme }) => (selected ? theme.backgroundInteractive : theme.accentAction)};
-      }
-
       &:before {
         background-size: 100%;
         border-radius: inherit;
