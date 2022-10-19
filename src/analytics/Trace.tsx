@@ -1,6 +1,6 @@
 import { createContext, memo, PropsWithChildren, useContext, useEffect, useMemo } from 'react'
 
-import { sendAnalyticsEvent } from '.'
+// import { sendAnalyticsEvent } from '.'
 import { ElementName, EventName, ModalName, PageName, SectionName } from './constants'
 
 export interface ITraceContext {
@@ -44,14 +44,14 @@ export const Trace = memo(
 
     useEffect(() => {
       if (shouldLogImpression) {
-        const origin = window.location.origin
-        const commitHash = process.env.REACT_APP_GIT_COMMIT_HASH
-        sendAnalyticsEvent(name ?? EventName.PAGE_VIEWED, {
-          ...combinedProps,
-          ...properties,
-          origin,
-          git_commit_hash: commitHash,
-        })
+        // const origin = window.location.origin
+        // const commitHash = process.env.REACT_APP_GIT_COMMIT_HASH
+        // sendAnalyticsEvent(name ?? EventName.PAGE_VIEWED, {
+        //   ...combinedProps,
+        //   ...properties,
+        //   origin,
+        //   git_commit_hash: commitHash,
+        // })
       }
       // Impressions should only be logged on mount.
       // eslint-disable-next-line react-hooks/exhaustive-deps

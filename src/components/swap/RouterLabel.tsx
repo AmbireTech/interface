@@ -33,7 +33,7 @@ const StyledAutoRouterLabel = styled(ThemedText.DeprecatedBlack)`
   color: ${({ theme }) => theme.deprecated_green1};
 
   @supports (-webkit-background-clip: text) and (-webkit-text-fill-color: transparent) {
-    background-image: linear-gradient(90deg, #2172e5 0%, #54e521 163.16%);
+    background-image: linear-gradient(90deg, #27e8a7 0%, #6000ff 163.16%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
