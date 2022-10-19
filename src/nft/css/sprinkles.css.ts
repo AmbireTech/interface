@@ -146,7 +146,7 @@ export const vars = createGlobalTheme(':root', {
     fallbackGradient: 'linear-gradient(270deg, #D1D5DB 0%, #F6F6F6 100%)',
     loadingBackground: '#24272e',
     dropShadow: '0px 4px 16px rgba(70, 115, 250, 0.4)',
-    green: '#209853',
+    green: '#27e8a7',
     orange: '#FA2C38',
     black: 'black',
     whitesmoke: '#F5F5F5',

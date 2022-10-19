@@ -23,7 +23,7 @@ import { DAI, USDC_MAINNET, USDT, WBTC, WRAPPED_NATIVE_CURRENCY } from '../../co
 
 const LinkRow = styled(Link)`
   align-items: center;
-  border-radius: 20px;
+  border-radius: 12px;
   display: flex;
   cursor: pointer;
   user-select: none;
