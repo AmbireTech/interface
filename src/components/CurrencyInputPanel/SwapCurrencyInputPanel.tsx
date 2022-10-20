@@ -86,7 +86,7 @@ const CurrencySelect = styled(ButtonGray)<{
   outline: none;
   user-select: none;
   border: none;
-  font-size: 24px;
+  font-size: 10px;
   font-weight: 400;
   width: ${({ hideInput }) => (hideInput ? '100%' : 'initial')};
   padding: ${({ selected, redesignFlag }) =>
@@ -95,10 +95,7 @@ const CurrencySelect = styled(ButtonGray)<{
   justify-content: space-between;
   margin-left: ${({ hideInput }) => (hideInput ? '0' : '12px')};
 
-  &:hover {
-    background-color: ${({ theme }) => theme.stateOverlayHover};
-  }
-
+  &:hover,
   &:active {
     background-color: ${({ theme }) => theme.stateOverlayHover};
   }
@@ -107,7 +104,7 @@ const CurrencySelect = styled(ButtonGray)<{
     css`
       &:hover,
       &:active {
-        background-color: ${({ theme }) => (selected ? theme.backgroundInteractive : theme.accentAction)};
+        background-color: ${({ theme }) => theme.stateOverlayHover};
       }
 
       &:before {
@@ -121,14 +118,6 @@ const CurrencySelect = styled(ButtonGray)<{
         width: 100%;
         height: 100%;
         content: '';
-      }
-
-      &:hover:before {
-        background-color: ${({ theme }) => theme.stateOverlayHover};
-      }
-
-      &:active:before {
-        background-color: ${({ theme }) => theme.stateOverlayPressed};
       }
     `}
 
@@ -214,9 +203,9 @@ const StyledBalanceMax = styled.button<{ disabled?: boolean; redesignFlag: boole
 const StyledNumericalInput = styled(NumericalInput)<{ $loading: boolean; redesignFlag: boolean }>`
   ${loadingOpacityMixin};
   text-align: left;
-  font-size: ${({ redesignFlag }) => redesignFlag && '36px'};
-  line-height: ${({ redesignFlag }) => redesignFlag && '44px'};
-  font-variant: ${({ redesignFlag }) => redesignFlag && 'small-caps'};
+  // font-size: ${({ redesignFlag }) => redesignFlag && '36px'};
+  // line-height: ${({ redesignFlag }) => redesignFlag && '44px'};
+  // font-variant: ${({ redesignFlag }) => redesignFlag && 'small-caps'};
 `
 
 interface SwapCurrencyInputPanelProps {

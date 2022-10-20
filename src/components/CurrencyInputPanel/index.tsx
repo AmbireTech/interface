@@ -11,7 +11,7 @@ import { RedesignVariant, useRedesignFlag } from 'featureFlags/flags/redesign'
 import { darken } from 'polished'
 import { ReactNode, useCallback, useState } from 'react'
 import { Lock } from 'react-feather'
-import styled, { css, useTheme } from 'styled-components/macro'
+import styled, { useTheme } from 'styled-components/macro'
 import { formatCurrencyAmount } from 'utils/formatCurrencyAmount'
 
 import { ReactComponent as DropDown } from '../../assets/images/dropdown.svg'
@@ -50,7 +50,7 @@ const FixedContainer = styled.div`
 
 const Container = styled.div<{ hideInput: boolean; disabled: boolean }>`
   border-radius: 12px;
-  background-color: transparent;
+  background-color: #2d314d;
   width: ${({ hideInput }) => (hideInput ? '100%' : 'initial')};
   opacity: 0.9;
   ${({ theme, hideInput, disabled }) =>
@@ -89,37 +89,10 @@ const CurrencySelect = styled(ButtonGray)<{
   justify-content: space-between;
   margin-left: ${({ hideInput }) => (hideInput ? '0' : '12px')};
 
-  &:hover {
-    background-color: ${({ theme }) => theme.stateOverlayHover};
-  }
-
+  &:hover,
   &:active {
     background-color: ${({ theme }) => theme.stateOverlayHover};
   }
-
-  ${({ selected }) =>
-    css`
-      &:before {
-        background-size: 100%;
-        border-radius: inherit;
-
-        position: absolute;
-        top: 0;
-        left: 0;
-
-        width: 100%;
-        height: 100%;
-        content: '';
-      }
-
-      &:hover:before {
-        background-color: ${({ theme }) => theme.stateOverlayHover};
-      }
-
-      &:active:before {
-        background-color: ${({ theme }) => theme.stateOverlayPressed};
-      }
-    `}
 
   visibility: ${({ visible }) => (visible ? 'visible' : 'hidden')};
 `
