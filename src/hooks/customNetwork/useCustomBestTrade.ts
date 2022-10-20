@@ -1,8 +1,7 @@
 import { Currency as V2Currency, CurrencyAmount, Token as V2Token, TradeType } from '@uniswap/sdk-core'
 import { Pair as V2Pair, Route as V2Route } from '@uniswap/v2-sdk'
 import { useWeb3React } from '@web3-react/core'
-import { SupportedChainId } from 'constants/chains'
-import { useGetBestTrade, useGetCurrency, useGetPairs } from 'hooks/avalanche/useJoeEntities'
+import { useGetBestTrade, useGetCurrency, useGetPairs } from 'hooks/customNetwork/useCustomEntities'
 import useDebounce from 'hooks/useDebounce'
 import { useMemo } from 'react'
 import { InterfaceTrade, TradeState } from 'state/routing/types'
@@ -14,7 +13,7 @@ import { convertDecimalToActualAmount } from 'utils/convertAmounts'
  * @param amountSpecified the exact amount to swap in/out
  * @param otherCurrency the desired output/payment currency
  */
-export function useJoeBestTrade(
+export function useCustomBestTrade(
   tradeType: TradeType,
   amountSpecified?: CurrencyAmount<V2Currency>,
   otherCurrency?: V2Currency
@@ -22,7 +21,7 @@ export function useJoeBestTrade(
   state: TradeState
   trade: InterfaceTrade<V2Currency, V2Currency, TradeType> | undefined
 } {
-  const { provider } = useWeb3React()
+  const { chainId, provider } = useWeb3React()
 
   const [debouncedAmount, debouncedOtherCurrency] = useDebounce(
     useMemo(() => [amountSpecified, otherCurrency], [amountSpecified, otherCurrency]),
@@ -34,19 +33,19 @@ export function useJoeBestTrade(
 
     const inputCurrency = tradeType === TradeType.EXACT_INPUT ? debouncedAmount.currency : debouncedOtherCurrency
     const outputCurrency = tradeType === TradeType.EXACT_INPUT ? debouncedOtherCurrency : debouncedAmount.currency
-    const amountString: string = convertDecimalToActualAmount(debouncedAmount.toExact(), debouncedAmount.currency)
+    const amountString = convertDecimalToActualAmount(debouncedAmount.toExact(), debouncedAmount.currency)
 
     return [inputCurrency, outputCurrency, amountString]
   }, [tradeType, debouncedAmount, debouncedOtherCurrency])
 
-  const joeInputCurrency = useGetCurrency(inputCurrency)
-  const joeOutputCurrency = useGetCurrency(outputCurrency)
-  const joePairs = useGetPairs(joeInputCurrency, joeOutputCurrency)
-  const bestTrade = useGetBestTrade(joeInputCurrency, joeOutputCurrency, joePairs, amountString, tradeType)
+  const customInputCurrency = useGetCurrency(inputCurrency)
+  const customOutputCurrency = useGetCurrency(outputCurrency)
+  const customPairs = useGetPairs(customInputCurrency, customOutputCurrency)
+  const bestTrade = useGetBestTrade(customInputCurrency, customOutputCurrency, customPairs, amountString, tradeType)
 
   const univ2TradeOrEnumState = useMemo(() => {
-    if (!inputCurrency || !outputCurrency || !provider || !joePairs) return TradeState.LOADING
-    if (joePairs.length === 0) return TradeState.NO_ROUTE_FOUND
+    if (!chainId || !provider || !inputCurrency || !outputCurrency || !customPairs) return TradeState.LOADING
+    if (customPairs.length === 0) return TradeState.NO_ROUTE_FOUND
     if (!bestTrade) return TradeState.INVALID
 
     const inputCurrencyAmont = CurrencyAmount.fromRawAmount(
@@ -63,20 +62,8 @@ export function useJoeBestTrade(
         {
           routev2: new V2Route(
             bestTrade.route.pairs.map((p) => {
-              const token0 = new V2Token(
-                SupportedChainId.AVALANCHE,
-                p.token0.address,
-                p.token0.decimals,
-                p.token0.symbol,
-                p.token0.name
-              )
-              const token1 = new V2Token(
-                SupportedChainId.AVALANCHE,
-                p.token1.address,
-                p.token1.decimals,
-                p.token1.symbol,
-                p.token1.name
-              )
+              const token0 = new V2Token(chainId, p.token0.address, p.token0.decimals, p.token0.symbol, p.token0.name)
+              const token1 = new V2Token(chainId, p.token1.address, p.token1.decimals, p.token1.symbol, p.token1.name)
               return new V2Pair(
                 CurrencyAmount.fromRawAmount(token0, convertDecimalToActualAmount(p.reserve0.toExact(), token0)),
                 CurrencyAmount.fromRawAmount(token1, convertDecimalToActualAmount(p.reserve1.toExact(), token1))
@@ -95,7 +82,7 @@ export function useJoeBestTrade(
       gasUseEstimateUSD: undefined, // TODO
       blockNumber: String(provider._lastBlockNumber),
     })
-  }, [tradeType, inputCurrency, outputCurrency, provider, joePairs, bestTrade])
+  }, [tradeType, inputCurrency, outputCurrency, chainId, provider, customPairs, bestTrade])
 
   // only return gas estimate from api if routing api trade is used
   return useMemo(() => {

@@ -4,7 +4,7 @@ import { sendAnalyticsEvent } from 'analytics'
 import { EventName } from 'analytics/constants'
 import { formatPercentInBasisPointsNumber, formatToDecimal, getTokenAddress } from 'analytics/utils'
 import { DEFAULT_TXN_DISMISS_MS, L2_TXN_DISMISS_MS } from 'constants/misc'
-import { useJoeBestTrade } from 'hooks/avalanche/useJoeBestTrade'
+import { useCustomBestTrade } from 'hooks/customNetwork/useCustomBestTrade'
 import { usePancakeBestTrade } from 'hooks/binance/usePancakeBestTrade'
 import { useBestTrade } from 'hooks/useBestTrade'
 import LibUpdater from 'lib/hooks/transactions/updater'
@@ -51,7 +51,7 @@ export function UpdaterDefault() {
 }
 
 export function UpdaterAvalanche() {
-  return <BaseUpdater useBestTradeHook={useJoeBestTrade} />
+  return <BaseUpdater useBestTradeHook={useCustomBestTrade} />
 }
 
 export function UpdaterBinance() {

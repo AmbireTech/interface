@@ -21,10 +21,10 @@ import { MouseoverTooltip } from 'components/Tooltip'
 import { isSupportedChain, SupportedChainId } from 'constants/chains'
 import { NavBarVariant, useNavBarFlag } from 'featureFlags/flags/navBar'
 import { RedesignVariant, useRedesignFlag } from 'featureFlags/flags/redesign'
-import { useJoeBestTrade } from 'hooks/avalanche/useJoeBestTrade'
-import { useJoeSwapCallArguments } from 'hooks/avalanche/useJoeSwapCallArguments'
 import { usePancakeBestTrade } from 'hooks/binance/usePancakeBestTrade'
 import { usePancakeSwapCallArguments } from 'hooks/binance/usePancakeSwapCallArguments'
+import { useCustomBestTrade } from 'hooks/customNetwork/useCustomBestTrade'
+import { useCustomSwapCallArguments } from 'hooks/customNetwork/useCustomSwapCallArguments'
 import { useBestTrade } from 'hooks/useBestTrade'
 import { useSwapCallArguments } from 'hooks/useSwapCallArguments'
 import { useSwapCallback } from 'hooks/useSwapCallback'
@@ -187,7 +187,7 @@ export function SwapDefault() {
 }
 
 export function SwapAvalanche() {
-  return <BaseSwap useBestTradeHook={useJoeBestTrade} useSwapCallArgumentsHook={useJoeSwapCallArguments} />
+  return <BaseSwap useBestTradeHook={useCustomBestTrade} useSwapCallArgumentsHook={useCustomSwapCallArguments} />
 }
 
 export function SwapBinance() {

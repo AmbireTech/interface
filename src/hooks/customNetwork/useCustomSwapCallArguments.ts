@@ -1,13 +1,15 @@
-import { Interface } from '@ethersproject/abi'
 import { BigNumber } from '@ethersproject/bignumber'
-import { Percent as JoePercent, Router as JoeRouter, TokenAmount as JoeTokenAmount } from '@traderjoe-xyz/sdk'
 import { Trade } from '@uniswap/router-sdk'
 import { Currency, Percent, TradeType } from '@uniswap/sdk-core'
 import { FeeOptions } from '@uniswap/v3-sdk'
 import { useWeb3React } from '@web3-react/core'
-import AVALANCHE_JOE_ROUTER_ABI from 'abis/avalanche-joe-router.json'
 import { SWAP_ROUTER_ADDRESSES } from 'constants/addresses'
-import { useGetBestTrade, useGetCurrency, useGetPairs } from 'hooks/avalanche/useJoeEntities'
+import {
+  useGetBestTrade,
+  useGetCurrency,
+  useGetNetworkLibrary,
+  useGetPairs,
+} from 'hooks/customNetwork/useCustomEntities'
 import useENS from 'hooks/useENS'
 import { SignatureData } from 'hooks/useERC20Permit'
 import { useMemo } from 'react'
@@ -24,7 +26,7 @@ import { ApprovalState, useApproveCallbackFromTrade } from '../useApproveCallbac
  * @param recipientAddressOrName the ENS name or address of the recipient of the swap output
  * @param signatureData the signature data of the permit of the input token amount, if available
  */
-export function useJoeSwapCallArguments(
+export function useCustomSwapCallArguments(
   trade: Trade<Currency, Currency, TradeType> | undefined,
   allowedSlippage: Percent,
   recipientAddressOrName: string | null | undefined,
@@ -51,41 +53,37 @@ export function useJoeSwapCallArguments(
     return [inputCurrency, outputCurrency, amountString]
   }, [trade])
 
-  // convert trade to Joe Trade
-  const joeInputCurrency = useGetCurrency(inputCurrency)
-  const joeOutputCurrency = useGetCurrency(outputCurrency)
-  const joePairs = useGetPairs(joeInputCurrency, joeOutputCurrency)
-  const joeTrade = useGetBestTrade(joeInputCurrency, joeOutputCurrency, joePairs, amountString, trade?.tradeType)
+  // get custom best trade
+  const customInputCurrency = useGetCurrency(inputCurrency)
+  const customOutputCurrency = useGetCurrency(outputCurrency)
+  const customPairs = useGetPairs(customInputCurrency, customOutputCurrency)
+  const bestTrade = useGetBestTrade(
+    customInputCurrency,
+    customOutputCurrency,
+    customPairs,
+    amountString,
+    trade?.tradeType
+  )
+
+  const lib = useGetNetworkLibrary()
 
   return useMemo(() => {
-    if (!trade || !recipient || !provider || !account || !chainId || !deadline || !joeTrade) return []
+    if (!lib || !trade || !recipient || !provider || !account || !chainId || !deadline || !bestTrade) return []
 
     const swapRouterAddress = chainId ? SWAP_ROUTER_ADDRESSES[chainId] : undefined
     if (!swapRouterAddress) return []
 
-    // convert slippage to joe percent
-    const joeAllowedSlippage = new JoePercent(
-      allowedSlippage.numerator.toString(),
-      allowedSlippage.denominator.toString()
-    )
-
-    const { methodName, args, value } = JoeRouter.swapCallParameters(joeTrade, {
+    const { methodName, args, value } = lib.getSwapCallParameters(bestTrade, {
       // fee: feeOptions,
       recipient,
-      allowedSlippage: joeAllowedSlippage,
+      allowedSlippage,
       ttl: Number(deadline.toString()),
     })
+    const calldata = lib.getRouterCalldata(methodName, args)
 
-    const JoeRouterInterface = new Interface(AVALANCHE_JOE_ROUTER_ABI)
-    const calldata = JoeRouterInterface.encodeFunctionData(methodName, args)
-
-    if (
-      joeTrade.inputAmount instanceof JoeTokenAmount &&
-      joeTrade.inputAmount.token.address &&
-      approvalState === ApprovalState.NOT_APPROVED
-    ) {
+    if (lib.isTradeInputToken(bestTrade) && approvalState === ApprovalState.NOT_APPROVED) {
       return [
-        approveAmountAmbireWallet(joeTrade.maximumAmountIn(joeAllowedSlippage), swapRouterAddress),
+        approveAmountAmbireWallet(lib.getTradeMaxAmountIn(bestTrade, allowedSlippage), swapRouterAddress),
         {
           address: swapRouterAddress,
           calldata,
@@ -102,6 +100,7 @@ export function useJoeSwapCallArguments(
       },
     ]
   }, [
+    lib,
     account,
     allowedSlippage,
     chainId,
@@ -112,6 +111,6 @@ export function useJoeSwapCallArguments(
     // signatureData,
     trade,
     approvalState,
-    joeTrade,
+    bestTrade,
   ])
 }

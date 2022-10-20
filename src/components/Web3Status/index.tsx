@@ -7,7 +7,7 @@ import WalletDropdown from 'components/WalletDropdown'
 import { getConnection } from 'connection/utils'
 import { SupportedChainId } from 'constants/chains'
 import { NavBarVariant, useNavBarFlag } from 'featureFlags/flags/navBar'
-import { useJoeBestTrade } from 'hooks/avalanche/useJoeBestTrade'
+import { useCustomBestTrade } from 'hooks/customNetwork/useCustomBestTrade'
 import { usePancakeBestTrade } from 'hooks/binance/usePancakeBestTrade'
 import { useBestTrade } from 'hooks/useBestTrade'
 import { Portal } from 'nft/components/common/Portal'
@@ -84,7 +84,7 @@ const Web3StatusConnectButton = styled.button<{ faded?: boolean }>`
   }
 `
 
-const Web3StatusConnect = styled(Web3StatusGeneric)<{ faded?: boolean }>`
+const Web3StatusConnect = styled(Web3StatusGeneric) <{ faded?: boolean }>`
   background-color: ${({ theme }) => theme.deprecated_primary4};
   border: none;
   color: ${({ theme }) => theme.deprecated_primaryText1};
@@ -111,7 +111,7 @@ const Web3StatusConnect = styled(Web3StatusGeneric)<{ faded?: boolean }>`
     `}
 `
 
-const Web3StatusConnected = styled(Web3StatusGeneric)<{ pending?: boolean }>`
+const Web3StatusConnected = styled(Web3StatusGeneric) <{ pending?: boolean }>`
   background-color: ${({ pending, theme }) => (pending ? theme.deprecated_primary1 : theme.deprecated_bg1)};
   border: 1px solid ${({ pending, theme }) => (pending ? theme.deprecated_primary1 : theme.deprecated_bg1)};
   color: ${({ pending, theme }) => (pending ? theme.deprecated_white : theme.deprecated_text1)};
@@ -123,7 +123,7 @@ const Web3StatusConnected = styled(Web3StatusGeneric)<{ pending?: boolean }>`
     :focus {
       border: 1px solid
         ${({ pending, theme }) =>
-          pending ? darken(0.1, theme.deprecated_primary1) : darken(0.1, theme.deprecated_bg2)};
+    pending ? darken(0.1, theme.deprecated_primary1) : darken(0.1, theme.deprecated_bg2)};
     }
   }
 `
@@ -175,10 +175,10 @@ const StyledConnect = styled.div`
   &:hover {
     color: ${({ theme }) => theme.accentActionSoft};
     transition: ${({
-      theme: {
-        transition: { duration, timing },
-      },
-    }) => `${duration.fast} color ${timing.in}`};
+  theme: {
+    transition: { duration, timing },
+  },
+}) => `${duration.fast} color ${timing.in}`};
   }
 `
 
@@ -192,7 +192,7 @@ function Web3StatusInnerDefault() {
 }
 
 function Web3StatusInnerAvalanche() {
-  return <BaseWeb3StatusInner useBestTradeHook={useJoeBestTrade} />
+  return <BaseWeb3StatusInner useBestTradeHook={useCustomBestTrade} />
 }
 
 function Web3StatusInnerBinance() {
