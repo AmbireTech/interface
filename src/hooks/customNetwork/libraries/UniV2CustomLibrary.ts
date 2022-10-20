@@ -27,6 +27,39 @@ export abstract class UniV2CustomLibrary {
     }
   }
 
+  fetchPairsWithHops(
+    provider: any,
+    passedTokens: TokenObject[],
+    hopTokens: TokenObject[],
+    prevHop: TokenObject | null,
+    currentHop: number,
+    maxHops: number,
+    pairsPromises: Promise<PairObject | undefined>[]
+  ): Promise<PairObject | undefined>[] {
+    hopTokens.map(async (newHop) => {
+      const sameAddress = passedTokens.filter((passedToken) => passedToken.address === newHop.address).length
+      if (sameAddress) {
+        return
+      }
+
+      if (prevHop === null) {
+        pairsPromises.push(this.fetchPair(provider, passedTokens[0], newHop))
+        pairsPromises.push(this.fetchPair(provider, newHop, passedTokens[1]))
+      } else {
+        pairsPromises.push(this.fetchPair(provider, prevHop, newHop))
+      }
+
+      passedTokens.push(newHop)
+
+      if (currentHop < maxHops) {
+        this.fetchPairsWithHops(provider, passedTokens, hopTokens, newHop, currentHop++, maxHops, pairsPromises)
+        passedTokens.pop()
+      }
+    })
+
+    return pairsPromises
+  }
+
   abstract getNativeCurrency(): CurrencyObject
   abstract getToken(address: string, decimals: number, symbol?: string, name?: string): TokenObject
   abstract getPairAddress(tokenA: TokenObject, tokenB: TokenObject): string

@@ -33,7 +33,7 @@ export function useGetCurrency(
 export function useGetPairs(
   input: TokenObject | CurrencyObject | undefined,
   output: TokenObject | CurrencyObject | undefined,
-  useHops = true
+  maxHops = 3
 ): PairObject[] | undefined {
   const { chainId, provider } = useWeb3React()
   const lib = useGetNetworkLibrary()
@@ -60,36 +60,19 @@ export function useGetPairs(
       return
     }
 
-    // direct pair
-    const pairsPromises = [lib.fetchPair(provider, tokenA, tokenB)]
+    // convert hop assets to token objects
+    const hopTokens = SWAP_HOP_ASSETS[chainId].map((asset) =>
+      lib.getToken(asset.address, asset.decimals, asset.symbol ?? '', asset.name ?? '')
+    )
 
-    if (useHops) {
-      // convert hop assets to token objects
-      const hopTokens = SWAP_HOP_ASSETS[chainId].map((asset) =>
-        lib.getToken(asset.address, asset.decimals, asset.symbol ?? '', asset.name ?? '')
-      )
-
-      // build hop pairs
-      hopTokens.map(async (hopToken1) => {
-        if (hopToken1.address === tokenA.address || hopToken1.address === tokenB.address) return
-        pairsPromises.push(lib.fetchPair(provider, tokenA, hopToken1))
-        pairsPromises.push(lib.fetchPair(provider, hopToken1, tokenB))
-
-        hopTokens.map(async (hopToken2) => {
-          if (
-            hopToken1.address === hopToken2.address ||
-            hopToken2.address === tokenA.address ||
-            hopToken2.address === tokenB.address
-          )
-            return
-          pairsPromises.push(lib.fetchPair(provider, hopToken1, hopToken2))
-        })
-      })
-    }
+    // fetch pairs
+    const pairsPromises = lib.fetchPairsWithHops(provider, [tokenA, tokenB], hopTokens, null, 1, maxHops, [
+      lib.fetchPair(provider, tokenA, tokenB),
+    ])
 
     const resolvedPairs = await Promise.all(pairsPromises)
     setPairs(resolvedPairs.filter((p) => p) as PairObject[])
-  }, [lib, chainId, provider, input, output, useHops])
+  }, [lib, chainId, provider, input, output, maxHops])
 
   useEffect(() => {
     setPairs(undefined)
