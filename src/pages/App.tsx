@@ -19,7 +19,6 @@ import { getCLS, getFCP, getFID, getLCP, Metric } from 'web-vitals'
 
 import { useAnalyticsReporter } from '../components/analytics'
 import ErrorBoundary from '../components/ErrorBoundary'
-import Polling from '../components/Header/Polling'
 import { PageTabs } from '../components/NavBar'
 import Popups from '../components/Popups'
 import { LoadingTokenDetails } from '../components/Tokens/TokenDetails/LoadingTokenDetails'
@@ -156,7 +155,7 @@ export default function App() {
           {!!isExpertMode && <HeaderWrapper>{<PageTabs />}</HeaderWrapper>}
           <BodyWrapper hasHeader={!!isExpertMode}>
             <Popups />
-            <Polling />
+            {/* <Polling /> */}
             <TopLevelModals />
             <Suspense fallback={<Loader />}>
               {isLoaded ? (
