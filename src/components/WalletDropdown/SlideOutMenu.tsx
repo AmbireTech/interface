@@ -7,22 +7,22 @@ const Menu = styled.div`
   font-size: 16px;
   overflow: auto;
 
-  // Firefox scrollbar styling
-  scrollbar-width: thin;
-  scrollbar-color: ${({ theme }) => `${theme.backgroundOutline} transparent`};
+  // // Firefox scrollbar styling
+  // scrollbar-width: thin;
+  // scrollbar-color: ${({ theme }) => `${theme.backgroundOutline} transparent`};
 
-  // safari and chrome scrollbar styling
-  ::-webkit-scrollbar {
-    background: transparent;
-    width: 4px;
-  }
-  ::-webkit-scrollbar-track {
-    margin-top: 40px;
-  }
-  ::-webkit-scrollbar-thumb {
-    background: ${({ theme }) => theme.backgroundOutline};
-    border-radius: 8px;
-  }
+  // // safari and chrome scrollbar styling
+  // ::-webkit-scrollbar {
+  //   background: transparent;
+  //   width: 4px;
+  // }
+  // ::-webkit-scrollbar-track {
+  //   margin-top: 40px;
+  // }
+  // ::-webkit-scrollbar-thumb {
+  //   background: ${({ theme }) => theme.backgroundOutline};
+  //   border-radius: 8px;
+  // }
 `
 
 const Header = styled.span`

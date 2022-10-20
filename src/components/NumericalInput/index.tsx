@@ -5,7 +5,7 @@ import styled from 'styled-components/macro'
 import { escapeRegExp } from '../../utils'
 
 const StyledInput = styled.input<{ error?: boolean; fontSize?: string; align?: string; redesignFlag: boolean }>`
-  color: ${({ error, theme }) => (error ? theme.deprecated_red1 : '#51588C')};
+  color: ${({ error, theme }) => (error ? theme.deprecated_red1 : '#ebecff')};
   width: 0;
   position: relative;
   font-weight: ${({ redesignFlag }) => (redesignFlag ? 400 : 500)};
@@ -13,12 +13,12 @@ const StyledInput = styled.input<{ error?: boolean; fontSize?: string; align?: s
   border: none;
   flex: 1 1 auto;
   background-color: #1e2033;
-  font-size: ${({ fontSize }) => fontSize ?? '28px'};
+  font-size: ${({ fontSize }) => fontSize ?? '16px'};
   text-align: ${({ align }) => align && align};
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  padding-left: 8px;
+  padding: 18px;
   -webkit-appearance: textfield;
   text-align: right;
   border-radius: 12px;
@@ -43,7 +43,7 @@ const StyledInput = styled.input<{ error?: boolean; fontSize?: string; align?: s
   }
 
   ::placeholder {
-    color: #51588c;
+    color: #ebecff;
   }
 `
 
