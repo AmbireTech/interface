@@ -26,6 +26,8 @@ import {
   SWISE,
   TRIBE,
   USDC_ARBITRUM,
+  USDC_AVALANCHE,
+  USDC_BINANCE,
   USDC_MAINNET,
   USDC_OPTIMISM,
   USDC_POLYGON,
@@ -86,6 +88,8 @@ export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
     WETH_POLYGON,
   ],
   [SupportedChainId.CELO]: [CUSD_CELO, CEUR_CELO, CMC02_CELO, PORTAL_USDC_CELO, PORTAL_ETH_CELO],
+  [SupportedChainId.AVALANCHE]: [...WRAPPED_NATIVE_CURRENCIES_ONLY[SupportedChainId.AVALANCHE], USDC_AVALANCHE],
+  [SupportedChainId.BINANCE]: [...WRAPPED_NATIVE_CURRENCIES_ONLY[SupportedChainId.BINANCE], USDC_BINANCE],
 }
 export const ADDITIONAL_BASES: { [chainId: number]: { [tokenAddress: string]: Token[] } } = {
   [SupportedChainId.MAINNET]: {
@@ -184,6 +188,16 @@ export const COMMON_BASES: ChainCurrencyList = {
     nativeOnChain(SupportedChainId.CELO_ALFAJORES),
     CUSD_CELO_ALFAJORES,
     CEUR_CELO_ALFAJORES,
+  ],
+  [SupportedChainId.AVALANCHE]: [
+    nativeOnChain(SupportedChainId.AVALANCHE),
+    USDC_AVALANCHE,
+    WRAPPED_NATIVE_CURRENCY[SupportedChainId.AVALANCHE] as Token,
+  ],
+  [SupportedChainId.BINANCE]: [
+    nativeOnChain(SupportedChainId.BINANCE),
+    USDC_BINANCE,
+    WRAPPED_NATIVE_CURRENCY[SupportedChainId.BINANCE] as Token,
   ],
 }
 

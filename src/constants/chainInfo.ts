@@ -1,3 +1,5 @@
+import avalancheLogo from 'assets/images/avalanche.png'
+import binanceLogo from 'assets/images/bnb-logo.png'
 import celoCircleLogoUrl from 'assets/images/celoCircle.png'
 import ethereumLogoUrl from 'assets/images/ethereum-logo.png'
 import optimismCircleLogoUrl from 'assets/images/optimismCircle.png'
@@ -10,7 +12,7 @@ import ms from 'ms.macro'
 import { colorsDark } from 'theme/colors'
 
 import { SupportedChainId, SupportedL1ChainId, SupportedL2ChainId } from './chains'
-import { ARBITRUM_LIST, CELO_LIST, OPTIMISM_LIST } from './lists'
+import { ARBITRUM_LIST, AVAX_TRADER_JOE_LIST, BINANCE_PANCAKE_SWAP_LIST, CELO_LIST, OPTIMISM_LIST } from './lists'
 
 export enum NetworkType {
   L1,
@@ -215,6 +217,28 @@ const CHAIN_INFO: ChainInfoMap = {
     logoUrl: celoLogo,
     nativeCurrency: { name: 'Celo', symbol: 'CELO', decimals: 18 },
     defaultListUrl: CELO_LIST,
+  },
+  [SupportedChainId.AVALANCHE]: {
+    networkType: NetworkType.L1,
+    docs: 'https://docs.uniswap.org/',
+    explorer: 'https://snowtrace.io/',
+    infoLink: 'https://info.uniswap.org/#/',
+    label: 'Avalanche',
+    logoUrl: avalancheLogo,
+    nativeCurrency: { name: 'Avax', symbol: 'AVAX', decimals: 18 },
+    color: colorsDark.chain_10,
+    backgroundColor: colorsDark.chain_10_background,
+    defaultListUrl: AVAX_TRADER_JOE_LIST,
+  },
+  [SupportedChainId.BINANCE]: {
+    networkType: NetworkType.L1,
+    docs: 'https://docs.uniswap.org/',
+    explorer: 'https://bscscan.com/',
+    infoLink: 'https://info.uniswap.org/#/',
+    label: 'Binance',
+    logoUrl: binanceLogo,
+    nativeCurrency: { name: 'Binance', symbol: 'BNB', decimals: 18 },
+    defaultListUrl: BINANCE_PANCAKE_SWAP_LIST,
   },
 }
 

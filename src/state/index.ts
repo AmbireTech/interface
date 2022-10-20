@@ -39,7 +39,7 @@ const store = configureStore({
     [routingApi.reducerPath]: routingApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({ thunk: true })
+    getDefaultMiddleware({ thunk: true, serializableCheck: false, immutableCheck: false }) // disable checks for faster development
       .concat(routingApi.middleware)
       .concat(save({ states: PERSISTED_KEYS, debounce: 1000 })),
   preloadedState: load({ states: PERSISTED_KEYS, disableWarnings: isTestEnv() }),

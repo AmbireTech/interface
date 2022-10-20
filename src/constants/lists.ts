@@ -16,6 +16,12 @@ export const OPTIMISM_LIST = 'https://static.optimism.io/optimism.tokenlist.json
 export const ARBITRUM_LIST = 'https://bridge.arbitrum.io/token-list-42161.json'
 export const CELO_LIST = 'https://celo-org.github.io/celo-token-list/celo.tokenlist.json'
 
+export const AVAX_TRADER_JOE_LIST =
+  'https://raw.githubusercontent.com/traderjoe-xyz/joe-tokenlists/main/joe.tokenlist.json'
+
+export const BINANCE_PANCAKE_SWAP_LIST =
+  'https://raw.githubusercontent.com/pancakeswap/token-list/main/lists/pancakeswap-extended.json'
+
 export const UNSUPPORTED_LIST_URLS: string[] = [BA_LIST, UNI_UNSUPPORTED_LISTS]
 
 // this is the default list of lists that are exposed to users
@@ -35,6 +41,8 @@ const DEFAULT_LIST_OF_LISTS_TO_DISPLAY: string[] = [
   ARBITRUM_LIST,
   OPTIMISM_LIST,
   CELO_LIST,
+  AVAX_TRADER_JOE_LIST,
+  BINANCE_PANCAKE_SWAP_LIST,
 ]
 
 export const DEFAULT_LIST_OF_LISTS: string[] = [
@@ -43,4 +51,9 @@ export const DEFAULT_LIST_OF_LISTS: string[] = [
 ]
 
 // default lists to be 'active' aka searched across
-export const DEFAULT_ACTIVE_LIST_URLS: string[] = [UNI_LIST, GEMINI_LIST]
+export const DEFAULT_ACTIVE_LIST_URLS: string[] = [
+  UNI_LIST,
+  GEMINI_LIST,
+  AVAX_TRADER_JOE_LIST,
+  BINANCE_PANCAKE_SWAP_LIST,
+]

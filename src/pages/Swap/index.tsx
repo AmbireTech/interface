@@ -13,15 +13,20 @@ import {
   getTokenAddress,
 } from 'analytics/utils'
 import { sendEvent } from 'components/analytics'
-import { NetworkAlert } from 'components/NetworkAlert/NetworkAlert'
 import PriceImpactWarning from 'components/swap/PriceImpactWarning'
 import SwapDetailsDropdown from 'components/swap/SwapDetailsDropdown'
 import UnsupportedCurrencyFooter from 'components/swap/UnsupportedCurrencyFooter'
 import TokenSafetyModal from 'components/TokenSafety/TokenSafetyModal'
 import { MouseoverTooltip } from 'components/Tooltip'
-import { isSupportedChain } from 'constants/chains'
+import { isSupportedChain, SupportedChainId } from 'constants/chains'
 import { NavBarVariant, useNavBarFlag } from 'featureFlags/flags/navBar'
 import { RedesignVariant, useRedesignFlag } from 'featureFlags/flags/redesign'
+import { useJoeBestTrade } from 'hooks/avalanche/useJoeBestTrade'
+import { useJoeSwapCallArguments } from 'hooks/avalanche/useJoeSwapCallArguments'
+import { usePancakeBestTrade } from 'hooks/binance/usePancakeBestTrade'
+import { usePancakeSwapCallArguments } from 'hooks/binance/usePancakeSwapCallArguments'
+import { useBestTrade } from 'hooks/useBestTrade'
+import { useSwapCallArguments } from 'hooks/useSwapCallArguments'
 import { useSwapCallback } from 'hooks/useSwapCallback'
 import useTransactionDeadline from 'hooks/useTransactionDeadline'
 import JSBI from 'jsbi'
@@ -31,10 +36,10 @@ import { ArrowDown, CheckCircle, HelpCircle } from 'react-feather'
 import { useNavigate } from 'react-router-dom'
 import { Text } from 'rebass'
 import { useToggleWalletModal } from 'state/application/hooks'
-import { InterfaceTrade } from 'state/routing/types'
-import { TradeState } from 'state/routing/types'
+import { InterfaceTrade, SwapCallArgumentsHook, TradeHook, TradeState } from 'state/routing/types'
 import styled, { css, useTheme } from 'styled-components/macro'
 
+import { ReactComponent as Switch } from '../../assets/svg/switch-ambire.svg'
 import AddressInputPanel from '../../components/AddressInputPanel'
 import { ButtonConfirmed, ButtonError, ButtonLight, ButtonPrimary } from '../../components/Button'
 import { GreyCard } from '../../components/Card'
@@ -177,7 +182,36 @@ const formatSwapQuoteReceivedEventProperties = (
 
 const TRADE_STRING = 'SwapRouter'
 
+export function SwapDefault() {
+  return <BaseSwap useBestTradeHook={useBestTrade} useSwapCallArgumentsHook={useSwapCallArguments} />
+}
+
+export function SwapAvalanche() {
+  return <BaseSwap useBestTradeHook={useJoeBestTrade} useSwapCallArgumentsHook={useJoeSwapCallArguments} />
+}
+
+export function SwapBinance() {
+  return <BaseSwap useBestTradeHook={usePancakeBestTrade} useSwapCallArgumentsHook={usePancakeSwapCallArguments} />
+}
+
 export default function Swap() {
+  const { chainId } = useWeb3React()
+
+  let swapComponent = <SwapDefault />
+
+  switch (chainId) {
+    case SupportedChainId.AVALANCHE:
+      swapComponent = <SwapAvalanche />
+      break
+    case SupportedChainId.BINANCE:
+      swapComponent = <SwapBinance />
+      break
+  }
+
+  return swapComponent
+}
+
+export function BaseSwap(props: { useBestTradeHook: TradeHook; useSwapCallArgumentsHook: SwapCallArgumentsHook }) {
   const navigate = useNavigate()
   const navBarFlag = useNavBarFlag()
   const navBarFlagEnabled = navBarFlag === NavBarVariant.Enabled
@@ -240,7 +274,7 @@ export default function Swap() {
     parsedAmount,
     currencies,
     inputError: swapInputError,
-  } = useDerivedSwapInfo()
+  } = useDerivedSwapInfo(props.useBestTradeHook)
 
   const {
     wrapType,
@@ -385,7 +419,8 @@ export default function Swap() {
     trade,
     allowedSlippage,
     recipient,
-    signatureData
+    signatureData,
+    props.useSwapCallArgumentsHook
   )
 
   const handleSwap = useCallback(() => {
@@ -454,6 +489,7 @@ export default function Swap() {
   // show approve flow when: no error on inputs, not approved or pending, or approved in current session
   // never show if price impact is above threshold in non expert mode
   const showApproveFlow =
+    false && // hide because of approve tx batching
     !isArgentWallet &&
     !swapInputError &&
     (approvalState === ApprovalState.NOT_APPROVED ||
@@ -616,8 +652,8 @@ export default function Swap() {
                     }}
                     color={theme.textPrimary}
                   >
-                    <ArrowDown
-                      size="16"
+                    <Switch
+                      // size="16"
                       color={
                         currencies[Field.INPUT] && currencies[Field.OUTPUT]
                           ? theme.deprecated_text1
@@ -829,7 +865,7 @@ export default function Swap() {
               </div>
             </AutoColumn>
           </SwapWrapper>
-          <NetworkAlert />
+          {/* <NetworkAlert /> */}
         </PageWrapper>
         <SwitchLocaleLink />
         {!swapIsUnsupported ? null : (

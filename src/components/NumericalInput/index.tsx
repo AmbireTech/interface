@@ -5,22 +5,29 @@ import styled from 'styled-components/macro'
 import { escapeRegExp } from '../../utils'
 
 const StyledInput = styled.input<{ error?: boolean; fontSize?: string; align?: string; redesignFlag: boolean }>`
-  color: ${({ error, theme }) => (error ? theme.deprecated_red1 : theme.deprecated_text1)};
+  color: ${({ error, theme }) => (error ? theme.deprecated_red1 : '#ebecff')};
   width: 0;
   position: relative;
   font-weight: ${({ redesignFlag }) => (redesignFlag ? 400 : 500)};
   outline: none;
   border: none;
   flex: 1 1 auto;
-  background-color: ${({ theme, redesignFlag }) => (redesignFlag ? 'transparent' : theme.deprecated_bg1)};
-  font-size: ${({ fontSize }) => fontSize ?? '28px'};
+  background-color: #1e2033;
+  font-size: ${({ fontSize }) => fontSize ?? '16px'};
   text-align: ${({ align }) => align && align};
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  padding: 0px;
+  padding: 18px;
   -webkit-appearance: textfield;
   text-align: right;
+  border-radius: 12px;
+  border-bottom: 2px solid transparent;
+
+  :focus,
+  :active {
+    border-bottom-color: #ebecff;
+  }
 
   ::-webkit-search-decoration {
     -webkit-appearance: none;
@@ -36,7 +43,7 @@ const StyledInput = styled.input<{ error?: boolean; fontSize?: string; align?: s
   }
 
   ::placeholder {
-    color: ${({ theme, redesignFlag }) => (redesignFlag ? theme.textSecondary : theme.deprecated_text4)};
+    color: #ebecff;
   }
 `
 
