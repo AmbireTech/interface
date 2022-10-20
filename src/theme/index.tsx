@@ -1,3 +1,4 @@
+import { RedesignVariant, useRedesignFlag } from 'featureFlags/flags/redesign'
 import React, { useMemo } from 'react'
 import { Text, TextProps as TextPropsOriginal } from 'rebass'
 import styled, {
@@ -10,6 +11,7 @@ import styled, {
 import { cssStringFromTheme } from '../nft/css/cssStringFromTheme'
 import { darkTheme } from '../nft/themes/darkTheme'
 import { lightTheme } from '../nft/themes/lightTheme'
+import { useIsDarkMode } from '../state/user/hooks'
 import { colors as ColorsPalette, colorsDark, colorsLight } from './colors'
 import { AllColors, Colors, ThemeColors } from './styled'
 import { opacify } from './utils'
@@ -291,8 +293,12 @@ function getTheme(darkMode: boolean, isNewColorsEnabled: boolean): DefaultTheme 
 }
 
 export default function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const darkMode = true
-  const themeObject = useMemo(() => getTheme(darkMode, true), [darkMode])
+  const redesignFlag = useRedesignFlag()
+  const darkMode = useIsDarkMode()
+  const themeObject = useMemo(
+    () => getTheme(darkMode, redesignFlag === RedesignVariant.Enabled),
+    [darkMode, redesignFlag]
+  )
   return <StyledComponentsThemeProvider theme={themeObject}>{children}</StyledComponentsThemeProvider>
 }
 
