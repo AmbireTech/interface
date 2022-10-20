@@ -9,7 +9,6 @@ import {
   TokenObject,
   TradeObject,
   TradeOptionsObject,
-  // UniV2CustomLibrary,
 } from 'hooks/customNetwork/types'
 
 export abstract class UniV2CustomLibrary {
