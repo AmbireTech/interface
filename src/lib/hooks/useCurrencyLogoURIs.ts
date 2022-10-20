@@ -10,11 +10,11 @@ import BinanceLogo from '../../assets/svg/bnb-logo.svg'
 import CeloLogo from '../../assets/svg/celo_logo.svg'
 import FantomLogo from '../../assets/svg/fantom-logo.svg'
 import GnosisLogo from '../../assets/svg/gnosis-logo.svg'
+import KuCoinLogo from '../../assets/svg/kucoin-logo.svg'
 import MaticLogo from '../../assets/svg/matic-token-icon.svg'
 import AndromedaLogo from '../../assets/svg/metis-logo.svg'
 import MoonbeamLogo from '../../assets/svg/moonbeam-token.svg'
 import MoonriverLogo from '../../assets/svg/moonriver-logo.svg'
-import KuCoinLogo from '../../assets/svg/kucoin-logo.svg'
 import { isCelo, nativeOnChain } from '../../constants/tokens'
 
 type Network =
