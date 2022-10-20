@@ -1,4 +1,5 @@
 import { AvalancheLibrary } from 'hooks/customNetwork/libraries/AvalancheLibrary'
+import { BinanceLibrary } from 'hooks/customNetwork/libraries/BinanceLibrary'
 import { UniV2CustomLibrary } from 'hooks/customNetwork/libraries/UniV2CustomLibrary'
 
 import { SupportedChainId } from './chains'
@@ -21,8 +22,17 @@ export const SWAP_HOP_ASSETS: {
     { address: '0x9702230A8Ea53601f5cD2dc00fDBc13d4dF4A8c7', name: 'Tether', symbol: 'USDT', decimals: 6 },
     { address: '0xc7198437980c041c805A1EDcbA50c1Ce5db95118', name: 'Tether - Bridged', symbol: 'USDT.e', decimals: 6 },
   ],
+  [SupportedChainId.BINANCE]: [
+    { address: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c', name: 'wbnb', symbol: 'WBNB', decimals: 18 },
+    { address: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d', name: 'usdc', symbol: 'USCD', decimals: 18 },
+    { address: '0x1AF3F329e8BE154074D8769D1FFa4eE058B1DBc3', name: 'dai', symbol: 'DAI', decimals: 18 },
+    { address: '0x2170Ed0880ac9A755fd29B2688956BD959F933F8', name: 'eth', symbol: 'ETH', decimals: 18 },
+    { address: '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56', name: 'busd', symbol: 'BUSD', decimals: 18 },
+    { address: '0x55d398326f99059fF775485246999027B3197955', name: 'USDT', symbol: 'USDT', decimals: 18 },
+  ],
 }
 
 export const LIBRARIES: { [chainId: number]: UniV2CustomLibrary } = {
   [SupportedChainId.AVALANCHE]: new AvalancheLibrary(),
+  [SupportedChainId.BINANCE]: new BinanceLibrary(),
 }
