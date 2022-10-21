@@ -7,8 +7,7 @@ import WalletDropdown from 'components/WalletDropdown'
 import { getConnection } from 'connection/utils'
 import { SupportedChainId } from 'constants/chains'
 import { NavBarVariant, useNavBarFlag } from 'featureFlags/flags/navBar'
-import { useJoeBestTrade } from 'hooks/avalanche/useJoeBestTrade'
-import { usePancakeBestTrade } from 'hooks/binance/usePancakeBestTrade'
+import { useCustomBestTrade } from 'hooks/customNetwork/useCustomBestTrade'
 import { useBestTrade } from 'hooks/useBestTrade'
 import { Portal } from 'nft/components/common/Portal'
 import { getIsValidSwapQuote } from 'pages/Swap'
@@ -192,11 +191,11 @@ function Web3StatusInnerDefault() {
 }
 
 function Web3StatusInnerAvalanche() {
-  return <BaseWeb3StatusInner useBestTradeHook={useJoeBestTrade} />
+  return <BaseWeb3StatusInner useBestTradeHook={useCustomBestTrade} />
 }
 
 function Web3StatusInnerBinance() {
-  return <BaseWeb3StatusInner useBestTradeHook={usePancakeBestTrade} />
+  return <BaseWeb3StatusInner useBestTradeHook={useCustomBestTrade} />
 }
 
 function Web3StatusInner() {

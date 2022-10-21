@@ -1,13 +1,15 @@
-import { Interface } from '@ethersproject/abi'
 import { BigNumber } from '@ethersproject/bignumber'
-import { Percent as PancakePercent, Router as PancakeRouter, TokenAmount as PancakeTokenAmount } from '@pancakeswap/sdk'
 import { Trade } from '@uniswap/router-sdk'
 import { Currency, Percent, TradeType } from '@uniswap/sdk-core'
 import { FeeOptions } from '@uniswap/v3-sdk'
 import { useWeb3React } from '@web3-react/core'
-import BINANCE_PANCAKE_ROUTER_ABI from 'abis/binance-pancake-router.json'
 import { SWAP_ROUTER_ADDRESSES } from 'constants/addresses'
-import { useGetBestTrade, useGetCurrency, useGetPairs } from 'hooks/binance/usePancakeEntities'
+import {
+  useGetBestTrade,
+  useGetCurrency,
+  useGetNetworkLibrary,
+  useGetPairs,
+} from 'hooks/customNetwork/useCustomEntities'
 import useENS from 'hooks/useENS'
 import { SignatureData } from 'hooks/useERC20Permit'
 import { useMemo } from 'react'
@@ -24,7 +26,7 @@ import { ApprovalState, useApproveCallbackFromTrade } from '../useApproveCallbac
  * @param recipientAddressOrName the ENS name or address of the recipient of the swap output
  * @param signatureData the signature data of the permit of the input token amount, if available
  */
-export function usePancakeSwapCallArguments(
+export function useCustomSwapCallArguments(
   trade: Trade<Currency, Currency, TradeType> | undefined,
   allowedSlippage: Percent,
   recipientAddressOrName: string | null | undefined,
@@ -51,57 +53,37 @@ export function usePancakeSwapCallArguments(
     return [inputCurrency, outputCurrency, amountString]
   }, [trade])
 
-  const pancakeInputCurrency = useGetCurrency(inputCurrency)
-  const pancakeOutputCurrency = useGetCurrency(outputCurrency)
-  const pairs = useGetPairs(pancakeInputCurrency, pancakeOutputCurrency)
-  const pancakeTrade = useGetBestTrade(
-    pancakeInputCurrency,
-    pancakeOutputCurrency,
-    pairs,
+  // get custom best trade
+  const customInputCurrency = useGetCurrency(inputCurrency)
+  const customOutputCurrency = useGetCurrency(outputCurrency)
+  const customPairs = useGetPairs(customInputCurrency, customOutputCurrency)
+  const bestTrade = useGetBestTrade(
+    customInputCurrency,
+    customOutputCurrency,
+    customPairs,
     amountString,
     trade?.tradeType
   )
 
+  const lib = useGetNetworkLibrary()
+
   return useMemo(() => {
-    if (
-      !trade ||
-      !recipient ||
-      !provider ||
-      !account ||
-      !chainId ||
-      !deadline ||
-      !pairs ||
-      !pancakeTrade ||
-      pairs.length === 0
-    )
-      return []
+    if (!lib || !trade || !recipient || !provider || !account || !chainId || !deadline || !bestTrade) return []
 
     const swapRouterAddress = chainId ? SWAP_ROUTER_ADDRESSES[chainId] : undefined
     if (!swapRouterAddress) return []
 
-    // convert slippage to Pancake percent
-    const PancakeAllowedSlippage = new PancakePercent(
-      allowedSlippage.numerator.toString(),
-      allowedSlippage.denominator.toString()
-    )
-
-    const { methodName, args, value } = PancakeRouter.swapCallParameters(pancakeTrade, {
+    const { methodName, args, value } = lib.getSwapCallParameters(bestTrade, {
       // fee: feeOptions,
       recipient,
-      allowedSlippage: PancakeAllowedSlippage,
+      allowedSlippage,
       ttl: Number(deadline.toString()),
     })
+    const calldata = lib.getRouterCalldata(methodName, args)
 
-    const PancakeRouterInterface = new Interface(BINANCE_PANCAKE_ROUTER_ABI)
-    const calldata = PancakeRouterInterface.encodeFunctionData(methodName, args)
-
-    if (
-      pancakeTrade.inputAmount instanceof PancakeTokenAmount &&
-      pancakeTrade.inputAmount.token.address &&
-      approvalState === ApprovalState.NOT_APPROVED
-    ) {
+    if (lib.isTradeInputToken(bestTrade) && approvalState === ApprovalState.NOT_APPROVED) {
       return [
-        approveAmountAmbireWallet(pancakeTrade.maximumAmountIn(PancakeAllowedSlippage), swapRouterAddress),
+        approveAmountAmbireWallet(lib.getTradeMaxAmountIn(bestTrade, allowedSlippage), swapRouterAddress),
         {
           address: swapRouterAddress,
           calldata,
@@ -118,6 +100,7 @@ export function usePancakeSwapCallArguments(
       },
     ]
   }, [
+    lib,
     account,
     allowedSlippage,
     chainId,
@@ -128,7 +111,6 @@ export function usePancakeSwapCallArguments(
     // signatureData,
     trade,
     approvalState,
-    pairs,
-    pancakeTrade,
+    bestTrade,
   ])
 }
