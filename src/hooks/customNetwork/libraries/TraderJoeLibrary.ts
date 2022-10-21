@@ -13,7 +13,7 @@ import {
   TradeOptionsObject,
 } from 'hooks/customNetwork/types'
 
-export class AvalancheLibrary extends UniV2CustomLibrary {
+export class TraderJoeLibrary extends UniV2CustomLibrary {
   _convertPercent(percent: V2Percent): Percent {
     return new Percent(percent.numerator.toString(), percent.denominator.toString())
   }

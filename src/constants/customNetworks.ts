@@ -1,5 +1,5 @@
-import { AvalancheLibrary } from 'hooks/customNetwork/libraries/AvalancheLibrary'
-import { BinanceLibrary } from 'hooks/customNetwork/libraries/BinanceLibrary'
+import { PancakeLibrary } from 'hooks/customNetwork/libraries/PancakeLibrary'
+import { TraderJoeLibrary } from 'hooks/customNetwork/libraries/TraderJoeLibrary'
 import { UniV2CustomLibrary } from 'hooks/customNetwork/libraries/UniV2CustomLibrary'
 
 import { SupportedChainId } from './chains'
@@ -33,6 +33,6 @@ export const SWAP_HOP_ASSETS: {
 }
 
 export const LIBRARIES: { [chainId: number]: UniV2CustomLibrary } = {
-  [SupportedChainId.AVALANCHE]: new AvalancheLibrary(),
-  [SupportedChainId.BINANCE]: new BinanceLibrary(),
+  [SupportedChainId.AVALANCHE]: new TraderJoeLibrary(),
+  [SupportedChainId.BINANCE]: new PancakeLibrary(),
 }
