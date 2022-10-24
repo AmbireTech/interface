@@ -192,6 +192,10 @@ export function SwapBinance() {
   return <BaseSwap useBestTradeHook={useCustomBestTrade} useSwapCallArgumentsHook={useCustomSwapCallArguments} />
 }
 
+export function SwapMoonbeam() {
+  return <BaseSwap useBestTradeHook={useCustomBestTrade} useSwapCallArgumentsHook={useCustomSwapCallArguments} />
+}
+
 export default function Swap() {
   const { chainId } = useWeb3React()
 
@@ -203,6 +207,9 @@ export default function Swap() {
       break
     case SupportedChainId.BINANCE:
       swapComponent = <SwapBinance />
+      break
+    case SupportedChainId.MOONBEAM:
+      swapComponent = <SwapMoonbeam />
       break
   }
 
