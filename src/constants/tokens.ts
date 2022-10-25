@@ -90,6 +90,13 @@ export const USDC_BINANCE = new Token(
   'USDC',
   'USD//C'
 )
+export const USDC_MOONBEAM = new Token(
+  SupportedChainId.MOONBEAM,
+  '0x818ec0A7Fe18Ff94269904fCED6AE3DaE6d6dC0b',
+  6,
+  'USDC',
+  'USD//C'
+)
 export const USDC_POLYGON_MUMBAI = new Token(
   SupportedChainId.POLYGON_MUMBAI,
   '0xe11a86849d99f524cac3e7a0ec1241828e332c62',
@@ -154,6 +161,7 @@ export const USDC: { [chainId in USDCSupportedChainId]: Token } = {
   [SupportedChainId.KOVAN]: USDC_KOVAN,
   [SupportedChainId.ROPSTEN]: USDC_ROPSTEN,
   [SupportedChainId.AVALANCHE]: USDC_AVALANCHE,
+  [SupportedChainId.MOONBEAM]: USDC_MOONBEAM,
   [SupportedChainId.BINANCE]: USDC_BINANCE,
 }
 export const DAI_POLYGON = new Token(
@@ -434,6 +442,13 @@ export const WRAPPED_NATIVE_CURRENCY: { [chainId: number]: Token | undefined } =
     'WBNB',
     'Wrapped BNB'
   ),
+  [SupportedChainId.MOONBEAM]: new Token(
+    SupportedChainId.MOONBEAM,
+    '0xAcc15dC74880C9944775448304B263D191c6077F',
+    18,
+    'WGLMR',
+    'Wrapped GLMR'
+  ),
 }
 
 export function isCelo(chainId: number): chainId is SupportedChainId.CELO | SupportedChainId.CELO_ALFAJORES {
@@ -446,6 +461,10 @@ export function isAvax(chainId: number): chainId is SupportedChainId.AVALANCHE {
 
 export function isBNB(chainId: number): chainId is SupportedChainId.BINANCE {
   return chainId === SupportedChainId.BINANCE
+}
+
+export function isMoonbeam(chainId: number): chainId is SupportedChainId.MOONBEAM {
+  return chainId === SupportedChainId.MOONBEAM
 }
 
 function getCeloNativeCurrency(chainId: number) {
@@ -517,6 +536,24 @@ class BnbNativeCurrency extends NativeCurrency {
   }
 }
 
+class MoonbeamNativeCurrency extends NativeCurrency {
+  equals(other: Currency): boolean {
+    return other.isNative && other.chainId === this.chainId
+  }
+
+  get wrapped(): Token {
+    if (!isMoonbeam(this.chainId)) throw new Error('Not moonbeam')
+    const wrapped = WRAPPED_NATIVE_CURRENCY[this.chainId]
+    invariant(wrapped instanceof Token)
+    return wrapped
+  }
+
+  public constructor(chainId: number) {
+    if (!isMoonbeam(chainId)) throw new Error('Not moonbeam')
+    super(chainId, 18, 'GLMR', 'Moonbeam GLMR')
+  }
+}
+
 export class ExtendedEther extends Ether {
   public get wrapped(): Token {
     const wrapped = WRAPPED_NATIVE_CURRENCY[this.chainId]
@@ -543,6 +580,8 @@ export function nativeOnChain(chainId: number): NativeCurrency | Token {
     nativeCurrency = new AvaxNativeCurrency(chainId)
   } else if (isBNB(chainId)) {
     nativeCurrency = new BnbNativeCurrency(chainId)
+  } else if (isMoonbeam(chainId)) {
+    nativeCurrency = new MoonbeamNativeCurrency(chainId)
   } else {
     nativeCurrency = ExtendedEther.onChain(chainId)
   }

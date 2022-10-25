@@ -89,6 +89,7 @@ export const FALLBACK_URLS: { [key in SupportedChainId]: string[] } = {
   ],
   [SupportedChainId.AVALANCHE]: ['https://rpc.ankr.com/avalanche'],
   [SupportedChainId.BINANCE]: ['https://bsc-dataseed1.binance.org'],
+  [SupportedChainId.MOONBEAM]: ['https://rpc.api.moonbeam.network'],
 }
 
 /**
@@ -138,4 +139,5 @@ export const RPC_URLS: { [key in SupportedChainId]: string[] } = {
   [SupportedChainId.CELO_ALFAJORES]: FALLBACK_URLS[SupportedChainId.CELO_ALFAJORES],
   [SupportedChainId.AVALANCHE]: ['https://api.avax.network/ext/bc/C/rpc', ...FALLBACK_URLS[SupportedChainId.AVALANCHE]],
   [SupportedChainId.BINANCE]: ['https://bsc-dataseed1.ninicoin.io', ...FALLBACK_URLS[SupportedChainId.BINANCE]],
+  [SupportedChainId.MOONBEAM]: ['https://moonbeam.public.blastapi.io', ...FALLBACK_URLS[SupportedChainId.MOONBEAM]],
 }

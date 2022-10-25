@@ -22,6 +22,9 @@ export const AVAX_TRADER_JOE_LIST =
 export const BINANCE_PANCAKE_SWAP_LIST =
   'https://raw.githubusercontent.com/pancakeswap/token-list/main/lists/pancakeswap-extended.json'
 
+export const MOONBEAM_BEAMSWAP_LIST =
+  'https://raw.githubusercontent.com/BeamSwap/beamswap-tokenlist/main/tokenlist.json'
+
 export const UNSUPPORTED_LIST_URLS: string[] = [BA_LIST, UNI_UNSUPPORTED_LISTS]
 
 // this is the default list of lists that are exposed to users
@@ -43,6 +46,7 @@ const DEFAULT_LIST_OF_LISTS_TO_DISPLAY: string[] = [
   CELO_LIST,
   AVAX_TRADER_JOE_LIST,
   BINANCE_PANCAKE_SWAP_LIST,
+  MOONBEAM_BEAMSWAP_LIST,
 ]
 
 export const DEFAULT_LIST_OF_LISTS: string[] = [
@@ -56,4 +60,5 @@ export const DEFAULT_ACTIVE_LIST_URLS: string[] = [
   GEMINI_LIST,
   AVAX_TRADER_JOE_LIST,
   BINANCE_PANCAKE_SWAP_LIST,
+  MOONBEAM_BEAMSWAP_LIST,
 ]

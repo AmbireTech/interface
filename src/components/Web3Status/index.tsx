@@ -198,6 +198,10 @@ function Web3StatusInnerBinance() {
   return <BaseWeb3StatusInner useBestTradeHook={useCustomBestTrade} />
 }
 
+function Web3StatusInnerMoonbeam() {
+  return <BaseWeb3StatusInner useBestTradeHook={useCustomBestTrade} />
+}
+
 function Web3StatusInner() {
   const { chainId } = useWeb3React()
 
@@ -209,6 +213,9 @@ function Web3StatusInner() {
       break
     case SupportedChainId.BINANCE:
       statusInnerComponent = <Web3StatusInnerBinance />
+      break
+    case SupportedChainId.MOONBEAM:
+      statusInnerComponent = <Web3StatusInnerMoonbeam />
       break
   }
 

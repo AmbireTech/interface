@@ -57,6 +57,10 @@ export function UpdaterBinance() {
   return <BaseUpdater useBestTradeHook={useCustomBestTrade} />
 }
 
+export function UpdaterMoonbeam() {
+  return <BaseUpdater useBestTradeHook={useCustomBestTrade} />
+}
+
 export default function Updater() {
   const { chainId } = useWeb3React()
 
@@ -68,6 +72,9 @@ export default function Updater() {
       break
     case SupportedChainId.BINANCE:
       updaterComponent = <UpdaterBinance />
+      break
+    case SupportedChainId.MOONBEAM:
+      updaterComponent = <UpdaterMoonbeam />
       break
   }
 

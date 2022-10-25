@@ -1,3 +1,4 @@
+import { BeamswapLibrary } from 'hooks/customNetwork/libraries/BeamSwapLibrary'
 import { PancakeLibrary } from 'hooks/customNetwork/libraries/PancakeLibrary'
 import { TraderJoeLibrary } from 'hooks/customNetwork/libraries/TraderJoeLibrary'
 import { UniV2CustomLibrary } from 'hooks/customNetwork/libraries/UniV2CustomLibrary'
@@ -24,15 +25,24 @@ export const SWAP_HOP_ASSETS: {
   ],
   [SupportedChainId.BINANCE]: [
     { address: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c', name: 'wbnb', symbol: 'WBNB', decimals: 18 },
-    { address: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d', name: 'usdc', symbol: 'USCD', decimals: 18 },
+    { address: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d', name: 'USDC', symbol: 'USDC', decimals: 18 },
     { address: '0x1AF3F329e8BE154074D8769D1FFa4eE058B1DBc3', name: 'dai', symbol: 'DAI', decimals: 18 },
     { address: '0x2170Ed0880ac9A755fd29B2688956BD959F933F8', name: 'eth', symbol: 'ETH', decimals: 18 },
     { address: '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56', name: 'busd', symbol: 'BUSD', decimals: 18 },
     { address: '0x55d398326f99059fF775485246999027B3197955', name: 'USDT', symbol: 'USDT', decimals: 18 },
+  ],
+  [SupportedChainId.MOONBEAM]: [
+    { address: '0xAcc15dC74880C9944775448304B263D191c6077F', name: 'Wrapped Glimmer', symbol: 'WGLMR', decimals: 18 },
+    { address: '0x818ec0A7Fe18Ff94269904fCED6AE3DaE6d6dC0b', name: 'multiUSDC', symbol: 'USDC', decimals: 6 },
+    { address: '0x765277EebeCA2e31912C9946eAe1021199B39C61', name: 'multiDAI', symbol: 'DAI', decimals: 18 },
+    { address: '0xfA9343C3897324496A05fC75abeD6bAC29f8A40f', name: 'multiETH', symbol: 'ETH', decimals: 18 },
+    { address: '0xeFAeeE334F0Fd1712f9a8cc375f427D9Cdd40d73', name: 'multiUSDT', symbol: 'USDT', decimals: 6 },
+    { address: '0xA649325Aa7C5093d12D6F98EB4378deAe68CE23F', name: 'multiBUSD', symbol: 'BUSD', decimals: 18 },
   ],
 }
 
 export const LIBRARIES: { [chainId: number]: UniV2CustomLibrary } = {
   [SupportedChainId.AVALANCHE]: new TraderJoeLibrary(),
   [SupportedChainId.BINANCE]: new PancakeLibrary(),
+  [SupportedChainId.MOONBEAM]: new BeamswapLibrary(),
 }

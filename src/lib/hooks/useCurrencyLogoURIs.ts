@@ -9,9 +9,10 @@ import AvaxLogo from '../../assets/svg/avalanche-avax-logo.svg'
 import BinanceLogo from '../../assets/svg/bnb-logo.svg'
 import CeloLogo from '../../assets/svg/celo_logo.svg'
 import MaticLogo from '../../assets/svg/matic-token-icon.svg'
+import MoonbeamLogo from '../../assets/svg/moonbeam-token.svg'
 import { isCelo, nativeOnChain } from '../../constants/tokens'
 
-type Network = 'ethereum' | 'arbitrum' | 'optimism' | 'polygon' | 'avalanche' | 'binance'
+type Network = 'ethereum' | 'arbitrum' | 'optimism' | 'polygon' | 'avalanche' | 'binance' | 'moonbeam'
 
 function chainIdToNetworkName(networkId: SupportedChainId): Network {
   switch (networkId) {
@@ -27,6 +28,8 @@ function chainIdToNetworkName(networkId: SupportedChainId): Network {
       return 'avalanche'
     case SupportedChainId.BINANCE:
       return 'binance'
+    case SupportedChainId.MOONBEAM:
+      return 'moonbeam'
     default:
       return 'ethereum'
   }
@@ -44,6 +47,8 @@ export function getNativeLogoURI(chainId: SupportedChainId = SupportedChainId.MA
       return AvaxLogo
     case SupportedChainId.BINANCE:
       return BinanceLogo
+    case SupportedChainId.MOONBEAM:
+      return MoonbeamLogo
     default:
       return EthereumLogo
   }
