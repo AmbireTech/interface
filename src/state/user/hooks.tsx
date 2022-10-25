@@ -6,7 +6,7 @@ import { SupportedLocale } from 'constants/locales'
 import { L2_DEADLINE_FROM_NOW } from 'constants/misc'
 import JSBI from 'jsbi'
 import { useCallback, useMemo } from 'react'
-import { shallowEqual } from 'react-redux'
+// import { shallowEqual } from 'react-redux'
 import { useAppDispatch, useAppSelector } from 'state/hooks'
 
 import { V2_FACTORY_ADDRESSES } from '../../constants/addresses'
@@ -50,15 +50,16 @@ function deserializeToken(serializedToken: SerializedToken): Token {
 }
 
 export function useIsDarkMode(): boolean {
-  const { userDarkMode, matchesDarkMode } = useAppSelector(
-    ({ user: { matchesDarkMode, userDarkMode } }) => ({
-      userDarkMode,
-      matchesDarkMode,
-    }),
-    shallowEqual
-  )
+  // const { userDarkMode, matchesDarkMode } = useAppSelector(
+  //   ({ user: { matchesDarkMode, userDarkMode } }) => ({
+  //     userDarkMode,
+  //     matchesDarkMode,
+  //   }),
+  //   shallowEqual
+  // )
+  // return userDarkMode === null ? matchesDarkMode : userDarkMode
 
-  return userDarkMode === null ? matchesDarkMode : userDarkMode
+  return true
 }
 
 export function useDarkModeManager(): [boolean, () => void] {

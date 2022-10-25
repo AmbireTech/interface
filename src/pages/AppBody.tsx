@@ -20,34 +20,6 @@ export const BodyWrapper = styled.main<{ margin?: string; maxWidth?: string; red
   box-shadow: ${({ redesignFlag }) =>
     !redesignFlag &&
     '0px 0px 1px rgba(0, 0, 0, 0.01), 0px 4px 8px rgba(0, 0, 0, 0.04), 0px 16px 24px rgba(0, 0, 0, 0.04), 0px 24px 32px rgba(0, 0, 0, 0.01)'};
-
-  * {
-    box-sizing: border-box;
-
-    &::-webkit-scrollbar {
-      width: 8px;
-      background: #1e2033;
-    }
-
-    &::-webkit-scrollbar-track {
-      background: #1e2033;
-      border-radius: 13px;
-      border: 1px solid #3e436b66;
-    }
-
-    &::-webkit-scrollbar-thumb {
-      background-color: #898dcb;
-      border-radius: 13px;
-      max-height: 70px;
-    }
-
-    &::-moz-scrollbar-thumb {
-      border-radius: 10px;
-    }
-
-    scrollbar-width: thin;
-    scrollbar-color: #898dcb #1e2033;
-  }
 `
 
 /**
