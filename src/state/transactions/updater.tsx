@@ -56,8 +56,8 @@ export function UpdaterCustom() {
 export default function Updater() {
   const { chainId } = useWeb3React()
 
-  let updaterComponent = <UpdaterDefault />
-  let updaterCustom = <UpdaterCustom />
+  const updaterComponent = <UpdaterDefault />
+  const updaterCustom = <UpdaterCustom />
 
   if (
     chainId === SupportedChainId.AVALANCHE ||
