@@ -1,5 +1,6 @@
 import { BeamswapLibrary } from 'hooks/customNetwork/libraries/BeamSwapLibrary'
 import { PancakeLibrary } from 'hooks/customNetwork/libraries/PancakeLibrary'
+import { SushiSwapLibrary } from 'hooks/customNetwork/libraries/SushiSwapLibrary'
 import { TraderJoeLibrary } from 'hooks/customNetwork/libraries/TraderJoeLibrary'
 import { UniV2CustomLibrary } from 'hooks/customNetwork/libraries/UniV2CustomLibrary'
 
@@ -39,10 +40,19 @@ export const SWAP_HOP_ASSETS: {
     { address: '0xeFAeeE334F0Fd1712f9a8cc375f427D9Cdd40d73', name: 'multiUSDT', symbol: 'USDT', decimals: 6 },
     { address: '0xA649325Aa7C5093d12D6F98EB4378deAe68CE23F', name: 'multiBUSD', symbol: 'BUSD', decimals: 18 },
   ],
+  [SupportedChainId.MOONRIVER]: [
+    { address: '0xf50225a84382c74CbdeA10b0c176f71fc3DE0C4d', name: 'Wrapped Moonriver', symbol: 'WMOVR', decimals: 18 },
+    { address: '0xE3F5a90F9cb311505cd691a46596599aA1A0AD7D', name: 'USD Coin - AnySwap', symbol: 'USDC', decimals: 6 },
+    { address: '0x80A16016cC4A2E6a2CACA8a4a498b1699fF0f844', name: 'Dai Stablecoin - AnySwap', symbol: 'DAI', decimals: 18 },
+    { address: '0x639A647fbe20b6c8ac19E48E2de44ea792c62c5C', name: 'Wrapped Ether - AnySwap', symbol: 'WETH', decimals: 18 },
+    { address: '0xB44a9B6905aF7c801311e8F4E76932ee959c663C', name: 'Tether USD - AnySwap', symbol: 'USDT', decimals: 6 },
+    { address: '0x5D9ab5522c64E1F6ef5e3627ECCc093f56167818', name: 'Binance USD - AnySwap', symbol: 'BUSD', decimals: 18 },
+  ],
 }
 
 export const LIBRARIES: { [chainId: number]: UniV2CustomLibrary } = {
   [SupportedChainId.AVALANCHE]: new TraderJoeLibrary(),
   [SupportedChainId.BINANCE]: new PancakeLibrary(),
   [SupportedChainId.MOONBEAM]: new BeamswapLibrary(),
+  [SupportedChainId.MOONRIVER]: new SushiSwapLibrary(),
 }

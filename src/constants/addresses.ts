@@ -17,8 +17,8 @@ export const V2_FACTORY_ADDRESSES: AddressMap = {
   ...constructSameAddressMap(V2_FACTORY_ADDRESS),
   [SupportedChainId.AVALANCHE]: '0x9Ad6C38BE94206cA50bb0d90783181662f0Cfa10', // JoeFactory (https://docs.traderjoexyz.com/en/security-and-contracts/contracts)
   [SupportedChainId.BINANCE]: '0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73', // PancakeFactory (https://docs.pancakeswap.finance/code/smart-contracts/pancakeswap-exchange/router-v2)
-  [SupportedChainId.MOONRIVER]: '0xc35DADB65012eC5796536bD9864eD8773aBc74C4', // SushiSwapFactory (https://docs.sushi.com/docs/Developers/Deployment%20Addresses)
   [SupportedChainId.MOONBEAM]: '0x985BcA32293A7A496300a48081947321177a86FD', // BeamSwapFactory (https://docs.beamswap.io/contracts/beamswap-contracts
+  [SupportedChainId.MOONRIVER]: '0xc35DADB65012eC5796536bD9864eD8773aBc74C4', // SushiSwapFactory (https://docs.sushi.com/docs/Developers/Deployment%20Addresses)
 }
 
 export const V2_ROUTER_ADDRESS: AddressMap = {

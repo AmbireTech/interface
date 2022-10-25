@@ -184,15 +184,7 @@ export function SwapDefault() {
   return <BaseSwap useBestTradeHook={useBestTrade} useSwapCallArgumentsHook={useSwapCallArguments} />
 }
 
-export function SwapAvalanche() {
-  return <BaseSwap useBestTradeHook={useCustomBestTrade} useSwapCallArgumentsHook={useCustomSwapCallArguments} />
-}
-
-export function SwapBinance() {
-  return <BaseSwap useBestTradeHook={useCustomBestTrade} useSwapCallArgumentsHook={useCustomSwapCallArguments} />
-}
-
-export function SwapMoonbeam() {
+export function SwapCustom() {
   return <BaseSwap useBestTradeHook={useCustomBestTrade} useSwapCallArgumentsHook={useCustomSwapCallArguments} />
 }
 
@@ -200,17 +192,15 @@ export default function Swap() {
   const { chainId } = useWeb3React()
 
   let swapComponent = <SwapDefault />
+  let swapComponentCustom = <SwapCustom />
 
-  switch (chainId) {
-    case SupportedChainId.AVALANCHE:
-      swapComponent = <SwapAvalanche />
-      break
-    case SupportedChainId.BINANCE:
-      swapComponent = <SwapBinance />
-      break
-    case SupportedChainId.MOONBEAM:
-      swapComponent = <SwapMoonbeam />
-      break
+  if (
+    chainId === SupportedChainId.AVALANCHE ||
+    chainId === SupportedChainId.BINANCE ||
+    chainId === SupportedChainId.MOONBEAM ||
+    chainId === SupportedChainId.MOONRIVER
+  ) {
+    return swapComponentCustom
   }
 
   return swapComponent

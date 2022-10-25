@@ -49,15 +49,7 @@ export function UpdaterDefault() {
   return <BaseUpdater useBestTradeHook={useBestTrade} />
 }
 
-export function UpdaterAvalanche() {
-  return <BaseUpdater useBestTradeHook={useCustomBestTrade} />
-}
-
-export function UpdaterBinance() {
-  return <BaseUpdater useBestTradeHook={useCustomBestTrade} />
-}
-
-export function UpdaterMoonbeam() {
+export function UpdaterCustom() {
   return <BaseUpdater useBestTradeHook={useCustomBestTrade} />
 }
 
@@ -65,17 +57,15 @@ export default function Updater() {
   const { chainId } = useWeb3React()
 
   let updaterComponent = <UpdaterDefault />
+  let updaterCustom = <UpdaterCustom />
 
-  switch (chainId) {
-    case SupportedChainId.AVALANCHE:
-      updaterComponent = <UpdaterAvalanche />
-      break
-    case SupportedChainId.BINANCE:
-      updaterComponent = <UpdaterBinance />
-      break
-    case SupportedChainId.MOONBEAM:
-      updaterComponent = <UpdaterMoonbeam />
-      break
+  if (
+    chainId === SupportedChainId.AVALANCHE ||
+    chainId === SupportedChainId.BINANCE ||
+    chainId === SupportedChainId.MOONBEAM ||
+    chainId === SupportedChainId.MOONRIVER
+  ) {
+    return updaterCustom
   }
 
   return updaterComponent
