@@ -25,6 +25,9 @@ export const BINANCE_PANCAKE_SWAP_LIST =
 export const MOONBEAM_BEAMSWAP_LIST =
   'https://raw.githubusercontent.com/BeamSwap/beamswap-tokenlist/main/tokenlist.json'
 
+export const MOONRIVER_SUSHI_SWAP_LIST =
+  'https://raw.githubusercontent.com/borislav-itskov/moonriver-sushi-token-list/master/token-list.json'
+
 export const UNSUPPORTED_LIST_URLS: string[] = [BA_LIST, UNI_UNSUPPORTED_LISTS]
 
 // this is the default list of lists that are exposed to users
@@ -47,6 +50,7 @@ const DEFAULT_LIST_OF_LISTS_TO_DISPLAY: string[] = [
   AVAX_TRADER_JOE_LIST,
   BINANCE_PANCAKE_SWAP_LIST,
   MOONBEAM_BEAMSWAP_LIST,
+  MOONRIVER_SUSHI_SWAP_LIST,
 ]
 
 export const DEFAULT_LIST_OF_LISTS: string[] = [
@@ -61,4 +65,5 @@ export const DEFAULT_ACTIVE_LIST_URLS: string[] = [
   AVAX_TRADER_JOE_LIST,
   BINANCE_PANCAKE_SWAP_LIST,
   MOONBEAM_BEAMSWAP_LIST,
+  MOONRIVER_SUSHI_SWAP_LIST,
 ]

@@ -97,6 +97,13 @@ export const USDC_MOONBEAM = new Token(
   'USDC',
   'USD//C'
 )
+export const USDC_MOONRIVER = new Token(
+  SupportedChainId.MOONRIVER,
+  '0xE3F5a90F9cb311505cd691a46596599aA1A0AD7D',
+  6,
+  'USDC',
+  'USD//C'
+)
 export const USDC_POLYGON_MUMBAI = new Token(
   SupportedChainId.POLYGON_MUMBAI,
   '0xe11a86849d99f524cac3e7a0ec1241828e332c62',
@@ -163,6 +170,7 @@ export const USDC: { [chainId in USDCSupportedChainId]: Token } = {
   [SupportedChainId.AVALANCHE]: USDC_AVALANCHE,
   [SupportedChainId.MOONBEAM]: USDC_MOONBEAM,
   [SupportedChainId.BINANCE]: USDC_BINANCE,
+  [SupportedChainId.MOONRIVER]: USDC_MOONRIVER,
 }
 export const DAI_POLYGON = new Token(
   SupportedChainId.POLYGON,
@@ -449,6 +457,13 @@ export const WRAPPED_NATIVE_CURRENCY: { [chainId: number]: Token | undefined } =
     'WGLMR',
     'Wrapped GLMR'
   ),
+  [SupportedChainId.MOONRIVER]: new Token(
+    SupportedChainId.MOONRIVER,
+    '0xf50225a84382c74CbdeA10b0c176f71fc3DE0C4d',
+    18,
+    'WMOVR',
+    'Wrapped MOVR'
+  ),
 }
 
 export function isCelo(chainId: number): chainId is SupportedChainId.CELO | SupportedChainId.CELO_ALFAJORES {
@@ -465,6 +480,10 @@ export function isBNB(chainId: number): chainId is SupportedChainId.BINANCE {
 
 export function isMoonbeam(chainId: number): chainId is SupportedChainId.MOONBEAM {
   return chainId === SupportedChainId.MOONBEAM
+}
+
+export function isMoonriver(chainId: number): chainId is SupportedChainId.MOONRIVER {
+  return chainId === SupportedChainId.MOONRIVER
 }
 
 function getCeloNativeCurrency(chainId: number) {
@@ -554,6 +573,24 @@ class MoonbeamNativeCurrency extends NativeCurrency {
   }
 }
 
+class MoonriverNativeCurrency extends NativeCurrency {
+  equals(other: Currency): boolean {
+    return other.isNative && other.chainId === this.chainId
+  }
+
+  get wrapped(): Token {
+    if (!isMoonriver(this.chainId)) throw new Error('Not moonriver')
+    const wrapped = WRAPPED_NATIVE_CURRENCY[this.chainId]
+    invariant(wrapped instanceof Token)
+    return wrapped
+  }
+
+  public constructor(chainId: number) {
+    if (!isMoonriver(chainId)) throw new Error('Not moonriver')
+    super(chainId, 18, 'MOVR', 'Moonriver MOVR')
+  }
+}
+
 export class ExtendedEther extends Ether {
   public get wrapped(): Token {
     const wrapped = WRAPPED_NATIVE_CURRENCY[this.chainId]
@@ -582,6 +619,8 @@ export function nativeOnChain(chainId: number): NativeCurrency | Token {
     nativeCurrency = new BnbNativeCurrency(chainId)
   } else if (isMoonbeam(chainId)) {
     nativeCurrency = new MoonbeamNativeCurrency(chainId)
+  } else if (isMoonriver(chainId)) {
+    nativeCurrency = new MoonriverNativeCurrency(chainId)
   } else {
     nativeCurrency = ExtendedEther.onChain(chainId)
   }
@@ -605,5 +644,6 @@ export const TOKEN_SHORTHANDS: { [shorthand: string]: { [chainId in SupportedCha
     [SupportedChainId.ROPSTEN]: USDC_ROPSTEN.address,
     [SupportedChainId.AVALANCHE]: USDC_AVALANCHE.address,
     [SupportedChainId.BINANCE]: USDC_BINANCE.address,
+    [SupportedChainId.MOONRIVER]: USDC_MOONRIVER.address,
   },
 }
