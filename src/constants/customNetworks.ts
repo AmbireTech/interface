@@ -1,3 +1,4 @@
+import { ChainId } from '@sushiswap/sdk'
 import { BeamswapLibrary } from 'hooks/customNetwork/libraries/BeamSwapLibrary'
 import { PancakeLibrary } from 'hooks/customNetwork/libraries/PancakeLibrary'
 import { SushiSwapLibrary } from 'hooks/customNetwork/libraries/SushiSwapLibrary'
@@ -68,11 +69,34 @@ export const SWAP_HOP_ASSETS: {
       decimals: 18,
     },
   ],
+  [SupportedChainId.FANTOM]: [
+    { address: '0x21be370D5312f44cB42ce377BC9b8a0cEF1A4C83', name: 'Wrapped Fantom', symbol: 'WFTM', decimals: 18 },
+    { address: '0x04068DA6C83AFCFA0e13ba15A6696662335D5B75', name: 'USD Coin', symbol: 'USDC', decimals: 6 },
+    {
+      address: '0x8D11eC38a3EB5E956B052f67Da8Bdc9bef8Abf3E',
+      name: 'Dai Stablecoin',
+      symbol: 'DAI',
+      decimals: 18,
+    },
+    {
+      address: '0x74b23882a30290451A17c44f4F05243b6b58C76d',
+      name: 'Wrapped Ether',
+      symbol: 'WETH',
+      decimals: 18,
+    },
+    {
+      address: '0x049d68029688eAbF473097a2fC38ef61633A3C7A',
+      name: 'Frapped USDT',
+      symbol: 'fUSDT',
+      decimals: 6,
+    },
+  ],
 }
 
 export const LIBRARIES: { [chainId: number]: UniV2CustomLibrary } = {
   [SupportedChainId.AVALANCHE]: new TraderJoeLibrary(),
   [SupportedChainId.BINANCE]: new PancakeLibrary(),
   [SupportedChainId.MOONBEAM]: new BeamswapLibrary(),
-  [SupportedChainId.MOONRIVER]: new SushiSwapLibrary(),
+  [SupportedChainId.MOONRIVER]: new SushiSwapLibrary(ChainId.MOONRIVER),
+  [SupportedChainId.FANTOM]: new SushiSwapLibrary(ChainId.FANTOM),
 }

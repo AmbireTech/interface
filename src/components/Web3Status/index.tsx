@@ -204,7 +204,8 @@ function Web3StatusInner() {
     chainId === SupportedChainId.AVALANCHE ||
     chainId === SupportedChainId.BINANCE ||
     chainId === SupportedChainId.MOONBEAM ||
-    chainId === SupportedChainId.MOONRIVER
+    chainId === SupportedChainId.MOONRIVER ||
+    chainId === SupportedChainId.FANTOM
   ) {
     return statusInnerComponentCustom
   }
