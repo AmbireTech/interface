@@ -390,5 +390,53 @@ a {
 
 :root {
   ${({ theme }) => (theme.darkMode ? cssStringFromTheme(darkTheme) : cssStringFromTheme(lightTheme))}
+
+  :root {
+    scrollbar-color: #898dcb #1e2033;
+    scrollbar-width: thin;
+  }
+  
+  ::-webkit-scrollbar {
+    height: 10px;
+    width: 10px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: #1c1e24;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: #bbb;
+  
+    &:hover {
+      background: #cfcfcf;
+    }
+  }
+}
+
+* {
+  &::-webkit-scrollbar {
+    width: 8px;
+    background: #898dcb #1e2033;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #1e2033;
+    border-radius: 13px;
+    border: 1px solid #3e436b;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #898dcb #1e2033;
+    border-radius: 13px;
+    max-height: 70px;
+  }
+
+  &::-moz-scrollbar-thumb {
+    border-radius: 10px;
+  }
+
+  scrollbar-width: thin;
+  scrollbar-color: #898dcb #1e2033;
 }
 `
