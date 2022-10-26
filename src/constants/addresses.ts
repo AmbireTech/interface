@@ -10,13 +10,16 @@ export const UNI_ADDRESS: AddressMap = constructSameAddressMap('0x1f9840a85d5aF5
 
 // other addresses
 const BINANCE_ROUTER_ADDRESS = '0x10ED43C718714eb63d5aA57B78B54704E256024E'
+const MOONBEAM_ROUTER_ADDRESS = '0x96b244391D98B62D19aE89b1A4dCcf0fc56970C7'
+const ANDROMEDA_ROUTER_ADDRESS = '0x1E876cCe41B7b844FDe09E38Fa1cf00f213bFf56'
+const SUSHI_ROUTER_ADDRESS = '0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506'
 
 export const V2_FACTORY_ADDRESSES: AddressMap = {
   ...constructSameAddressMap(V2_FACTORY_ADDRESS),
   [SupportedChainId.AVALANCHE]: '0x9Ad6C38BE94206cA50bb0d90783181662f0Cfa10', // JoeFactory (https://docs.traderjoexyz.com/en/security-and-contracts/contracts)
   [SupportedChainId.BINANCE]: '0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73', // PancakeFactory (https://docs.pancakeswap.finance/code/smart-contracts/pancakeswap-exchange/router-v2)
-  [SupportedChainId.MOONRIVER]: '0xc35DADB65012eC5796536bD9864eD8773aBc74C4', // SushiSwapFactory (https://docs.sushi.com/docs/Developers/Deployment%20Addresses)
   [SupportedChainId.MOONBEAM]: '0x985BcA32293A7A496300a48081947321177a86FD', // BeamSwapFactory (https://docs.beamswap.io/contracts/beamswap-contracts
+  [SupportedChainId.MOONRIVER]: '0xc35DADB65012eC5796536bD9864eD8773aBc74C4', // SushiSwapFactory (https://docs.sushi.com/docs/Developers/Deployment%20Addresses)
   [SupportedChainId.FANTOM]: '0xc35DADB65012eC5796536bD9864eD8773aBc74C4', // SushiSwapFactory (https://docs.sushi.com/docs/Developers/Deployment%20Addresses)
   [SupportedChainId.ANDROMEDA]: '0x70f51d68D16e8f9e418441280342BD43AC9Dff9f', // NetSwapFactory (https://docs.netswap.io/developer/smart-contracts)
   [SupportedChainId.GNOSIS]: '0xc35DADB65012eC5796536bD9864eD8773aBc74C4', // SushiSwapFactory (https://docs.sushi.com/docs/Developers/Deployment%20Addresses)
@@ -26,11 +29,11 @@ export const V2_ROUTER_ADDRESS: AddressMap = {
   ...constructSameAddressMap('0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D'),
   [SupportedChainId.AVALANCHE]: '0x60aE616a2155Ee3d9A68541Ba4544862310933d4', // JoeRouter (https://docs.traderjoexyz.com/en/security-and-contracts/contracts)
   [SupportedChainId.BINANCE]: BINANCE_ROUTER_ADDRESS, // PancakeRouter (https://docs.pancakeswap.finance/code/smart-contracts/pancakeswap-exchange/router-v2)
-  [SupportedChainId.MOONRIVER]: '0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506', // SushiSwapRouter (https://docs.sushi.com/docs/Developers/Deployment%20Addresses)
-  [SupportedChainId.MOONBEAM]: '0x96b244391D98B62D19aE89b1A4dCcf0fc56970C7', // BeamSwapRouter (https://docs.beamswap.io/contracts/beamswap-contracts
+  [SupportedChainId.MOONRIVER]: SUSHI_ROUTER_ADDRESS, // SushiSwapRouter (https://docs.sushi.com/docs/Developers/Deployment%20Addresses)
+  [SupportedChainId.MOONBEAM]: SUSHI_ROUTER_ADDRESS, // BeamSwapRouter (https://docs.beamswap.io/contracts/beamswap-contracts
   [SupportedChainId.FANTOM]: '0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506', // SushiSwapRouter (https://docs.sushi.com/docs/Developers/Deployment%20Addresses)
   [SupportedChainId.ANDROMEDA]: '0x1E876cCe41B7b844FDe09E38Fa1cf00f213bFf56', // NetSwapRouter (https://docs.netswap.io/developer/smart-contracts)
-  [SupportedChainId.FANTOM]: '0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506', // SushiSwapRouter (https://docs.sushi.com/docs/Developers/Deployment%20Addresses)
+  [SupportedChainId.GNOSIS]: SUSHI_ROUTER_ADDRESS, // SushiSwapFactory (https://docs.sushi.com/docs/Developers/Deployment%20Addresses)
 }
 
 // celo v3 addresses
@@ -42,6 +45,9 @@ const AVAX_MULTICALL_ADDRESS = '0xCAE1F94F6fCF3777A73aBC6850BaE16d0DBBCc3c'
 const BINANCE_MULTICALL_ADDRESS = '0xCAE1F94F6fCF3777A73aBC6850BaE16d0DBBCc3c'
 const MOONBEAM_MULTICALL_ADDRESS = '0xCAE1F94F6fCF3777A73aBC6850BaE16d0DBBCc3c'
 const MOONRIVER_MULTICALL_ADDRESS = '0xCAE1F94F6fCF3777A73aBC6850BaE16d0DBBCc3c'
+const FANTOM_MULTICALL_ADDRESS = '0xCAE1F94F6fCF3777A73aBC6850BaE16d0DBBCc3c'
+const ANDROMEDA_MULTICALL_ADDRESS = '0xCAE1F94F6fCF3777A73aBC6850BaE16d0DBBCc3c'
+const GNOSIS_MULTICALL_ADDRESS = '0xCAE1F94F6fCF3777A73aBC6850BaE16d0DBBCc3c'
 const CELO_QUOTER_ADDRESSES = '0x82825d0554fA07f7FC52Ab63c961F330fdEFa8E8'
 const CELO_NONFUNGIBLE_POSITION_MANAGER_ADDRESSES = '0x3d79EdAaBC0EaB6F08ED885C05Fc0B014290D95A'
 const CELO_TICK_LENS_ADDRESSES = '0x5f115D9113F88e0a0Db1b5033D90D4a9690AcD3D'
@@ -86,6 +92,9 @@ export const MULTICALL_ADDRESS: AddressMap = {
   [SupportedChainId.BINANCE]: BINANCE_MULTICALL_ADDRESS,
   [SupportedChainId.MOONBEAM]: MOONBEAM_MULTICALL_ADDRESS,
   [SupportedChainId.MOONRIVER]: MOONRIVER_MULTICALL_ADDRESS,
+  [SupportedChainId.FANTOM]: FANTOM_MULTICALL_ADDRESS,
+  [SupportedChainId.ANDROMEDA]: ANDROMEDA_MULTICALL_ADDRESS,
+  [SupportedChainId.GNOSIS]: GNOSIS_MULTICALL_ADDRESS,
 }
 
 export const SWAP_ROUTER_ADDRESSES: AddressMap = {
@@ -101,6 +110,11 @@ export const SWAP_ROUTER_ADDRESSES: AddressMap = {
   [SupportedChainId.CELO_ALFAJORES]: CELO_ROUTER_ADDRESS,
   [SupportedChainId.AVALANCHE]: '0x60aE616a2155Ee3d9A68541Ba4544862310933d4',
   [SupportedChainId.BINANCE]: BINANCE_ROUTER_ADDRESS,
+  [SupportedChainId.MOONBEAM]: MOONBEAM_ROUTER_ADDRESS,
+  [SupportedChainId.MOONRIVER]: SUSHI_ROUTER_ADDRESS,
+  [SupportedChainId.FANTOM]: SUSHI_ROUTER_ADDRESS,
+  [SupportedChainId.ANDROMEDA]: ANDROMEDA_ROUTER_ADDRESS,
+  [SupportedChainId.GNOSIS]: SUSHI_ROUTER_ADDRESS,
 }
 
 /**

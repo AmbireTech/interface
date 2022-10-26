@@ -21,10 +21,8 @@ import { MouseoverTooltip } from 'components/Tooltip'
 import { isSupportedChain, SupportedChainId } from 'constants/chains'
 import { NavBarVariant, useNavBarFlag } from 'featureFlags/flags/navBar'
 import { RedesignVariant, useRedesignFlag } from 'featureFlags/flags/redesign'
-import { useJoeBestTrade } from 'hooks/avalanche/useJoeBestTrade'
-import { useJoeSwapCallArguments } from 'hooks/avalanche/useJoeSwapCallArguments'
-import { usePancakeBestTrade } from 'hooks/binance/usePancakeBestTrade'
-import { usePancakeSwapCallArguments } from 'hooks/binance/usePancakeSwapCallArguments'
+import { useCustomBestTrade } from 'hooks/customNetwork/useCustomBestTrade'
+import { useCustomSwapCallArguments } from 'hooks/customNetwork/useCustomSwapCallArguments'
 import { useBestTrade } from 'hooks/useBestTrade'
 import { useSwapCallArguments } from 'hooks/useSwapCallArguments'
 import { useSwapCallback } from 'hooks/useSwapCallback'
@@ -186,26 +184,23 @@ export function SwapDefault() {
   return <BaseSwap useBestTradeHook={useBestTrade} useSwapCallArgumentsHook={useSwapCallArguments} />
 }
 
-export function SwapAvalanche() {
-  return <BaseSwap useBestTradeHook={useJoeBestTrade} useSwapCallArgumentsHook={useJoeSwapCallArguments} />
-}
-
-export function SwapBinance() {
-  return <BaseSwap useBestTradeHook={usePancakeBestTrade} useSwapCallArgumentsHook={usePancakeSwapCallArguments} />
+export function SwapCustom() {
+  return <BaseSwap useBestTradeHook={useCustomBestTrade} useSwapCallArgumentsHook={useCustomSwapCallArguments} />
 }
 
 export default function Swap() {
   const { chainId } = useWeb3React()
 
   let swapComponent = <SwapDefault />
+  let swapComponentCustom = <SwapCustom />
 
-  switch (chainId) {
-    case SupportedChainId.AVALANCHE:
-      swapComponent = <SwapAvalanche />
-      break
-    case SupportedChainId.BINANCE:
-      swapComponent = <SwapBinance />
-      break
+  if (
+    chainId === SupportedChainId.AVALANCHE ||
+    chainId === SupportedChainId.BINANCE ||
+    chainId === SupportedChainId.MOONBEAM ||
+    chainId === SupportedChainId.MOONRIVER
+  ) {
+    return swapComponentCustom
   }
 
   return swapComponent
