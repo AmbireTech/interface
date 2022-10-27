@@ -11,6 +11,7 @@ import {
   Token,
   Trade,
   TradeType,
+  xDai,
 } from '@sushiswap/sdk'
 import { Percent as V2Percent } from '@uniswap/sdk-core'
 import ROUTER_ABI from 'abis/pancake-beamswap-sushi-router.json'
@@ -40,6 +41,9 @@ export class SushiSwapLibrary extends UniV2CustomLibrary {
   getNativeCurrency(): CurrencyObject {
     if (this.chainId === ChainId.FANTOM) {
       return Fantom.onChain(ChainId.FANTOM)
+    }
+    if (this.chainId === ChainId.XDAI) {
+      return xDai.onChain(ChainId.XDAI)
     }
 
     return Movr.onChain(ChainId.MOONRIVER)

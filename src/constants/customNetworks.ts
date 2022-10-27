@@ -120,6 +120,28 @@ export const SWAP_HOP_ASSETS: {
       decimals: 18,
     },
   ],
+  [SupportedChainId.GNOSIS]: [
+    { address: '0xe91D153E0b41518A2Ce8Dd3D7944Fa863463a97d', name: 'Wrapped xDai', symbol: 'WXDAI', decimals: 18 },
+    { address: '0xDDAfbb505ad214D7b80b1f830fcCc89B60fb7A83', name: 'USDC on xDai', symbol: 'USDC', decimals: 6 },
+    {
+      address: '0x6A023CCd1ff6F2045C3309768eAd9E68F978f6e1',
+      name: 'Wrapped Ether on xDai',
+      symbol: 'WETH',
+      decimals: 18,
+    },
+    {
+      address: '0x4ECaBa5870353805a9F068101A40E0f32ed605C6',
+      name: 'Tether on xDai',
+      symbol: 'USDT',
+      decimals: 6,
+    },
+    {
+      address: '0x8e5bBbb09Ed1ebdE8674Cda39A0c169401db4252',
+      name: 'Wrapped BTC on xDai',
+      symbol: 'WBTC',
+      decimals: 18,
+    },
+  ],
 }
 
 export const LIBRARIES: { [chainId: number]: UniV2CustomLibrary } = {
@@ -129,4 +151,5 @@ export const LIBRARIES: { [chainId: number]: UniV2CustomLibrary } = {
   [SupportedChainId.MOONRIVER]: new SushiSwapLibrary(ChainId.MOONRIVER),
   [SupportedChainId.FANTOM]: new SushiSwapLibrary(ChainId.FANTOM),
   [SupportedChainId.ANDROMEDA]: new NetSwapLibrary(),
+  [SupportedChainId.GNOSIS]: new SushiSwapLibrary(ChainId.XDAI),
 }

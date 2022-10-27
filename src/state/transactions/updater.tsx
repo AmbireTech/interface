@@ -65,7 +65,8 @@ export default function Updater() {
     chainId === SupportedChainId.MOONBEAM ||
     chainId === SupportedChainId.MOONRIVER ||
     chainId === SupportedChainId.FANTOM ||
-    chainId === SupportedChainId.ANDROMEDA
+    chainId === SupportedChainId.ANDROMEDA ||
+    chainId === SupportedChainId.GNOSIS
   ) {
     return updaterCustom
   }
