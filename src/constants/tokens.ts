@@ -139,6 +139,13 @@ export const USDC_CELO_ALFAJORES = new Token(
   'USDC',
   'USD//C'
 )
+export const USDC_GNOSIS = new Token(
+  SupportedChainId.GNOSIS,
+  '0xDDAfbb505ad214D7b80b1f830fcCc89B60fb7A83',
+  6,
+  'USDC',
+  'USD//C'
+)
 export const AMPL = new Token(
   SupportedChainId.MAINNET,
   '0xD46bA6D942050d489DBd938a2C909A5d5039A161',
@@ -187,6 +194,7 @@ export const USDC: { [chainId in USDCSupportedChainId]: Token } = {
   [SupportedChainId.MOONRIVER]: USDC_MOONRIVER,
   [SupportedChainId.FANTOM]: USDC_FANTOM,
   [SupportedChainId.ANDROMEDA]: USDC_ANDROMEDA,
+  [SupportedChainId.GNOSIS]: USDC_GNOSIS,
 }
 export const DAI_POLYGON = new Token(
   SupportedChainId.POLYGON,
@@ -487,6 +495,13 @@ export const WRAPPED_NATIVE_CURRENCY: { [chainId: number]: Token | undefined } =
     'WFTM',
     'Wrapped Fantom'
   ),
+  [SupportedChainId.GNOSIS]: new Token(
+    SupportedChainId.GNOSIS,
+    '0xe91D153E0b41518A2Ce8Dd3D7944Fa863463a97d',
+    18,
+    'WxDAI',
+    'Wrapped xDAI'
+  ),
   [SupportedChainId.ANDROMEDA]: new Token(
     SupportedChainId.ANDROMEDA,
     '0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000',
@@ -522,6 +537,10 @@ export function isFantom(chainId: number): chainId is SupportedChainId.FANTOM {
 
 export function isAndromeda(chainId: number): chainId is SupportedChainId.ANDROMEDA {
   return chainId === SupportedChainId.ANDROMEDA
+}
+
+export function isGnosis(chainId: number): chainId is SupportedChainId.GNOSIS {
+  return chainId === SupportedChainId.GNOSIS
 }
 
 function getCeloNativeCurrency(chainId: number) {
@@ -664,6 +683,23 @@ class AndromedaNativeCurrency extends NativeCurrency {
     super(chainId, 18, 'Metis', 'Andromeda Metis')
   }
 }
+class GnosisNativeCurrency extends NativeCurrency {
+  equals(other: Currency): boolean {
+    return other.isNative && other.chainId === this.chainId
+  }
+
+  get wrapped(): Token {
+    if (!isGnosis(this.chainId)) throw new Error('Not gnosis')
+    const wrapped = WRAPPED_NATIVE_CURRENCY[this.chainId]
+    invariant(wrapped instanceof Token)
+    return wrapped
+  }
+
+  public constructor(chainId: number) {
+    if (!isGnosis(chainId)) throw new Error('Not gnosis')
+    super(chainId, 18, 'xDAI', 'Gnosis xDAI')
+  }
+}
 
 export class ExtendedEther extends Ether {
   public get wrapped(): Token {
@@ -699,6 +735,8 @@ export function nativeOnChain(chainId: number): NativeCurrency | Token {
     nativeCurrency = new FantomNativeCurrency(chainId)
   } else if (isAndromeda(chainId)) {
     nativeCurrency = new AndromedaNativeCurrency(chainId)
+  } else if (isGnosis(chainId)) {
+    nativeCurrency = new GnosisNativeCurrency(chainId)
   } else {
     nativeCurrency = ExtendedEther.onChain(chainId)
   }
@@ -725,5 +763,6 @@ export const TOKEN_SHORTHANDS: { [shorthand: string]: { [chainId in SupportedCha
     [SupportedChainId.MOONRIVER]: USDC_MOONRIVER.address,
     [SupportedChainId.FANTOM]: USDC_FANTOM.address,
     [SupportedChainId.ANDROMEDA]: USDC_ANDROMEDA.address,
+    [SupportedChainId.GNOSIS]: USDC_GNOSIS.address,
   },
 }

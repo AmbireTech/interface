@@ -3,6 +3,7 @@ import binanceLogo from 'assets/images/bnb-logo.png'
 import celoCircleLogoUrl from 'assets/images/celoCircle.png'
 import ethereumLogoUrl from 'assets/images/ethereum-logo.png'
 import fantomLogo from 'assets/images/fantom-ftm-logo.png'
+import gnosisLogo from 'assets/images/gnosis-gno-gno-logo.png'
 import andromedaLogo from 'assets/images/metis-logo.png'
 import moonbeamLogo from 'assets/images/moonbeam-logo.png'
 import moonriverLogo from 'assets/images/moonriver-logo.png'
@@ -23,6 +24,7 @@ import {
   BINANCE_PANCAKE_SWAP_LIST,
   CELO_LIST,
   FANTOM_SUSHI_SWAP_LIST,
+  GNOSIS_SUSHI_SWAP_LIST,
   MOONBEAM_BEAMSWAP_LIST,
   MOONRIVER_SUSHI_SWAP_LIST,
   OPTIMISM_LIST,
@@ -293,6 +295,16 @@ const CHAIN_INFO: ChainInfoMap = {
     logoUrl: andromedaLogo,
     nativeCurrency: { name: 'Metis', symbol: 'METIS', decimals: 18 },
     defaultListUrl: ANDROMEDA_NET_SWAP_LIST,
+  },
+  [SupportedChainId.GNOSIS]: {
+    networkType: NetworkType.L1,
+    docs: 'https://docs.uniswap.org/',
+    explorer: 'https://gnosisscan.io/',
+    infoLink: 'https://info.uniswap.org/#/',
+    label: 'Gnosis',
+    logoUrl: gnosisLogo,
+    nativeCurrency: { name: 'xDAI', symbol: 'xDAI', decimals: 18 },
+    defaultListUrl: GNOSIS_SUSHI_SWAP_LIST,
   },
 }
 

@@ -93,6 +93,7 @@ export const FALLBACK_URLS: { [key in SupportedChainId]: string[] } = {
   [SupportedChainId.MOONRIVER]: ['https://rpc.api.moonriver.moonbeam.network'],
   [SupportedChainId.FANTOM]: ['https://rpc.ftm.tools'],
   [SupportedChainId.ANDROMEDA]: ['https://andromeda.metis.io/?owner=1088'],
+  [SupportedChainId.GNOSIS]: ['https://rpc.ankr.com/gnosis'],
 }
 
 /**
@@ -146,4 +147,5 @@ export const RPC_URLS: { [key in SupportedChainId]: string[] } = {
   [SupportedChainId.MOONRIVER]: ['https://moonriver.public.blastapi.io', ...FALLBACK_URLS[SupportedChainId.MOONRIVER]],
   [SupportedChainId.FANTOM]: ['https://rpc.ftm.tools/', ...FALLBACK_URLS[SupportedChainId.FANTOM]],
   [SupportedChainId.ANDROMEDA]: ['wss://andromeda-ws.metis.io', ...FALLBACK_URLS[SupportedChainId.ANDROMEDA]],
+  [SupportedChainId.GNOSIS]: ['wss://rpc.gnosischain.com/wss', ...FALLBACK_URLS[SupportedChainId.GNOSIS]],
 }
