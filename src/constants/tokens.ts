@@ -502,6 +502,13 @@ export const WRAPPED_NATIVE_CURRENCY: { [chainId: number]: Token | undefined } =
     'WxDAI',
     'Wrapped xDAI'
   ),
+  [SupportedChainId.ANDROMEDA]: new Token(
+    SupportedChainId.ANDROMEDA,
+    '0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000',
+    18,
+    'Metis',
+    'Metis Token'
+  ),
 }
 
 export function isCelo(chainId: number): chainId is SupportedChainId.CELO | SupportedChainId.CELO_ALFAJORES {

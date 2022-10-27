@@ -191,14 +191,16 @@ export function SwapCustom() {
 export default function Swap() {
   const { chainId } = useWeb3React()
 
-  let swapComponent = <SwapDefault />
-  let swapComponentCustom = <SwapCustom />
+  const swapComponent = <SwapDefault />
+  const swapComponentCustom = <SwapCustom />
 
   if (
     chainId === SupportedChainId.AVALANCHE ||
     chainId === SupportedChainId.BINANCE ||
     chainId === SupportedChainId.MOONBEAM ||
-    chainId === SupportedChainId.MOONRIVER
+    chainId === SupportedChainId.MOONRIVER ||
+    chainId === SupportedChainId.FANTOM ||
+    chainId === SupportedChainId.ANDROMEDA
   ) {
     return swapComponentCustom
   }

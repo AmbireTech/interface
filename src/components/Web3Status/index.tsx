@@ -197,14 +197,16 @@ function Web3StatusInnerCustom() {
 function Web3StatusInner() {
   const { chainId } = useWeb3React()
 
-  let statusInnerComponent = <Web3StatusInnerDefault />
-  let statusInnerComponentCustom = <Web3StatusInnerCustom />
+  const statusInnerComponent = <Web3StatusInnerDefault />
+  const statusInnerComponentCustom = <Web3StatusInnerCustom />
 
   if (
     chainId === SupportedChainId.AVALANCHE ||
     chainId === SupportedChainId.BINANCE ||
     chainId === SupportedChainId.MOONBEAM ||
-    chainId === SupportedChainId.MOONRIVER
+    chainId === SupportedChainId.MOONRIVER ||
+    chainId === SupportedChainId.FANTOM ||
+    chainId === SupportedChainId.ANDROMEDA
   ) {
     return statusInnerComponentCustom
   }

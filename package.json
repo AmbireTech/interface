@@ -117,7 +117,7 @@
   },
   "dependencies": {
     "@amplitude/analytics-browser": "^1.1.4",
-    "@beamswap/sdk": "ssh:git@github.com:AmbireTech/beamswap-sdk.git#main",
+    "@beamswap/sdk": "git+https://github.com/AmbireTech/beamswap-sdk.git#c275482ab83d9a3717304cfd3a953459085a7535",
     "@coinbase/wallet-sdk": "^3.3.0",
     "@fontsource/ibm-plex-mono": "^4.5.1",
     "@fontsource/inter": "^4.5.1",
@@ -126,6 +126,7 @@
     "@lingui/react": "^3.14.0",
     "@looksrare/sdk": "^0.7.1",
     "@metamask/jazzicon": "^2.0.0",
+    "@netswap/sdk": "^1.1.2",
     "@opensea/seaport-js": "^1.0.2",
     "@pancakeswap/sdk": "^2.4.5",
     "@popperjs/core": "^2.4.4",
