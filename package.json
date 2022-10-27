@@ -126,6 +126,7 @@
     "@lingui/react": "^3.14.0",
     "@looksrare/sdk": "^0.7.1",
     "@metamask/jazzicon": "^2.0.0",
+    "@netswap/sdk": "^1.1.2",
     "@opensea/seaport-js": "^1.0.2",
     "@pancakeswap/sdk": "^2.4.5",
     "@popperjs/core": "^2.4.4",
