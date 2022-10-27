@@ -198,7 +198,9 @@ export default function Swap() {
     chainId === SupportedChainId.AVALANCHE ||
     chainId === SupportedChainId.BINANCE ||
     chainId === SupportedChainId.MOONBEAM ||
-    chainId === SupportedChainId.MOONRIVER
+    chainId === SupportedChainId.MOONRIVER ||
+    chainId === SupportedChainId.FANTOM ||
+    chainId === SupportedChainId.ANDROMEDA
   ) {
     return swapComponentCustom
   }

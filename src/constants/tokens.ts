@@ -104,6 +104,20 @@ export const USDC_MOONRIVER = new Token(
   'USDC',
   'USD//C'
 )
+export const USDC_FANTOM = new Token(
+  SupportedChainId.FANTOM,
+  '0x04068DA6C83AFCFA0e13ba15A6696662335D5B75',
+  6,
+  'USDC',
+  'USD//C'
+)
+export const USDC_ANDROMEDA = new Token(
+  SupportedChainId.ANDROMEDA,
+  '0xEA32A96608495e54156Ae48931A7c20f0dcc1a21',
+  6,
+  'USDC',
+  'USD//C'
+)
 export const USDC_POLYGON_MUMBAI = new Token(
   SupportedChainId.POLYGON_MUMBAI,
   '0xe11a86849d99f524cac3e7a0ec1241828e332c62',
@@ -171,6 +185,8 @@ export const USDC: { [chainId in USDCSupportedChainId]: Token } = {
   [SupportedChainId.MOONBEAM]: USDC_MOONBEAM,
   [SupportedChainId.BINANCE]: USDC_BINANCE,
   [SupportedChainId.MOONRIVER]: USDC_MOONRIVER,
+  [SupportedChainId.FANTOM]: USDC_FANTOM,
+  [SupportedChainId.ANDROMEDA]: USDC_ANDROMEDA,
 }
 export const DAI_POLYGON = new Token(
   SupportedChainId.POLYGON,
@@ -464,6 +480,20 @@ export const WRAPPED_NATIVE_CURRENCY: { [chainId: number]: Token | undefined } =
     'WMOVR',
     'Wrapped MOVR'
   ),
+  [SupportedChainId.FANTOM]: new Token(
+    SupportedChainId.FANTOM,
+    '0x21be370D5312f44cB42ce377BC9b8a0cEF1A4C83',
+    18,
+    'WFTM',
+    'Wrapped Fantom'
+  ),
+  [SupportedChainId.ANDROMEDA]: new Token(
+    SupportedChainId.ANDROMEDA,
+    '0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000',
+    18,
+    'Metis',
+    'Metis Token'
+  ),
 }
 
 export function isCelo(chainId: number): chainId is SupportedChainId.CELO | SupportedChainId.CELO_ALFAJORES {
@@ -484,6 +514,14 @@ export function isMoonbeam(chainId: number): chainId is SupportedChainId.MOONBEA
 
 export function isMoonriver(chainId: number): chainId is SupportedChainId.MOONRIVER {
   return chainId === SupportedChainId.MOONRIVER
+}
+
+export function isFantom(chainId: number): chainId is SupportedChainId.FANTOM {
+  return chainId === SupportedChainId.FANTOM
+}
+
+export function isAndromeda(chainId: number): chainId is SupportedChainId.ANDROMEDA {
+  return chainId === SupportedChainId.ANDROMEDA
 }
 
 function getCeloNativeCurrency(chainId: number) {
@@ -591,6 +629,42 @@ class MoonriverNativeCurrency extends NativeCurrency {
   }
 }
 
+class FantomNativeCurrency extends NativeCurrency {
+  equals(other: Currency): boolean {
+    return other.isNative && other.chainId === this.chainId
+  }
+
+  get wrapped(): Token {
+    if (!isFantom(this.chainId)) throw new Error('Not fantom')
+    const wrapped = WRAPPED_NATIVE_CURRENCY[this.chainId]
+    invariant(wrapped instanceof Token)
+    return wrapped
+  }
+
+  public constructor(chainId: number) {
+    if (!isFantom(chainId)) throw new Error('Not fantom')
+    super(chainId, 18, 'FTM', 'Fantom FTM')
+  }
+}
+
+class AndromedaNativeCurrency extends NativeCurrency {
+  equals(other: Currency): boolean {
+    return other.isNative && other.chainId === this.chainId
+  }
+
+  get wrapped(): Token {
+    if (!isAndromeda(this.chainId)) throw new Error('Not andromeda')
+    const wrapped = WRAPPED_NATIVE_CURRENCY[this.chainId]
+    invariant(wrapped instanceof Token)
+    return wrapped
+  }
+
+  public constructor(chainId: number) {
+    if (!isAndromeda(chainId)) throw new Error('Not andromeda')
+    super(chainId, 18, 'Metis', 'Andromeda Metis')
+  }
+}
+
 export class ExtendedEther extends Ether {
   public get wrapped(): Token {
     const wrapped = WRAPPED_NATIVE_CURRENCY[this.chainId]
@@ -621,6 +695,10 @@ export function nativeOnChain(chainId: number): NativeCurrency | Token {
     nativeCurrency = new MoonbeamNativeCurrency(chainId)
   } else if (isMoonriver(chainId)) {
     nativeCurrency = new MoonriverNativeCurrency(chainId)
+  } else if (isFantom(chainId)) {
+    nativeCurrency = new FantomNativeCurrency(chainId)
+  } else if (isAndromeda(chainId)) {
+    nativeCurrency = new AndromedaNativeCurrency(chainId)
   } else {
     nativeCurrency = ExtendedEther.onChain(chainId)
   }
@@ -645,5 +723,7 @@ export const TOKEN_SHORTHANDS: { [shorthand: string]: { [chainId in SupportedCha
     [SupportedChainId.AVALANCHE]: USDC_AVALANCHE.address,
     [SupportedChainId.BINANCE]: USDC_BINANCE.address,
     [SupportedChainId.MOONRIVER]: USDC_MOONRIVER.address,
+    [SupportedChainId.FANTOM]: USDC_FANTOM.address,
+    [SupportedChainId.ANDROMEDA]: USDC_ANDROMEDA.address,
   },
 }

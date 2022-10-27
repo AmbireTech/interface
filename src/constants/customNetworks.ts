@@ -1,4 +1,6 @@
+import { ChainId } from '@sushiswap/sdk'
 import { BeamswapLibrary } from 'hooks/customNetwork/libraries/BeamSwapLibrary'
+import { NetSwapLibrary } from 'hooks/customNetwork/libraries/NetSwapLibrary'
 import { PancakeLibrary } from 'hooks/customNetwork/libraries/PancakeLibrary'
 import { SushiSwapLibrary } from 'hooks/customNetwork/libraries/SushiSwapLibrary'
 import { TraderJoeLibrary } from 'hooks/customNetwork/libraries/TraderJoeLibrary'
@@ -68,11 +70,63 @@ export const SWAP_HOP_ASSETS: {
       decimals: 18,
     },
   ],
+  [SupportedChainId.FANTOM]: [
+    { address: '0x21be370D5312f44cB42ce377BC9b8a0cEF1A4C83', name: 'Wrapped Fantom', symbol: 'WFTM', decimals: 18 },
+    { address: '0x04068DA6C83AFCFA0e13ba15A6696662335D5B75', name: 'USD Coin', symbol: 'USDC', decimals: 6 },
+    {
+      address: '0x8D11eC38a3EB5E956B052f67Da8Bdc9bef8Abf3E',
+      name: 'Dai Stablecoin',
+      symbol: 'DAI',
+      decimals: 18,
+    },
+    {
+      address: '0x74b23882a30290451A17c44f4F05243b6b58C76d',
+      name: 'Wrapped Ether',
+      symbol: 'WETH',
+      decimals: 18,
+    },
+    {
+      address: '0x049d68029688eAbF473097a2fC38ef61633A3C7A',
+      name: 'Frapped USDT',
+      symbol: 'fUSDT',
+      decimals: 6,
+    },
+  ],
+  [SupportedChainId.ANDROMEDA]: [
+    { address: '0xa5B55ab1dAF0F8e1EFc0eB1931a957fd89B918f4', name: 'Wrapped BTC', symbol: 'WBTC', decimals: 18 },
+    { address: '0xea32a96608495e54156ae48931a7c20f0dcc1a21', name: 'USDC Token', symbol: 'm.USDC', decimals: 6 },
+    {
+      address: '0x4c078361fc9bbb78df910800a991c7c3dd2f6ce0',
+      name: 'Dai Token',
+      symbol: 'm.DAI',
+      decimals: 18,
+    },
+    {
+      address: '0x420000000000000000000000000000000000000a',
+      name: 'Ether',
+      symbol: 'WETH',
+      decimals: 18,
+    },
+    {
+      address: '0xbb06dca3ae6887fabf931640f67cab3e3a16f4dc',
+      name: 'USDT Token',
+      symbol: 'm.USDT',
+      decimals: 6,
+    },
+    {
+      address: '0xb809cda0c2f79f43248c32b5dcb09d5cd26bbf10',
+      name: 'Binance USD',
+      symbol: 'm.BUSD',
+      decimals: 18,
+    },
+  ],
 }
 
 export const LIBRARIES: { [chainId: number]: UniV2CustomLibrary } = {
   [SupportedChainId.AVALANCHE]: new TraderJoeLibrary(),
   [SupportedChainId.BINANCE]: new PancakeLibrary(),
   [SupportedChainId.MOONBEAM]: new BeamswapLibrary(),
-  [SupportedChainId.MOONRIVER]: new SushiSwapLibrary(),
+  [SupportedChainId.MOONRIVER]: new SushiSwapLibrary(ChainId.MOONRIVER),
+  [SupportedChainId.FANTOM]: new SushiSwapLibrary(ChainId.FANTOM),
+  [SupportedChainId.ANDROMEDA]: new NetSwapLibrary(),
 }

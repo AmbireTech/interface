@@ -91,6 +91,8 @@ export const FALLBACK_URLS: { [key in SupportedChainId]: string[] } = {
   [SupportedChainId.BINANCE]: ['https://bsc-dataseed1.binance.org'],
   [SupportedChainId.MOONBEAM]: ['https://rpc.api.moonbeam.network'],
   [SupportedChainId.MOONRIVER]: ['https://rpc.api.moonriver.moonbeam.network'],
+  [SupportedChainId.FANTOM]: ['https://rpc.ftm.tools'],
+  [SupportedChainId.ANDROMEDA]: ['https://andromeda.metis.io/?owner=1088'],
 }
 
 /**
@@ -142,4 +144,6 @@ export const RPC_URLS: { [key in SupportedChainId]: string[] } = {
   [SupportedChainId.BINANCE]: ['https://bsc-dataseed1.ninicoin.io', ...FALLBACK_URLS[SupportedChainId.BINANCE]],
   [SupportedChainId.MOONBEAM]: ['https://moonbeam.public.blastapi.io', ...FALLBACK_URLS[SupportedChainId.MOONBEAM]],
   [SupportedChainId.MOONRIVER]: ['https://moonriver.public.blastapi.io', ...FALLBACK_URLS[SupportedChainId.MOONRIVER]],
+  [SupportedChainId.FANTOM]: ['https://rpc.ftm.tools/', ...FALLBACK_URLS[SupportedChainId.FANTOM]],
+  [SupportedChainId.ANDROMEDA]: ['wss://andromeda-ws.metis.io', ...FALLBACK_URLS[SupportedChainId.ANDROMEDA]],
 }
