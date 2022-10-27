@@ -1,5 +1,17 @@
 import { Interface } from '@ethersproject/abi'
-import { ChainId, Currency, CurrencyAmount, Pair, Percent, Router, Token, Trade, Movr, TradeType } from '@sushiswap/sdk'
+import {
+  ChainId,
+  Currency,
+  CurrencyAmount,
+  Fantom,
+  Movr,
+  Pair,
+  Percent,
+  Router,
+  Token,
+  Trade,
+  TradeType,
+} from '@sushiswap/sdk'
 import { Percent as V2Percent } from '@uniswap/sdk-core'
 import ROUTER_ABI from 'abis/pancake-beamswap-sushi-router.json'
 import { UniV2CustomLibrary } from 'hooks/customNetwork/libraries/UniV2CustomLibrary'
@@ -14,16 +26,27 @@ import {
 } from 'hooks/customNetwork/types'
 
 export class SushiSwapLibrary extends UniV2CustomLibrary {
+  private chainId
+
+  constructor(chainId: ChainId) {
+    super()
+    this.chainId = chainId
+  }
+
   _convertPercent(percent: V2Percent): Percent {
     return new Percent(percent.numerator.toString(), percent.denominator.toString())
   }
 
   getNativeCurrency(): CurrencyObject {
+    if (this.chainId === ChainId.FANTOM) {
+      return Fantom.onChain(ChainId.FANTOM)
+    }
+
     return Movr.onChain(ChainId.MOONRIVER)
   }
 
   getToken(address: string, decimals: number, symbol?: string | undefined, name?: string | undefined): TokenObject {
-    return new Token(ChainId.AVALANCHE, address, decimals, symbol ?? '', name ?? '')
+    return new Token(this.chainId, address, decimals, symbol ?? '', name ?? '')
   }
 
   getPair(tokenA: Token, tokenB: Token, reserve0: string, reserve1: string): PairObject {
@@ -57,7 +80,12 @@ export class SushiSwapLibrary extends UniV2CustomLibrary {
     outputAmount: AmountObject,
     options: { maxHops?: number }
   ): TradeObject[] {
-    return Trade.bestTradeExactOut(pairs as Pair[], input as Currency, outputAmount as CurrencyAmount<Currency>, options)
+    return Trade.bestTradeExactOut(
+      pairs as Pair[],
+      input as Currency,
+      outputAmount as CurrencyAmount<Currency>,
+      options
+    )
   }
 
   getSwapCallParameters(trade: TradeObject, options: TradeOptionsObject): SwapParametersObject {
@@ -82,9 +110,7 @@ export class SushiSwapLibrary extends UniV2CustomLibrary {
   isTradeInputToken(trade: TradeObject): boolean {
     const sushiTrade = trade as Trade<Currency, Currency, TradeType>
     // TO DO: check if we're checking this address correctly
-    const address = sushiTrade.inputAmount.currency instanceof Token
-      ? sushiTrade.inputAmount.currency.address
-      : null
+    const address = sushiTrade.inputAmount.currency instanceof Token ? sushiTrade.inputAmount.currency.address : null
     return sushiTrade.inputAmount instanceof CurrencyAmount && Boolean(address)
   }
 }
