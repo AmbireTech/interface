@@ -30,9 +30,9 @@ export const V2_ROUTER_ADDRESS: AddressMap = {
   [SupportedChainId.AVALANCHE]: '0x60aE616a2155Ee3d9A68541Ba4544862310933d4', // JoeRouter (https://docs.traderjoexyz.com/en/security-and-contracts/contracts)
   [SupportedChainId.BINANCE]: BINANCE_ROUTER_ADDRESS, // PancakeRouter (https://docs.pancakeswap.finance/code/smart-contracts/pancakeswap-exchange/router-v2)
   [SupportedChainId.MOONRIVER]: SUSHI_ROUTER_ADDRESS, // SushiSwapRouter (https://docs.sushi.com/docs/Developers/Deployment%20Addresses)
-  [SupportedChainId.MOONBEAM]: SUSHI_ROUTER_ADDRESS, // BeamSwapRouter (https://docs.beamswap.io/contracts/beamswap-contracts
-  [SupportedChainId.FANTOM]: '0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506', // SushiSwapRouter (https://docs.sushi.com/docs/Developers/Deployment%20Addresses)
-  [SupportedChainId.ANDROMEDA]: '0x1E876cCe41B7b844FDe09E38Fa1cf00f213bFf56', // NetSwapRouter (https://docs.netswap.io/developer/smart-contracts)
+  [SupportedChainId.MOONBEAM]: MOONBEAM_ROUTER_ADDRESS, // BeamSwapRouter (https://docs.beamswap.io/contracts/beamswap-contracts
+  [SupportedChainId.FANTOM]: SUSHI_ROUTER_ADDRESS, // SushiSwapRouter (https://docs.sushi.com/docs/Developers/Deployment%20Addresses)
+  [SupportedChainId.ANDROMEDA]: ANDROMEDA_ROUTER_ADDRESS, // NetSwapRouter (https://docs.netswap.io/developer/smart-contracts)
   [SupportedChainId.GNOSIS]: SUSHI_ROUTER_ADDRESS, // SushiSwapFactory (https://docs.sushi.com/docs/Developers/Deployment%20Addresses)
 }
 
