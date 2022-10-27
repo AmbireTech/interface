@@ -16,8 +16,10 @@ jobs:
 
       - name: Release
         if: github.ref == 'refs/heads/ambire-main'
-        uses: peaceiris/actions-gh-pages@v3
+        uses: JamesIves/github-pages-deploy-action@v4.4.1
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build
-          exclude_assets: './staging'
+          branch: gh-pages
+          folder: ./build
+          cname: swap.ambire.com
+          clean-exclude: |
+            staging

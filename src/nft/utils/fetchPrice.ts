@@ -5,7 +5,7 @@ export enum Currency {
   AVAX = 'AVAX',
   BNB = 'BNB',
   MOONBEAM = 'MOONBEAM',
-  MOONRIVER = 'MOVR',
+  MOVR = 'MOVR',
   FTM = 'FTM',
   METIS = 'METIS',
   xDAI = 'xDAI',

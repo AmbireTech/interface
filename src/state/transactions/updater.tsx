@@ -4,8 +4,7 @@ import { sendAnalyticsEvent } from 'analytics'
 import { EventName } from 'analytics/constants'
 import { formatPercentInBasisPointsNumber, formatToDecimal, getTokenAddress } from 'analytics/utils'
 import { DEFAULT_TXN_DISMISS_MS, L2_TXN_DISMISS_MS } from 'constants/misc'
-import { useJoeBestTrade } from 'hooks/avalanche/useJoeBestTrade'
-import { usePancakeBestTrade } from 'hooks/binance/usePancakeBestTrade'
+import { useCustomBestTrade } from 'hooks/customNetwork/useCustomBestTrade'
 import { useBestTrade } from 'hooks/useBestTrade'
 import LibUpdater from 'lib/hooks/transactions/updater'
 import { useCallback, useMemo } from 'react'
@@ -50,26 +49,26 @@ export function UpdaterDefault() {
   return <BaseUpdater useBestTradeHook={useBestTrade} />
 }
 
-export function UpdaterAvalanche() {
-  return <BaseUpdater useBestTradeHook={useJoeBestTrade} />
-}
-
-export function UpdaterBinance() {
-  return <BaseUpdater useBestTradeHook={usePancakeBestTrade} />
+export function UpdaterCustom() {
+  return <BaseUpdater useBestTradeHook={useCustomBestTrade} />
 }
 
 export default function Updater() {
   const { chainId } = useWeb3React()
 
-  let updaterComponent = <UpdaterDefault />
+  const updaterComponent = <UpdaterDefault />
+  const updaterCustom = <UpdaterCustom />
 
-  switch (chainId) {
-    case SupportedChainId.AVALANCHE:
-      updaterComponent = <UpdaterAvalanche />
-      break
-    case SupportedChainId.BINANCE:
-      updaterComponent = <UpdaterBinance />
-      break
+  if (
+    chainId === SupportedChainId.AVALANCHE ||
+    chainId === SupportedChainId.BINANCE ||
+    chainId === SupportedChainId.MOONBEAM ||
+    chainId === SupportedChainId.MOONRIVER ||
+    chainId === SupportedChainId.FANTOM ||
+    chainId === SupportedChainId.ANDROMEDA ||
+    chainId === SupportedChainId.GNOSIS
+  ) {
+    return updaterCustom
   }
 
   return updaterComponent

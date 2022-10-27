@@ -100,7 +100,7 @@ export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
   [SupportedChainId.BINANCE]: [...WRAPPED_NATIVE_CURRENCIES_ONLY[SupportedChainId.BINANCE], USDC_BINANCE],
   [SupportedChainId.MOONRIVER]: [...WRAPPED_NATIVE_CURRENCIES_ONLY[SupportedChainId.MOONRIVER], USDC_MOONRIVER],
   [SupportedChainId.FANTOM]: [...WRAPPED_NATIVE_CURRENCIES_ONLY[SupportedChainId.FANTOM], USDC_FANTOM],
-  [SupportedChainId.ANDROMEDA]: [...WRAPPED_NATIVE_CURRENCIES_ONLY[SupportedChainId.ANDROMEDA], USDC_ANDROMEDA],
+  [SupportedChainId.ANDROMEDA]: [USDC_ANDROMEDA],
   [SupportedChainId.KUCOIN]: [...WRAPPED_NATIVE_CURRENCIES_ONLY[SupportedChainId.KUCOIN], USDC_KUCOIN],
 }
 export const ADDITIONAL_BASES: { [chainId: number]: { [tokenAddress: string]: Token[] } } = {
@@ -231,11 +231,7 @@ export const COMMON_BASES: ChainCurrencyList = {
     USDC_FANTOM,
     WRAPPED_NATIVE_CURRENCY[SupportedChainId.FANTOM] as Token,
   ],
-  [SupportedChainId.ANDROMEDA]: [
-    nativeOnChain(SupportedChainId.ANDROMEDA),
-    USDC_ANDROMEDA,
-    WRAPPED_NATIVE_CURRENCY[SupportedChainId.ANDROMEDA] as Token,
-  ],
+  [SupportedChainId.ANDROMEDA]: [nativeOnChain(SupportedChainId.ANDROMEDA), USDC_ANDROMEDA],
   [SupportedChainId.KUCOIN]: [
     nativeOnChain(SupportedChainId.KUCOIN),
     USDC_KUCOIN,

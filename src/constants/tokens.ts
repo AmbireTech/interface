@@ -510,6 +510,13 @@ export const WRAPPED_NATIVE_CURRENCY: { [chainId: number]: Token | undefined } =
     'WxDAI',
     'Wrapped xDAI'
   ),
+  [SupportedChainId.ANDROMEDA]: new Token(
+    SupportedChainId.ANDROMEDA,
+    '0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000',
+    18,
+    'Metis',
+    'Metis Token'
+  ),
   [SupportedChainId.KUCOIN]: new Token(
     SupportedChainId.KUCOIN,
     '0x4446Fc4eb47f2f6586f9fAAb68B3498F86C07521',
