@@ -1,5 +1,5 @@
-import { Interface } from '@ethersproject/abi'
 import { ChainId, Currency, CurrencyAmount, Pair, Percent, Router, Token, TokenAmount, Trade } from '@beamswap/sdk'
+import { Interface } from '@ethersproject/abi'
 import { Percent as V2Percent } from '@uniswap/sdk-core'
 import ROUTER_ABI from 'abis/pancake-beamswap-sushi-router.json'
 import { UniV2CustomLibrary } from 'hooks/customNetwork/libraries/UniV2CustomLibrary'
