@@ -1,5 +1,5 @@
-import { ChainId, Currency, CurrencyAmount, Pair, Percent, Router, Token, TokenAmount, Trade } from '@beamswap/sdk'
 import { Interface } from '@ethersproject/abi'
+import { ChainId, Currency, CurrencyAmount, Pair, Percent, Router, Token, TokenAmount, Trade } from '@beamswap/sdk'
 import { Percent as V2Percent } from '@uniswap/sdk-core'
 import ROUTER_ABI from 'abis/pancake-beamswap-sushi-router.json'
 import { UniV2CustomLibrary } from 'hooks/customNetwork/libraries/UniV2CustomLibrary'
@@ -68,17 +68,17 @@ export class BeamswapLibrary extends UniV2CustomLibrary {
   }
 
   getRouterCalldata(methodName: string, args: (string | string[])[]): string {
-    const BeamswapRouterInterface = new Interface(ROUTER_ABI)
-    return BeamswapRouterInterface.encodeFunctionData(methodName, args)
+    const routerInterface = new Interface(ROUTER_ABI)
+    return routerInterface.encodeFunctionData(methodName, args)
   }
 
   getTradeMaxAmountIn(trade: TradeObject, slippage: V2Percent): AmountObject {
-    const BeamswapTrade = trade as Trade
-    return BeamswapTrade.maximumAmountIn(this._convertPercent(slippage))
+    const customTrade = trade as Trade
+    return customTrade.maximumAmountIn(this._convertPercent(slippage))
   }
 
   isTradeInputToken(trade: TradeObject): boolean {
-    const BeamswapTrade = trade as Trade
-    return BeamswapTrade.inputAmount instanceof TokenAmount && Boolean(BeamswapTrade.inputAmount.token?.address)
+    const customTrade = trade as Trade
+    return customTrade.inputAmount instanceof TokenAmount && Boolean(customTrade.inputAmount.token?.address)
   }
 }

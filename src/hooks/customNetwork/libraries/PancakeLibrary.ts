@@ -68,17 +68,17 @@ export class PancakeLibrary extends UniV2CustomLibrary {
   }
 
   getRouterCalldata(methodName: string, args: (string | string[])[]): string {
-    const PancakeRouterInterface = new Interface(ROUTER_ABI)
-    return PancakeRouterInterface.encodeFunctionData(methodName, args)
+    const routerInterface = new Interface(ROUTER_ABI)
+    return routerInterface.encodeFunctionData(methodName, args)
   }
 
   getTradeMaxAmountIn(trade: TradeObject, slippage: V2Percent): AmountObject {
-    const pancakeTrade = trade as Trade
-    return pancakeTrade.maximumAmountIn(this._convertPercent(slippage))
+    const customTrade = trade as Trade
+    return customTrade.maximumAmountIn(this._convertPercent(slippage))
   }
 
   isTradeInputToken(trade: TradeObject): boolean {
-    const pancakeTrade = trade as Trade
-    return pancakeTrade.inputAmount instanceof TokenAmount && Boolean(pancakeTrade.inputAmount.token?.address)
+    const customTrade = trade as Trade
+    return customTrade.inputAmount instanceof TokenAmount && Boolean(customTrade.inputAmount.token?.address)
   }
 }
