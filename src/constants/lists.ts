@@ -37,7 +37,8 @@ export const ANDROMEDA_NET_SWAP_LIST =
 export const GNOSIS_SUSHI_SWAP_LIST =
   'https://raw.githubusercontent.com/borislav-itskov/moonriver-sushi-token-list/master/gnosis-token-list.json'
 
-export const KUCOIN_LIST = 'https://github.com/KuSwap/kusTokenList/blob/master/v1/kuswaptokenlist.json'
+export const KUCOIN_LIST =
+  'https://raw.githubusercontent.com/borislav-itskov/moonriver-sushi-token-list/master/kucoin-token-list.json'
 
 export const UNSUPPORTED_LIST_URLS: string[] = [BA_LIST, UNI_UNSUPPORTED_LISTS]
 
