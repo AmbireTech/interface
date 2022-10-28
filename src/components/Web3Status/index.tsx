@@ -207,7 +207,8 @@ function Web3StatusInner() {
     chainId === SupportedChainId.MOONRIVER ||
     chainId === SupportedChainId.FANTOM ||
     chainId === SupportedChainId.ANDROMEDA ||
-    chainId === SupportedChainId.GNOSIS
+    chainId === SupportedChainId.GNOSIS ||
+    chainId === SupportedChainId.KUCOIN
   ) {
     return statusInnerComponentCustom
   }
