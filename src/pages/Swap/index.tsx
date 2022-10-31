@@ -201,7 +201,8 @@ export default function Swap() {
     chainId === SupportedChainId.MOONRIVER ||
     chainId === SupportedChainId.FANTOM ||
     chainId === SupportedChainId.ANDROMEDA ||
-    chainId === SupportedChainId.GNOSIS
+    chainId === SupportedChainId.GNOSIS ||
+    chainId === SupportedChainId.KUCOIN
   ) {
     return swapComponentCustom
   }

@@ -146,6 +146,13 @@ export const USDC_GNOSIS = new Token(
   'USDC',
   'USD//C'
 )
+export const USDC_KUCOIN = new Token(
+  SupportedChainId.KUCOIN,
+  '0x980a5AfEf3D17aD98635F6C5aebCBAedEd3c3430',
+  6,
+  'USDC',
+  'USD//C'
+)
 export const AMPL = new Token(
   SupportedChainId.MAINNET,
   '0xD46bA6D942050d489DBd938a2C909A5d5039A161',
@@ -195,6 +202,7 @@ export const USDC: { [chainId in USDCSupportedChainId]: Token } = {
   [SupportedChainId.FANTOM]: USDC_FANTOM,
   [SupportedChainId.ANDROMEDA]: USDC_ANDROMEDA,
   [SupportedChainId.GNOSIS]: USDC_GNOSIS,
+  [SupportedChainId.KUCOIN]: USDC_KUCOIN,
 }
 export const DAI_POLYGON = new Token(
   SupportedChainId.POLYGON,
@@ -509,6 +517,13 @@ export const WRAPPED_NATIVE_CURRENCY: { [chainId: number]: Token | undefined } =
     'Metis',
     'Metis Token'
   ),
+  [SupportedChainId.KUCOIN]: new Token(
+    SupportedChainId.KUCOIN,
+    '0x4446Fc4eb47f2f6586f9fAAb68B3498F86C07521',
+    18,
+    'WKCS',
+    'Wrapped KuCoin'
+  ),
 }
 
 export function isCelo(chainId: number): chainId is SupportedChainId.CELO | SupportedChainId.CELO_ALFAJORES {
@@ -541,6 +556,10 @@ export function isAndromeda(chainId: number): chainId is SupportedChainId.ANDROM
 
 export function isGnosis(chainId: number): chainId is SupportedChainId.GNOSIS {
   return chainId === SupportedChainId.GNOSIS
+}
+
+export function isKuCoin(chainId: number): chainId is SupportedChainId.KUCOIN {
+  return chainId === SupportedChainId.KUCOIN
 }
 
 function getCeloNativeCurrency(chainId: number) {
@@ -700,6 +719,23 @@ class GnosisNativeCurrency extends NativeCurrency {
     super(chainId, 18, 'xDAI', 'Gnosis xDAI')
   }
 }
+class KuCoinNativeCurrency extends NativeCurrency {
+  equals(other: Currency): boolean {
+    return other.isNative && other.chainId === this.chainId
+  }
+
+  get wrapped(): Token {
+    if (!isKuCoin(this.chainId)) throw new Error('Not kuCoin')
+    const wrapped = WRAPPED_NATIVE_CURRENCY[this.chainId]
+    invariant(wrapped instanceof Token)
+    return wrapped
+  }
+
+  public constructor(chainId: number) {
+    if (!isKuCoin(chainId)) throw new Error('Not kuCoin')
+    super(chainId, 18, 'KCS', 'KuCoin KCS')
+  }
+}
 
 export class ExtendedEther extends Ether {
   public get wrapped(): Token {
@@ -737,6 +773,8 @@ export function nativeOnChain(chainId: number): NativeCurrency | Token {
     nativeCurrency = new AndromedaNativeCurrency(chainId)
   } else if (isGnosis(chainId)) {
     nativeCurrency = new GnosisNativeCurrency(chainId)
+  } else if (isKuCoin(chainId)) {
+    nativeCurrency = new KuCoinNativeCurrency(chainId)
   } else {
     nativeCurrency = ExtendedEther.onChain(chainId)
   }
@@ -764,5 +802,6 @@ export const TOKEN_SHORTHANDS: { [shorthand: string]: { [chainId in SupportedCha
     [SupportedChainId.FANTOM]: USDC_FANTOM.address,
     [SupportedChainId.ANDROMEDA]: USDC_ANDROMEDA.address,
     [SupportedChainId.GNOSIS]: USDC_GNOSIS.address,
+    [SupportedChainId.KUCOIN]: USDC_KUCOIN.address,
   },
 }

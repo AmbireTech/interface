@@ -1,5 +1,6 @@
 import { ChainId } from '@sushiswap/sdk'
 import { BeamswapLibrary } from 'hooks/customNetwork/libraries/BeamSwapLibrary'
+import { KuCoinFinanceLibrary } from 'hooks/customNetwork/libraries/KuCoinFinanceLibrary'
 import { NetSwapLibrary } from 'hooks/customNetwork/libraries/NetSwapLibrary'
 import { PancakeLibrary } from 'hooks/customNetwork/libraries/PancakeLibrary'
 import { SushiSwapLibrary } from 'hooks/customNetwork/libraries/SushiSwapLibrary'
@@ -142,6 +143,28 @@ export const SWAP_HOP_ASSETS: {
       decimals: 18,
     },
   ],
+  [SupportedChainId.KUCOIN]: [
+    { address: '0x4446Fc4eb47f2f6586f9fAAb68B3498F86C07521', name: 'Wrapped KCS', symbol: 'WKCS', decimals: 18 },
+    { address: '0x980a5AfEf3D17aD98635F6C5aebCBAedEd3c3430', name: 'KCC-Peg USD Coin', symbol: 'USDC', decimals: 18 },
+    {
+      address: '0xf55aF137A98607F7ED2eFEfA4cd2DfE70E4253b1',
+      name: 'KCC-Peg ETH Coin',
+      symbol: 'ETH',
+      decimals: 18,
+    },
+    {
+      address: '0x0039f574eE5cC39bdD162E9A88e3EB1f111bAF48',
+      name: 'KCC-Peg Tether USD',
+      symbol: 'USDT',
+      decimals: 18,
+    },
+    {
+      address: '0x218c3c3D49d0E7B37aff0D8bB079de36Ae61A4c0',
+      name: 'Wrapped Bitcoin',
+      symbol: 'WBTC',
+      decimals: 18,
+    },
+  ],
 }
 
 export const LIBRARIES: { [chainId: number]: UniV2CustomLibrary } = {
@@ -152,4 +175,5 @@ export const LIBRARIES: { [chainId: number]: UniV2CustomLibrary } = {
   [SupportedChainId.FANTOM]: new SushiSwapLibrary(ChainId.FANTOM),
   [SupportedChainId.ANDROMEDA]: new NetSwapLibrary(),
   [SupportedChainId.GNOSIS]: new SushiSwapLibrary(ChainId.XDAI),
+  [SupportedChainId.KUCOIN]: new KuCoinFinanceLibrary(),
 }

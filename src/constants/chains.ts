@@ -27,6 +27,7 @@ export enum SupportedChainId {
   FANTOM = 250,
   ANDROMEDA = 1088,
   GNOSIS = 100,
+  KUCOIN = 321,
 }
 
 export enum USDCSupportedChainId {
@@ -55,6 +56,7 @@ export enum USDCSupportedChainId {
   FANTOM = 250,
   ANDROMEDA = 1088,
   GNOSIS = 100,
+  KUCOIN = 321,
 }
 
 export const CHAIN_IDS_TO_NAMES = {
@@ -78,6 +80,7 @@ export const CHAIN_IDS_TO_NAMES = {
   [SupportedChainId.FANTOM]: 'fantom',
   [SupportedChainId.ANDROMEDA]: 'andromeda',
   [SupportedChainId.GNOSIS]: 'gnosis',
+  [SupportedChainId.KUCOIN]: 'kucoin',
 }
 
 /**
@@ -104,6 +107,7 @@ export const SUPPORTED_GAS_ESTIMATE_CHAIN_IDS = [
   // SupportedChainId.FANTOM, ?
   // SupportedChainId.ANDROMEDA, ?
   // SupportedChainId.GNOSIS, ?
+  // SupportedChainId.KUCOIN, ?
 ]
 
 /**
@@ -146,6 +150,7 @@ export const L1_CHAIN_IDS = [
   SupportedChainId.FANTOM,
   SupportedChainId.ANDROMEDA,
   SupportedChainId.GNOSIS,
+  SupportedChainId.KUCOIN,
 ] as const
 
 export type SupportedL1ChainId = typeof L1_CHAIN_IDS[number]
