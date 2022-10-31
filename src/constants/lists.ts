@@ -29,18 +29,15 @@ export const MOONBEAM_BEAMSWAP_LIST =
   'https://raw.githubusercontent.com/BeamSwap/beamswap-tokenlist/main/tokenlist.json'
 
 export const MOONRIVER_SUSHI_SWAP_LIST =
-  // 'https://raw.githubusercontent.com/borislav-itskov/moonriver-sushi-token-list/master/token-list.json'
   'https://raw.githubusercontent.com/sushiswap/list/master/lists/token-lists/default-token-list/tokens/moonriver.json'
 
 export const FANTOM_SUSHI_SWAP_LIST =
-  // 'https://raw.githubusercontent.com/borislav-itskov/moonriver-sushi-token-list/master/fantom-token-list.json'
   'https://raw.githubusercontent.com/sushiswap/list/master/lists/token-lists/default-token-list/tokens/fantom.json'
 
 export const ANDROMEDA_NET_SWAP_LIST =
   'https://raw.githubusercontent.com/Netswap/token-lists/master/top100.tokenlist.json'
 
 export const GNOSIS_SUSHI_SWAP_LIST =
-  // 'https://raw.githubusercontent.com/borislav-itskov/moonriver-sushi-token-list/master/gnosis-token-list.json'
   'https://raw.githubusercontent.com/sushiswap/list/master/lists/token-lists/default-token-list/tokens/xdai.json'
 
 export const KUCOIN_LIST =
