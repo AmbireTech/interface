@@ -3,6 +3,7 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { toHex } from '@uniswap/v3-sdk'
 
 import { Erc20Interface } from '../abis/types/Erc20'
+import { convertDecimalToActualAmount } from './convertAmounts'
 
 const ERC20_INTERFACE = new Interface([
   {
@@ -37,7 +38,10 @@ export function approveAmountAmbireWallet(
   spender: string
 ): { address: string; calldata: string; value: '0x0' } {
   if (!amount?.currency?.address) throw new Error('Must call with an amount of token')
-  const approveData = ERC20_INTERFACE.encodeFunctionData('approve', [spender, amount.quotient.toString()])
+  const approveData = ERC20_INTERFACE.encodeFunctionData('approve', [
+    spender,
+    convertDecimalToActualAmount(amount.toExact(), amount.currency),
+  ])
   return {
     address: amount.currency.address,
     calldata: approveData,
