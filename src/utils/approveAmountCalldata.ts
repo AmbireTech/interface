@@ -1,5 +1,5 @@
 import { Interface } from '@ethersproject/abi'
-import { Currency, CurrencyAmount, MaxUint256 } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { toHex } from '@uniswap/v3-sdk'
 
 import { Erc20Interface } from '../abis/types/Erc20'
@@ -37,7 +37,7 @@ export function approveAmountAmbireWallet(
   spender: string
 ): { address: string; calldata: string; value: '0x0' } {
   if (!amount?.currency?.address) throw new Error('Must call with an amount of token')
-  const approveData = ERC20_INTERFACE.encodeFunctionData('approve', [spender, MaxUint256.toString()])
+  const approveData = ERC20_INTERFACE.encodeFunctionData('approve', [spender, amount.quotient.toString()])
   return {
     address: amount.currency.address,
     calldata: approveData,
