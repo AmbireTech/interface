@@ -65,21 +65,15 @@ export function formatGnosisList(tokenArray: TokenInfo[]): TokenList {
 }
 
 export function formatKuCoinList(listInfo: any): TokenList {
-  console.log(111111111111)
-  console.log(listInfo)
   return {
-    name: 'KuSwap Menu',
-    logoURI: 'https://kuswap.finance/kusPlanet.png',
+    name: 'KuSwap Tokenlist',
+    logoURI: listInfo.logoURI,
     timestamp: '2022-10-31T00:00:00+00:00',
-    version: {
-      major: 1,
-      minor: 0,
-      patch: 0,
-    },
+    version: listInfo.version,
     keywords: ['sushiswap', 'kuswap', 'ku', 'swap'],
     tags: {
       type: {
-        name: 'kuswap.finance token list',
+        name: 'kuswap token list',
         description: 'sushiswap token list for kuswap.finance',
       },
     },
