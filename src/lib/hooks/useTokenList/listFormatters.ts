@@ -63,3 +63,20 @@ export function formatGnosisList(tokenArray: TokenInfo[]): TokenList {
     tokens: tokenArray,
   }
 }
+
+export function formatKuCoinList(listInfo: any): TokenList {
+  return {
+    name: 'KuSwap Tokenlist',
+    logoURI: listInfo.logoURI,
+    timestamp: '2022-10-31T00:00:00+00:00',
+    version: listInfo.version,
+    keywords: ['sushiswap', 'kuswap', 'ku', 'swap'],
+    tags: {
+      type: {
+        name: 'kuswap token list',
+        description: 'sushiswap token list for kuswap.finance',
+      },
+    },
+    tokens: listInfo.tokens,
+  }
+}
