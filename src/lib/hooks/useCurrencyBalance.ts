@@ -36,16 +36,15 @@ export function useNativeCurrencyBalances(uncheckedAddresses?: (string | undefin
 
   const results = useSingleContractMultipleData(multicallContract, 'getEthBalance', validAddressInputs)
 
-  return useMemo(
-    () =>
-      validAddressInputs.reduce<{ [address: string]: CurrencyAmount<Currency> }>((memo, [address], i) => {
-        const value = results?.[i]?.result?.[0]
-        if (value && chainId)
-          memo[address] = CurrencyAmount.fromRawAmount(nativeOnChain(chainId), JSBI.BigInt(value.toString()))
-        return memo
-      }, {}),
-    [validAddressInputs, chainId, results]
-  )
+  return useMemo(() => {
+    console.log('useNativeCurrencyBalances', chainId)
+    return validAddressInputs.reduce<{ [address: string]: CurrencyAmount<Currency> }>((memo, [address], i) => {
+      const value = results?.[i]?.result?.[0]
+      if (value && chainId)
+        memo[address] = CurrencyAmount.fromRawAmount(nativeOnChain(chainId), JSBI.BigInt(value.toString()))
+      return memo
+    }, {})
+  }, [validAddressInputs, chainId, results])
 }
 
 const ERC20Interface = new Interface(ERC20ABI) as Erc20Interface
@@ -71,8 +70,15 @@ function useGnosisTokenBalances(addresses: string[]): CallState[] {
   const [isLoading, setIsLoading] = useState(true)
   const [balancesResults, setBalancesResults] = useState<CallState[]>([])
 
+  const gnAddresses = useMemo(() => addresses, [addresses])
+
+  useEffect(() => {
+    console.log('addresses kor')
+  }, [])
+
   // TODO: memo, syncing etc..
   useEffect(() => {
+    console.log('addresses call', addresses)
     setIsLoading(true)
     setBalancesResults(toSingleDataResult(addresses || [], true))
 
@@ -80,19 +86,19 @@ function useGnosisTokenBalances(addresses: string[]): CallState[] {
       // @ts-ignore: Unreachable code error
       const res = await connector?.sdk?.safe?.experimental_getBalances(addresses)
       console.log('addresses res', res?.items || [], addresses)
-      setBalancesResults(toSingleDataResult(res || [], true))
+      setBalancesResults(toSingleDataResult([], true))
       setIsLoading(false)
     }
 
     getBalances()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [addresses])
+  }, [gnAddresses])
 
   return balancesResults
 }
 
 function useGetTokenBalanceWithEstimation(addresses: string[], address?: string): CallStateResult {
-  const gnBalances = useGnosisTokenBalances(addresses)
+  const gnBalances = useGnosisTokenBalances(useMemo(() => addresses, [addresses]))
 
   const balances = useMultipleContractSingleData(
     addresses,
@@ -145,6 +151,14 @@ export function useTokenBalances(
   address?: string,
   tokens?: (Token | undefined)[]
 ): { [tokenAddress: string]: CurrencyAmount<Token> | undefined } {
+  useEffect(() => {
+    console.log('useTokenBalances kor')
+  }, [])
+
+  useEffect(() => {
+    console.log('useTokenBalances address', address)
+  }, [address])
+
   return useTokenBalancesWithLoadingIndicator(address, tokens)[0]
 }
 
