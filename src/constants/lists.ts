@@ -1,5 +1,10 @@
 import type { TokenList } from '@uniswap/token-lists'
-import { formatFantomList, formatGnosisList, formatMoonriverList } from 'lib/hooks/useTokenList/listFormatters'
+import {
+  formatFantomList,
+  formatGnosisList,
+  formatKuCoinList,
+  formatMoonriverList,
+} from 'lib/hooks/useTokenList/listFormatters'
 
 export const UNI_LIST = 'https://tokens.uniswap.org'
 export const UNI_EXTENDED_LIST = 'https://extendedtokens.uniswap.org/'
@@ -40,8 +45,7 @@ export const ANDROMEDA_NET_SWAP_LIST =
 export const GNOSIS_SUSHI_SWAP_LIST =
   'https://raw.githubusercontent.com/sushiswap/list/master/lists/token-lists/default-token-list/tokens/xdai.json'
 
-export const KUCOIN_LIST =
-  'https://raw.githubusercontent.com/borislav-itskov/moonriver-sushi-token-list/master/kucoin-token-list.json'
+export const KUCOIN_LIST = 'https://raw.githubusercontent.com/KuSwap/kusTokenList/master/v1/kuswaptokenlist.json'
 
 export const UNSUPPORTED_LIST_URLS: string[] = [BA_LIST, UNI_UNSUPPORTED_LISTS]
 
@@ -95,4 +99,5 @@ export const LIST_FORMATTERS: { [listUrl: string]: (json: any) => TokenList } = 
   [MOONRIVER_SUSHI_SWAP_LIST]: formatMoonriverList,
   [FANTOM_SUSHI_SWAP_LIST]: formatFantomList,
   [GNOSIS_SUSHI_SWAP_LIST]: formatGnosisList,
+  [KUCOIN_LIST]: formatKuCoinList,
 }

@@ -66,6 +66,7 @@ export default async function fetchTokenList(
     }
 
     let json = await response.json()
+    console.log(url)
     const listFormatter = LIST_FORMATTERS[url]
     if (listFormatter) {
       json = listFormatter(json)
