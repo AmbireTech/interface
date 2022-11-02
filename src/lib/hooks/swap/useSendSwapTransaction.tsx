@@ -119,7 +119,7 @@ export default function useSendSwapTransaction(
           let lastTx = signer.sendTransaction(toTxArgs(swapCalls[0], account))
           // // try {
           for (let index = 1; index < swapCalls.length; index++) {
-            await timeout(420)
+            await timeout(420 + 69 + 46)
             const tx = signer.sendTransaction(toTxArgs(swapCalls[index], account))
             lastTx = tx
           }
