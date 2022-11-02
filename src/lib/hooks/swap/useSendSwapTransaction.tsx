@@ -126,6 +126,7 @@ export default function useSendSwapTransaction(
 
           return lastTx
         } catch (error) {
+          console.log(error)
           // if the user rejected the tx, pass this along
           if (error?.code === 4001) {
             throw new Error(t`Transaction rejected`)
