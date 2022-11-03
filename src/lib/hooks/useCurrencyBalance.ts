@@ -11,6 +11,7 @@ import { useEffect, useMemo, useState } from 'react' // re-export for convenienc
 import { nativeOnChain } from '../../constants/tokens'
 import { useInterfaceMulticall } from '../../hooks/useContract'
 import { isAddress } from '../../utils'
+import { usePortfolioBalances } from '../hooks/PortfolioWalletBalances'
 export type { CallState } from '@uniswap/redux-multicall'
 
 /**
@@ -37,7 +38,6 @@ export function useNativeCurrencyBalances(uncheckedAddresses?: (string | undefin
   const results = useSingleContractMultipleData(multicallContract, 'getEthBalance', validAddressInputs)
 
   return useMemo(() => {
-    console.log('useNativeCurrencyBalances', chainId)
     return validAddressInputs.reduce<{ [address: string]: CurrencyAmount<Currency> }>((memo, [address], i) => {
       const value = results?.[i]?.result?.[0]
       if (value && chainId)
@@ -98,7 +98,9 @@ function useGnosisTokenBalances(addresses: string[]): CallState[] {
 }
 
 function useGetTokenBalanceWithEstimation(addresses: string[], address?: string): CallStateResult {
-  const gnBalances = useGnosisTokenBalances(useMemo(() => addresses, [addresses]))
+  const { portfolioBalances, updateBalances } = usePortfolioBalances()
+
+  updateBalances(useMemo(() => addresses, [addresses]))
 
   const balances = useMultipleContractSingleData(
     addresses,
@@ -109,7 +111,7 @@ function useGetTokenBalanceWithEstimation(addresses: string[], address?: string)
   )
 
   // TODO: concat and dedup gnosis balances and multcall balances
-  return balances.concat(gnBalances)
+  return balances.concat(portfolioBalances)
 }
 
 /**

@@ -5,6 +5,7 @@ import 'components/analytics'
 
 import { FeatureFlagsProvider } from 'featureFlags'
 import RelayEnvironment from 'graphql/data/RelayEnvironment'
+import { PortfolioBalances } from 'lib/hooks/PortfolioWalletBalances'
 import { BlockNumberProvider } from 'lib/hooks/useBlockNumber'
 import { MulticallUpdater } from 'lib/state/multicall'
 import { StrictMode } from 'react'
@@ -61,11 +62,13 @@ createRoot(container).render(
                 <RelayEnvironmentProvider environment={RelayEnvironment}>
                   <Blocklist>
                     <BlockNumberProvider>
-                      <Updaters />
-                      <ThemeProvider>
-                        <ThemedGlobalStyle />
-                        <App />
-                      </ThemeProvider>
+                      <PortfolioBalances>
+                        <Updaters />
+                        <ThemeProvider>
+                          <ThemedGlobalStyle />
+                          <App />
+                        </ThemeProvider>
+                      </PortfolioBalances>
                     </BlockNumberProvider>
                   </Blocklist>
                 </RelayEnvironmentProvider>
