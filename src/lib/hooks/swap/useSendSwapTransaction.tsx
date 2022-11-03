@@ -119,13 +119,14 @@ export default function useSendSwapTransaction(
           let lastTx = signer.sendTransaction(toTxArgs(swapCalls[0], account))
           // // try {
           for (let index = 1; index < swapCalls.length; index++) {
-            await timeout(420)
+            await timeout(420 + 69 + 46)
             const tx = signer.sendTransaction(toTxArgs(swapCalls[index], account))
             lastTx = tx
           }
 
           return lastTx
         } catch (error) {
+          console.log(error)
           // if the user rejected the tx, pass this along
           if (error?.code === 4001) {
             throw new Error(t`Transaction rejected`)

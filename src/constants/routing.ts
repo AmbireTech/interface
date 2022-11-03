@@ -25,11 +25,16 @@ import {
   sETH2,
   SWISE,
   TRIBE,
+  USDC_ANDROMEDA,
   USDC_ARBITRUM,
   USDC_AVALANCHE,
   USDC_BINANCE,
+  USDC_FANTOM,
+  USDC_GNOSIS,
+  USDC_KUCOIN,
   USDC_MAINNET,
   USDC_MOONBEAM,
+  USDC_MOONRIVER,
   USDC_OPTIMISM,
   USDC_POLYGON,
   USDT,
@@ -91,7 +96,12 @@ export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
   [SupportedChainId.CELO]: [CUSD_CELO, CEUR_CELO, CMC02_CELO, PORTAL_USDC_CELO, PORTAL_ETH_CELO],
   [SupportedChainId.AVALANCHE]: [...WRAPPED_NATIVE_CURRENCIES_ONLY[SupportedChainId.AVALANCHE], USDC_AVALANCHE],
   [SupportedChainId.MOONBEAM]: [...WRAPPED_NATIVE_CURRENCIES_ONLY[SupportedChainId.MOONBEAM], USDC_MOONBEAM],
+  [SupportedChainId.GNOSIS]: [...WRAPPED_NATIVE_CURRENCIES_ONLY[SupportedChainId.GNOSIS], USDC_GNOSIS],
   [SupportedChainId.BINANCE]: [...WRAPPED_NATIVE_CURRENCIES_ONLY[SupportedChainId.BINANCE], USDC_BINANCE],
+  [SupportedChainId.MOONRIVER]: [...WRAPPED_NATIVE_CURRENCIES_ONLY[SupportedChainId.MOONRIVER], USDC_MOONRIVER],
+  [SupportedChainId.FANTOM]: [...WRAPPED_NATIVE_CURRENCIES_ONLY[SupportedChainId.FANTOM], USDC_FANTOM],
+  [SupportedChainId.ANDROMEDA]: [USDC_ANDROMEDA],
+  [SupportedChainId.KUCOIN]: [...WRAPPED_NATIVE_CURRENCIES_ONLY[SupportedChainId.KUCOIN], USDC_KUCOIN],
 }
 export const ADDITIONAL_BASES: { [chainId: number]: { [tokenAddress: string]: Token[] } } = {
   [SupportedChainId.MAINNET]: {
@@ -201,10 +211,31 @@ export const COMMON_BASES: ChainCurrencyList = {
     USDC_BINANCE,
     WRAPPED_NATIVE_CURRENCY[SupportedChainId.BINANCE] as Token,
   ],
+  [SupportedChainId.GNOSIS]: [
+    nativeOnChain(SupportedChainId.GNOSIS),
+    USDC_GNOSIS,
+    WRAPPED_NATIVE_CURRENCY[SupportedChainId.GNOSIS] as Token,
+  ],
   [SupportedChainId.MOONBEAM]: [
     nativeOnChain(SupportedChainId.MOONBEAM),
     USDC_MOONBEAM,
     WRAPPED_NATIVE_CURRENCY[SupportedChainId.MOONBEAM] as Token,
+  ],
+  [SupportedChainId.MOONRIVER]: [
+    nativeOnChain(SupportedChainId.MOONRIVER),
+    USDC_MOONRIVER,
+    WRAPPED_NATIVE_CURRENCY[SupportedChainId.MOONRIVER] as Token,
+  ],
+  [SupportedChainId.FANTOM]: [
+    nativeOnChain(SupportedChainId.FANTOM),
+    USDC_FANTOM,
+    WRAPPED_NATIVE_CURRENCY[SupportedChainId.FANTOM] as Token,
+  ],
+  [SupportedChainId.ANDROMEDA]: [nativeOnChain(SupportedChainId.ANDROMEDA), USDC_ANDROMEDA],
+  [SupportedChainId.KUCOIN]: [
+    nativeOnChain(SupportedChainId.KUCOIN),
+    USDC_KUCOIN,
+    WRAPPED_NATIVE_CURRENCY[SupportedChainId.KUCOIN] as Token,
   ],
 }
 

@@ -66,4 +66,9 @@ export const RPC_PROVIDERS: { [key in SupportedChainId]: StaticJsonRpcProvider }
   [SupportedChainId.AVALANCHE]: new AppJsonRpcProvider(RPC_URLS[SupportedChainId.AVALANCHE]),
   [SupportedChainId.BINANCE]: new AppJsonRpcProvider(RPC_URLS[SupportedChainId.BINANCE]),
   [SupportedChainId.MOONBEAM]: new AppJsonRpcProvider(RPC_URLS[SupportedChainId.MOONBEAM]),
+  [SupportedChainId.MOONRIVER]: new AppJsonRpcProvider(RPC_URLS[SupportedChainId.MOONRIVER]),
+  [SupportedChainId.FANTOM]: new AppJsonRpcProvider(RPC_URLS[SupportedChainId.FANTOM]),
+  [SupportedChainId.ANDROMEDA]: new AppJsonRpcProvider(RPC_URLS[SupportedChainId.ANDROMEDA]),
+  [SupportedChainId.GNOSIS]: new AppJsonRpcProvider(RPC_URLS[SupportedChainId.GNOSIS]),
+  [SupportedChainId.KUCOIN]: new AppJsonRpcProvider(RPC_URLS[SupportedChainId.KUCOIN]),
 }

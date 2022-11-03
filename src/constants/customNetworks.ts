@@ -1,5 +1,9 @@
+import { ChainId } from '@sushiswap/sdk'
 import { BeamswapLibrary } from 'hooks/customNetwork/libraries/BeamSwapLibrary'
+import { KuCoinFinanceLibrary } from 'hooks/customNetwork/libraries/KuCoinFinanceLibrary'
+import { NetSwapLibrary } from 'hooks/customNetwork/libraries/NetSwapLibrary'
 import { PancakeLibrary } from 'hooks/customNetwork/libraries/PancakeLibrary'
+import { SushiSwapLibrary } from 'hooks/customNetwork/libraries/SushiSwapLibrary'
 import { TraderJoeLibrary } from 'hooks/customNetwork/libraries/TraderJoeLibrary'
 import { UniV2CustomLibrary } from 'hooks/customNetwork/libraries/UniV2CustomLibrary'
 
@@ -39,10 +43,137 @@ export const SWAP_HOP_ASSETS: {
     { address: '0xeFAeeE334F0Fd1712f9a8cc375f427D9Cdd40d73', name: 'multiUSDT', symbol: 'USDT', decimals: 6 },
     { address: '0xA649325Aa7C5093d12D6F98EB4378deAe68CE23F', name: 'multiBUSD', symbol: 'BUSD', decimals: 18 },
   ],
+  [SupportedChainId.MOONRIVER]: [
+    { address: '0xf50225a84382c74CbdeA10b0c176f71fc3DE0C4d', name: 'Wrapped Moonriver', symbol: 'WMOVR', decimals: 18 },
+    { address: '0xE3F5a90F9cb311505cd691a46596599aA1A0AD7D', name: 'USD Coin - AnySwap', symbol: 'USDC', decimals: 6 },
+    {
+      address: '0x80A16016cC4A2E6a2CACA8a4a498b1699fF0f844',
+      name: 'Dai Stablecoin - AnySwap',
+      symbol: 'DAI',
+      decimals: 18,
+    },
+    {
+      address: '0x639A647fbe20b6c8ac19E48E2de44ea792c62c5C',
+      name: 'Wrapped Ether - AnySwap',
+      symbol: 'WETH',
+      decimals: 18,
+    },
+    {
+      address: '0xB44a9B6905aF7c801311e8F4E76932ee959c663C',
+      name: 'Tether USD - AnySwap',
+      symbol: 'USDT',
+      decimals: 6,
+    },
+    {
+      address: '0x5D9ab5522c64E1F6ef5e3627ECCc093f56167818',
+      name: 'Binance USD - AnySwap',
+      symbol: 'BUSD',
+      decimals: 18,
+    },
+  ],
+  [SupportedChainId.FANTOM]: [
+    { address: '0x21be370D5312f44cB42ce377BC9b8a0cEF1A4C83', name: 'Wrapped Fantom', symbol: 'WFTM', decimals: 18 },
+    { address: '0x04068DA6C83AFCFA0e13ba15A6696662335D5B75', name: 'USD Coin', symbol: 'USDC', decimals: 6 },
+    {
+      address: '0x8D11eC38a3EB5E956B052f67Da8Bdc9bef8Abf3E',
+      name: 'Dai Stablecoin',
+      symbol: 'DAI',
+      decimals: 18,
+    },
+    {
+      address: '0x74b23882a30290451A17c44f4F05243b6b58C76d',
+      name: 'Wrapped Ether',
+      symbol: 'WETH',
+      decimals: 18,
+    },
+    {
+      address: '0x049d68029688eAbF473097a2fC38ef61633A3C7A',
+      name: 'Frapped USDT',
+      symbol: 'fUSDT',
+      decimals: 6,
+    },
+  ],
+  [SupportedChainId.ANDROMEDA]: [
+    { address: '0xa5B55ab1dAF0F8e1EFc0eB1931a957fd89B918f4', name: 'Wrapped BTC', symbol: 'WBTC', decimals: 18 },
+    { address: '0xea32a96608495e54156ae48931a7c20f0dcc1a21', name: 'USDC Token', symbol: 'm.USDC', decimals: 6 },
+    {
+      address: '0x4c078361fc9bbb78df910800a991c7c3dd2f6ce0',
+      name: 'Dai Token',
+      symbol: 'm.DAI',
+      decimals: 18,
+    },
+    {
+      address: '0x420000000000000000000000000000000000000a',
+      name: 'Ether',
+      symbol: 'WETH',
+      decimals: 18,
+    },
+    {
+      address: '0xbb06dca3ae6887fabf931640f67cab3e3a16f4dc',
+      name: 'USDT Token',
+      symbol: 'm.USDT',
+      decimals: 6,
+    },
+    {
+      address: '0xb809cda0c2f79f43248c32b5dcb09d5cd26bbf10',
+      name: 'Binance USD',
+      symbol: 'm.BUSD',
+      decimals: 18,
+    },
+  ],
+  [SupportedChainId.GNOSIS]: [
+    { address: '0xe91D153E0b41518A2Ce8Dd3D7944Fa863463a97d', name: 'Wrapped xDai', symbol: 'WXDAI', decimals: 18 },
+    { address: '0xDDAfbb505ad214D7b80b1f830fcCc89B60fb7A83', name: 'USDC on xDai', symbol: 'USDC', decimals: 6 },
+    {
+      address: '0x6A023CCd1ff6F2045C3309768eAd9E68F978f6e1',
+      name: 'Wrapped Ether on xDai',
+      symbol: 'WETH',
+      decimals: 18,
+    },
+    {
+      address: '0x4ECaBa5870353805a9F068101A40E0f32ed605C6',
+      name: 'Tether on xDai',
+      symbol: 'USDT',
+      decimals: 6,
+    },
+    {
+      address: '0x8e5bBbb09Ed1ebdE8674Cda39A0c169401db4252',
+      name: 'Wrapped BTC on xDai',
+      symbol: 'WBTC',
+      decimals: 18,
+    },
+  ],
+  [SupportedChainId.KUCOIN]: [
+    { address: '0x4446Fc4eb47f2f6586f9fAAb68B3498F86C07521', name: 'Wrapped KCS', symbol: 'WKCS', decimals: 18 },
+    { address: '0x980a5AfEf3D17aD98635F6C5aebCBAedEd3c3430', name: 'KCC-Peg USD Coin', symbol: 'USDC', decimals: 18 },
+    {
+      address: '0xf55aF137A98607F7ED2eFEfA4cd2DfE70E4253b1',
+      name: 'KCC-Peg ETH Coin',
+      symbol: 'ETH',
+      decimals: 18,
+    },
+    {
+      address: '0x0039f574eE5cC39bdD162E9A88e3EB1f111bAF48',
+      name: 'KCC-Peg Tether USD',
+      symbol: 'USDT',
+      decimals: 18,
+    },
+    {
+      address: '0x218c3c3D49d0E7B37aff0D8bB079de36Ae61A4c0',
+      name: 'Wrapped Bitcoin',
+      symbol: 'WBTC',
+      decimals: 18,
+    },
+  ],
 }
 
 export const LIBRARIES: { [chainId: number]: UniV2CustomLibrary } = {
   [SupportedChainId.AVALANCHE]: new TraderJoeLibrary(),
   [SupportedChainId.BINANCE]: new PancakeLibrary(),
   [SupportedChainId.MOONBEAM]: new BeamswapLibrary(),
+  [SupportedChainId.MOONRIVER]: new SushiSwapLibrary(ChainId.MOONRIVER),
+  [SupportedChainId.FANTOM]: new SushiSwapLibrary(ChainId.FANTOM),
+  [SupportedChainId.ANDROMEDA]: new NetSwapLibrary(),
+  [SupportedChainId.GNOSIS]: new SushiSwapLibrary(ChainId.XDAI),
+  [SupportedChainId.KUCOIN]: new KuCoinFinanceLibrary(),
 }

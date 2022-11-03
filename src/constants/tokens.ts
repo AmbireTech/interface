@@ -97,6 +97,27 @@ export const USDC_MOONBEAM = new Token(
   'USDC',
   'USD//C'
 )
+export const USDC_MOONRIVER = new Token(
+  SupportedChainId.MOONRIVER,
+  '0xE3F5a90F9cb311505cd691a46596599aA1A0AD7D',
+  6,
+  'USDC',
+  'USD//C'
+)
+export const USDC_FANTOM = new Token(
+  SupportedChainId.FANTOM,
+  '0x04068DA6C83AFCFA0e13ba15A6696662335D5B75',
+  6,
+  'USDC',
+  'USD//C'
+)
+export const USDC_ANDROMEDA = new Token(
+  SupportedChainId.ANDROMEDA,
+  '0xEA32A96608495e54156Ae48931A7c20f0dcc1a21',
+  6,
+  'USDC',
+  'USD//C'
+)
 export const USDC_POLYGON_MUMBAI = new Token(
   SupportedChainId.POLYGON_MUMBAI,
   '0xe11a86849d99f524cac3e7a0ec1241828e332c62',
@@ -114,6 +135,20 @@ export const PORTAL_USDC_CELO = new Token(
 export const USDC_CELO_ALFAJORES = new Token(
   SupportedChainId.CELO_ALFAJORES,
   '0x41F4a5d2632b019Ae6CE9625bE3c9CaC143AcC7D',
+  6,
+  'USDC',
+  'USD//C'
+)
+export const USDC_GNOSIS = new Token(
+  SupportedChainId.GNOSIS,
+  '0xDDAfbb505ad214D7b80b1f830fcCc89B60fb7A83',
+  6,
+  'USDC',
+  'USD//C'
+)
+export const USDC_KUCOIN = new Token(
+  SupportedChainId.KUCOIN,
+  '0x980a5AfEf3D17aD98635F6C5aebCBAedEd3c3430',
   6,
   'USDC',
   'USD//C'
@@ -163,6 +198,11 @@ export const USDC: { [chainId in USDCSupportedChainId]: Token } = {
   [SupportedChainId.AVALANCHE]: USDC_AVALANCHE,
   [SupportedChainId.MOONBEAM]: USDC_MOONBEAM,
   [SupportedChainId.BINANCE]: USDC_BINANCE,
+  [SupportedChainId.MOONRIVER]: USDC_MOONRIVER,
+  [SupportedChainId.FANTOM]: USDC_FANTOM,
+  [SupportedChainId.ANDROMEDA]: USDC_ANDROMEDA,
+  [SupportedChainId.GNOSIS]: USDC_GNOSIS,
+  [SupportedChainId.KUCOIN]: USDC_KUCOIN,
 }
 export const DAI_POLYGON = new Token(
   SupportedChainId.POLYGON,
@@ -449,6 +489,41 @@ export const WRAPPED_NATIVE_CURRENCY: { [chainId: number]: Token | undefined } =
     'WGLMR',
     'Wrapped GLMR'
   ),
+  [SupportedChainId.MOONRIVER]: new Token(
+    SupportedChainId.MOONRIVER,
+    '0xf50225a84382c74CbdeA10b0c176f71fc3DE0C4d',
+    18,
+    'WMOVR',
+    'Wrapped MOVR'
+  ),
+  [SupportedChainId.FANTOM]: new Token(
+    SupportedChainId.FANTOM,
+    '0x21be370D5312f44cB42ce377BC9b8a0cEF1A4C83',
+    18,
+    'WFTM',
+    'Wrapped Fantom'
+  ),
+  [SupportedChainId.GNOSIS]: new Token(
+    SupportedChainId.GNOSIS,
+    '0xe91D153E0b41518A2Ce8Dd3D7944Fa863463a97d',
+    18,
+    'WxDAI',
+    'Wrapped xDAI'
+  ),
+  [SupportedChainId.ANDROMEDA]: new Token(
+    SupportedChainId.ANDROMEDA,
+    '0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000',
+    18,
+    'Metis',
+    'Metis Token'
+  ),
+  [SupportedChainId.KUCOIN]: new Token(
+    SupportedChainId.KUCOIN,
+    '0x4446Fc4eb47f2f6586f9fAAb68B3498F86C07521',
+    18,
+    'WKCS',
+    'Wrapped KuCoin'
+  ),
 }
 
 export function isCelo(chainId: number): chainId is SupportedChainId.CELO | SupportedChainId.CELO_ALFAJORES {
@@ -465,6 +540,26 @@ export function isBNB(chainId: number): chainId is SupportedChainId.BINANCE {
 
 export function isMoonbeam(chainId: number): chainId is SupportedChainId.MOONBEAM {
   return chainId === SupportedChainId.MOONBEAM
+}
+
+export function isMoonriver(chainId: number): chainId is SupportedChainId.MOONRIVER {
+  return chainId === SupportedChainId.MOONRIVER
+}
+
+export function isFantom(chainId: number): chainId is SupportedChainId.FANTOM {
+  return chainId === SupportedChainId.FANTOM
+}
+
+export function isAndromeda(chainId: number): chainId is SupportedChainId.ANDROMEDA {
+  return chainId === SupportedChainId.ANDROMEDA
+}
+
+export function isGnosis(chainId: number): chainId is SupportedChainId.GNOSIS {
+  return chainId === SupportedChainId.GNOSIS
+}
+
+export function isKuCoin(chainId: number): chainId is SupportedChainId.KUCOIN {
+  return chainId === SupportedChainId.KUCOIN
 }
 
 function getCeloNativeCurrency(chainId: number) {
@@ -554,6 +649,94 @@ class MoonbeamNativeCurrency extends NativeCurrency {
   }
 }
 
+class MoonriverNativeCurrency extends NativeCurrency {
+  equals(other: Currency): boolean {
+    return other.isNative && other.chainId === this.chainId
+  }
+
+  get wrapped(): Token {
+    if (!isMoonriver(this.chainId)) throw new Error('Not moonriver')
+    const wrapped = WRAPPED_NATIVE_CURRENCY[this.chainId]
+    invariant(wrapped instanceof Token)
+    return wrapped
+  }
+
+  public constructor(chainId: number) {
+    if (!isMoonriver(chainId)) throw new Error('Not moonriver')
+    super(chainId, 18, 'MOVR', 'Moonriver MOVR')
+  }
+}
+
+class FantomNativeCurrency extends NativeCurrency {
+  equals(other: Currency): boolean {
+    return other.isNative && other.chainId === this.chainId
+  }
+
+  get wrapped(): Token {
+    if (!isFantom(this.chainId)) throw new Error('Not fantom')
+    const wrapped = WRAPPED_NATIVE_CURRENCY[this.chainId]
+    invariant(wrapped instanceof Token)
+    return wrapped
+  }
+
+  public constructor(chainId: number) {
+    if (!isFantom(chainId)) throw new Error('Not fantom')
+    super(chainId, 18, 'FTM', 'Fantom FTM')
+  }
+}
+
+class AndromedaNativeCurrency extends NativeCurrency {
+  equals(other: Currency): boolean {
+    return other.isNative && other.chainId === this.chainId
+  }
+
+  get wrapped(): Token {
+    if (!isAndromeda(this.chainId)) throw new Error('Not andromeda')
+    const wrapped = WRAPPED_NATIVE_CURRENCY[this.chainId]
+    invariant(wrapped instanceof Token)
+    return wrapped
+  }
+
+  public constructor(chainId: number) {
+    if (!isAndromeda(chainId)) throw new Error('Not andromeda')
+    super(chainId, 18, 'Metis', 'Andromeda Metis')
+  }
+}
+class GnosisNativeCurrency extends NativeCurrency {
+  equals(other: Currency): boolean {
+    return other.isNative && other.chainId === this.chainId
+  }
+
+  get wrapped(): Token {
+    if (!isGnosis(this.chainId)) throw new Error('Not gnosis')
+    const wrapped = WRAPPED_NATIVE_CURRENCY[this.chainId]
+    invariant(wrapped instanceof Token)
+    return wrapped
+  }
+
+  public constructor(chainId: number) {
+    if (!isGnosis(chainId)) throw new Error('Not gnosis')
+    super(chainId, 18, 'xDAI', 'Gnosis xDAI')
+  }
+}
+class KuCoinNativeCurrency extends NativeCurrency {
+  equals(other: Currency): boolean {
+    return other.isNative && other.chainId === this.chainId
+  }
+
+  get wrapped(): Token {
+    if (!isKuCoin(this.chainId)) throw new Error('Not kuCoin')
+    const wrapped = WRAPPED_NATIVE_CURRENCY[this.chainId]
+    invariant(wrapped instanceof Token)
+    return wrapped
+  }
+
+  public constructor(chainId: number) {
+    if (!isKuCoin(chainId)) throw new Error('Not kuCoin')
+    super(chainId, 18, 'KCS', 'KuCoin KCS')
+  }
+}
+
 export class ExtendedEther extends Ether {
   public get wrapped(): Token {
     const wrapped = WRAPPED_NATIVE_CURRENCY[this.chainId]
@@ -582,6 +765,16 @@ export function nativeOnChain(chainId: number): NativeCurrency | Token {
     nativeCurrency = new BnbNativeCurrency(chainId)
   } else if (isMoonbeam(chainId)) {
     nativeCurrency = new MoonbeamNativeCurrency(chainId)
+  } else if (isMoonriver(chainId)) {
+    nativeCurrency = new MoonriverNativeCurrency(chainId)
+  } else if (isFantom(chainId)) {
+    nativeCurrency = new FantomNativeCurrency(chainId)
+  } else if (isAndromeda(chainId)) {
+    nativeCurrency = new AndromedaNativeCurrency(chainId)
+  } else if (isGnosis(chainId)) {
+    nativeCurrency = new GnosisNativeCurrency(chainId)
+  } else if (isKuCoin(chainId)) {
+    nativeCurrency = new KuCoinNativeCurrency(chainId)
   } else {
     nativeCurrency = ExtendedEther.onChain(chainId)
   }
@@ -605,5 +798,10 @@ export const TOKEN_SHORTHANDS: { [shorthand: string]: { [chainId in SupportedCha
     [SupportedChainId.ROPSTEN]: USDC_ROPSTEN.address,
     [SupportedChainId.AVALANCHE]: USDC_AVALANCHE.address,
     [SupportedChainId.BINANCE]: USDC_BINANCE.address,
+    [SupportedChainId.MOONRIVER]: USDC_MOONRIVER.address,
+    [SupportedChainId.FANTOM]: USDC_FANTOM.address,
+    [SupportedChainId.ANDROMEDA]: USDC_ANDROMEDA.address,
+    [SupportedChainId.GNOSIS]: USDC_GNOSIS.address,
+    [SupportedChainId.KUCOIN]: USDC_KUCOIN.address,
   },
 }

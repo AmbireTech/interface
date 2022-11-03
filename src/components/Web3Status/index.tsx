@@ -190,33 +190,27 @@ function Web3StatusInnerDefault() {
   return <BaseWeb3StatusInner useBestTradeHook={useBestTrade} />
 }
 
-function Web3StatusInnerAvalanche() {
-  return <BaseWeb3StatusInner useBestTradeHook={useCustomBestTrade} />
-}
-
-function Web3StatusInnerBinance() {
-  return <BaseWeb3StatusInner useBestTradeHook={useCustomBestTrade} />
-}
-
-function Web3StatusInnerMoonbeam() {
+function Web3StatusInnerCustom() {
   return <BaseWeb3StatusInner useBestTradeHook={useCustomBestTrade} />
 }
 
 function Web3StatusInner() {
   const { chainId } = useWeb3React()
 
-  let statusInnerComponent = <Web3StatusInnerDefault />
+  const statusInnerComponent = <Web3StatusInnerDefault />
+  const statusInnerComponentCustom = <Web3StatusInnerCustom />
 
-  switch (chainId) {
-    case SupportedChainId.AVALANCHE:
-      statusInnerComponent = <Web3StatusInnerAvalanche />
-      break
-    case SupportedChainId.BINANCE:
-      statusInnerComponent = <Web3StatusInnerBinance />
-      break
-    case SupportedChainId.MOONBEAM:
-      statusInnerComponent = <Web3StatusInnerMoonbeam />
-      break
+  if (
+    chainId === SupportedChainId.AVALANCHE ||
+    chainId === SupportedChainId.BINANCE ||
+    chainId === SupportedChainId.MOONBEAM ||
+    chainId === SupportedChainId.MOONRIVER ||
+    chainId === SupportedChainId.FANTOM ||
+    chainId === SupportedChainId.ANDROMEDA ||
+    chainId === SupportedChainId.GNOSIS ||
+    chainId === SupportedChainId.KUCOIN
+  ) {
+    return statusInnerComponentCustom
   }
 
   return statusInnerComponent

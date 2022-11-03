@@ -1,3 +1,11 @@
+import type { TokenList } from '@uniswap/token-lists'
+import {
+  formatFantomList,
+  formatGnosisList,
+  formatKuCoinList,
+  formatMoonriverList,
+} from 'lib/hooks/useTokenList/listFormatters'
+
 export const UNI_LIST = 'https://tokens.uniswap.org'
 export const UNI_EXTENDED_LIST = 'https://extendedtokens.uniswap.org/'
 const UNI_UNSUPPORTED_LISTS = 'https://unsupportedtokens.uniswap.org/'
@@ -25,6 +33,20 @@ export const BINANCE_PANCAKE_SWAP_LIST =
 export const MOONBEAM_BEAMSWAP_LIST =
   'https://raw.githubusercontent.com/BeamSwap/beamswap-tokenlist/main/tokenlist.json'
 
+export const MOONRIVER_SUSHI_SWAP_LIST =
+  'https://raw.githubusercontent.com/sushiswap/list/master/lists/token-lists/default-token-list/tokens/moonriver.json'
+
+export const FANTOM_SUSHI_SWAP_LIST =
+  'https://raw.githubusercontent.com/sushiswap/list/master/lists/token-lists/default-token-list/tokens/fantom.json'
+
+export const ANDROMEDA_NET_SWAP_LIST =
+  'https://raw.githubusercontent.com/Netswap/token-lists/master/top100.tokenlist.json'
+
+export const GNOSIS_SUSHI_SWAP_LIST =
+  'https://raw.githubusercontent.com/sushiswap/list/master/lists/token-lists/default-token-list/tokens/xdai.json'
+
+export const KUCOIN_LIST = 'https://raw.githubusercontent.com/KuSwap/kusTokenList/master/v1/kuswaptokenlist.json'
+
 export const UNSUPPORTED_LIST_URLS: string[] = [BA_LIST, UNI_UNSUPPORTED_LISTS]
 
 // this is the default list of lists that are exposed to users
@@ -47,6 +69,11 @@ const DEFAULT_LIST_OF_LISTS_TO_DISPLAY: string[] = [
   AVAX_TRADER_JOE_LIST,
   BINANCE_PANCAKE_SWAP_LIST,
   MOONBEAM_BEAMSWAP_LIST,
+  MOONRIVER_SUSHI_SWAP_LIST,
+  FANTOM_SUSHI_SWAP_LIST,
+  ANDROMEDA_NET_SWAP_LIST,
+  GNOSIS_SUSHI_SWAP_LIST,
+  KUCOIN_LIST,
 ]
 
 export const DEFAULT_LIST_OF_LISTS: string[] = [
@@ -61,4 +88,16 @@ export const DEFAULT_ACTIVE_LIST_URLS: string[] = [
   AVAX_TRADER_JOE_LIST,
   BINANCE_PANCAKE_SWAP_LIST,
   MOONBEAM_BEAMSWAP_LIST,
+  MOONRIVER_SUSHI_SWAP_LIST,
+  FANTOM_SUSHI_SWAP_LIST,
+  ANDROMEDA_NET_SWAP_LIST,
+  GNOSIS_SUSHI_SWAP_LIST,
+  KUCOIN_LIST,
 ]
+
+export const LIST_FORMATTERS: { [listUrl: string]: (json: any) => TokenList } = {
+  [MOONRIVER_SUSHI_SWAP_LIST]: formatMoonriverList,
+  [FANTOM_SUSHI_SWAP_LIST]: formatFantomList,
+  [GNOSIS_SUSHI_SWAP_LIST]: formatGnosisList,
+  [KUCOIN_LIST]: formatKuCoinList,
+}
