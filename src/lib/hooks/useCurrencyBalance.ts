@@ -1,12 +1,11 @@
 import { Interface } from '@ethersproject/abi'
-import { CallState } from '@uniswap/redux-multicall'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 import ERC20ABI from 'abis/erc20.json'
 import { Erc20Interface } from 'abis/types/Erc20'
 import JSBI from 'jsbi'
 import { CallStateResult, useMultipleContractSingleData, useSingleContractMultipleData } from 'lib/hooks/multicall'
-import { useEffect, useMemo, useState } from 'react' // re-export for convenience
+import { useEffect, useMemo } from 'react' // re-export for convenience
 
 import { nativeOnChain } from '../../constants/tokens'
 import { useInterfaceMulticall } from '../../hooks/useContract'
@@ -50,57 +49,10 @@ export function useNativeCurrencyBalances(uncheckedAddresses?: (string | undefin
 const ERC20Interface = new Interface(ERC20ABI) as Erc20Interface
 const tokenBalancesGasRequirement = { gasRequired: 185_000 }
 
-// TODO: addresses - strings ot currency balances results
-function toSingleDataResult(addresses: string[], isLoading: boolean): CallState[] {
-  const balances: CallState[] = addresses.map((addr) => {
-    return {
-      valid: true,
-      result: [addr], // TODO; match the result
-      loading: isLoading,
-      syncing: isLoading,
-      error: false,
-    }
-  })
-
-  return balances
-}
-
-function useGnosisTokenBalances(addresses: string[]): CallState[] {
-  const { connector } = useWeb3React()
-  const [isLoading, setIsLoading] = useState(true)
-  const [balancesResults, setBalancesResults] = useState<CallState[]>([])
-
-  const gnAddresses = useMemo(() => addresses, [addresses])
-
-  useEffect(() => {
-    console.log('addresses kor')
-  }, [])
-
-  // TODO: memo, syncing etc..
-  useEffect(() => {
-    console.log('addresses call', addresses)
-    setIsLoading(true)
-    setBalancesResults(toSingleDataResult(addresses || [], true))
-
-    const getBalances = async () => {
-      // @ts-ignore: Unreachable code error
-      const res = await connector?.sdk?.safe?.experimental_getBalances(addresses)
-      console.log('addresses res', res?.items || [], addresses)
-      setBalancesResults(toSingleDataResult([], true))
-      setIsLoading(false)
-    }
-
-    getBalances()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [gnAddresses])
-
-  return balancesResults
-}
-
 function useGetTokenBalanceWithEstimation(addresses: string[], address?: string): CallStateResult {
-  const { portfolioBalances, updateBalances } = usePortfolioBalances()
+  const { getPortfolioBalances } = usePortfolioBalances()
 
-  updateBalances(useMemo(() => addresses, [addresses]))
+  const portfolioBalances = getPortfolioBalances(useMemo(() => addresses, [addresses]))
 
   const balances = useMultipleContractSingleData(
     addresses,
@@ -109,6 +61,9 @@ function useGetTokenBalanceWithEstimation(addresses: string[], address?: string)
     useMemo(() => [address], [address]),
     tokenBalancesGasRequirement
   )
+
+  // console.log({ balances })
+  // console.log({ portfolioBalances })
 
   // TODO: concat and dedup gnosis balances and multcall balances
   return balances.concat(portfolioBalances)
