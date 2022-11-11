@@ -157,10 +157,11 @@ export default function SettingsTab({ placeholderSlippage }: { placeholderSlippa
             <Break />
             <AutoColumn gap="lg" style={{ padding: '0 2rem' }}>
               <Text fontWeight={500} fontSize={20}>
-                <Trans>
+                {/* <Trans>
                   Expert mode turns off the confirm transaction prompt and allows high slippage trades that often result
                   in bad rates and lost funds.
-                </Trans>
+                </Trans> */}
+                <Trans>Expert allows high slippage trades that often result in bad rates and lost funds.</Trans>
               </Text>
               <Text fontWeight={600} fontSize={20}>
                 <Trans>ONLY USE THIS MODE IF YOU KNOW WHAT YOU ARE DOING.</Trans>
@@ -238,7 +239,8 @@ export default function SettingsTab({ placeholderSlippage }: { placeholderSlippa
                 </ThemedText.DeprecatedBlack>
                 <QuestionHelper
                   text={
-                    <Trans>Allow high price impact trades and skip the confirm screen. Use at your own risk.</Trans>
+                    // <Trans>Allow high price impact trades and skip the confirm screen. Use at your own risk.</Trans>
+                    <Trans>Allow high price impact trades. Use at your own risk.</Trans>
                   }
                 />
               </RowFixed>

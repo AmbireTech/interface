@@ -9,7 +9,6 @@ import { AutoColumn } from 'components/Column'
 import { LoadingOpacityContainer } from 'components/Loader/styled'
 import Row, { RowBetween, RowFixed } from 'components/Row'
 import { MouseoverTooltipContent } from 'components/Tooltip'
-import { SUPPORTED_GAS_ESTIMATE_CHAIN_IDS } from 'constants/chains'
 import { RedesignVariant, useRedesignFlag } from 'featureFlags/flags/redesign'
 import { useState } from 'react'
 import { ChevronDown, Info } from 'react-feather'
@@ -18,7 +17,6 @@ import styled, { keyframes, useTheme } from 'styled-components/macro'
 import { HideSmall, ThemedText } from 'theme'
 
 import { AdvancedSwapDetails } from './AdvancedSwapDetails'
-import GasEstimateBadge from './GasEstimateBadge'
 import { ResponsiveTooltipContainer } from './styleds'
 import SwapRoute from './SwapRoute'
 import TradePrice from './TradePrice'
@@ -193,7 +191,7 @@ export default function SwapDetailsDropdown({
               ) : null}
             </RowFixed>
             <RowFixed>
-              {!trade?.gasUseEstimateUSD ||
+              {/* {!trade?.gasUseEstimateUSD ||
               showDetails ||
               !chainId ||
               !SUPPORTED_GAS_ESTIMATE_CHAIN_IDS.includes(chainId) ? null : (
@@ -203,7 +201,7 @@ export default function SwapDetailsDropdown({
                   showRoute={!showDetails}
                   disableHover={showDetails}
                 />
-              )}
+              )} */}
               <RotatingArrow
                 stroke={trade ? theme.deprecated_text3 : theme.deprecated_bg3}
                 open={Boolean(trade && showDetails)}
