@@ -19,7 +19,6 @@ import { getCLS, getFCP, getFID, getLCP, Metric } from 'web-vitals'
 
 import { useAnalyticsReporter } from '../components/analytics'
 import ErrorBoundary from '../components/ErrorBoundary'
-import { PageTabs } from '../components/NavBar'
 import Popups from '../components/Popups'
 import { LoadingTokenDetails } from '../components/Tokens/TokenDetails/LoadingTokenDetails'
 import { useIsExpertMode } from '../state/user/hooks'
@@ -152,7 +151,7 @@ export default function App() {
       <ApeModeQueryParamReader />
       <AppWrapper redesignFlagEnabled={redesignFlagEnabled}>
         <Trace page={currentPage}>
-          {!!isExpertMode && <HeaderWrapper>{<PageTabs />}</HeaderWrapper>}
+          {/* {!!isExpertMode && <HeaderWrapper>{<PageTabs />}</HeaderWrapper>} */}
           <BodyWrapper hasHeader={!!isExpertMode}>
             <Popups />
             {/* <Polling /> */}
