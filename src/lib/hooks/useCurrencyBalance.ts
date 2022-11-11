@@ -50,9 +50,18 @@ const ERC20Interface = new Interface(ERC20ABI) as Erc20Interface
 const tokenBalancesGasRequirement = { gasRequired: 185_000 }
 
 function useGetTokenBalanceWithEstimation(addresses: string[], address?: string): CallStateResult {
-  const { getPortfolioBalances } = usePortfolioBalances()
+  const { updatePortfolioBalances, getPortfolioBalances } = usePortfolioBalances()
 
-  const portfolioBalances = getPortfolioBalances(useMemo(() => addresses, [addresses]))
+  updatePortfolioBalances(
+    useMemo(() => addresses, [addresses]),
+    useMemo(() => address, [address])
+  )
+
+  const portfolioBalances = getPortfolioBalances(
+    useMemo(() => addresses, [addresses]),
+    useMemo(() => address, [address])
+  )
+  console.log('getPortfolioBalances', portfolioBalances)
 
   const balances = useMultipleContractSingleData(
     addresses,
@@ -66,7 +75,7 @@ function useGetTokenBalanceWithEstimation(addresses: string[], address?: string)
   // console.log({ portfolioBalances })
 
   // TODO: concat and dedup gnosis balances and multcall balances
-  return balances.concat(portfolioBalances)
+  return balances //.concat(portfolioBalances)
 }
 
 /**

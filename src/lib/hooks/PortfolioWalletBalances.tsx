@@ -4,29 +4,17 @@ import { useWeb3React } from '@web3-react/core'
 import { createContext, FC, PropsWithChildren, useCallback, useContext, useEffect, useState } from 'react'
 
 export interface IPortfolioBalancesContext {
-  portfolioBalances: Array<CallState> // CallStateResult
-  getPortfolioBalances: (addresses: string[]) => Array<CallState>
+  // portfolioBalances: Array<CallState> // CallStateResult
+  updatePortfolioBalances: (tokensAddresses: string[], address?: string) => void
+  getPortfolioBalances: (tokensAddresses: string[], address?: string) => Array<CallState>
 }
 
 const PortfolioBalancesContext = createContext<IPortfolioBalancesContext>({
-  portfolioBalances: [],
+  updatePortfolioBalances: () => {
+    // banana
+  },
   getPortfolioBalances: () => [],
 })
-
-// TODO: addresses - strings ot currency balances results
-function toSingleDataResult(addresses: string[], isLoading: boolean): CallState[] {
-  const balances: CallState[] = addresses.map((addr) => {
-    return {
-      valid: true,
-      result: [addr], // TODO; match the result
-      loading: isLoading,
-      syncing: isLoading,
-      error: false,
-    }
-  })
-
-  return balances
-}
 
 const PortfolioBalances: FC<PropsWithChildren> = ({ children }: PropsWithChildren) => {
   const { connector, chainId } = useWeb3React()
@@ -37,31 +25,57 @@ const PortfolioBalances: FC<PropsWithChildren> = ({ children }: PropsWithChildre
   }, [])
 
   // const [isLoading, setIsLoading] = useState(true)
-  const [portfolioBalances, setPortfolioBalances] = useState<CallState[]>([])
-  const getPortfolioBalances = useCallback(
-    (addresses: string[]) => {
-      console.log('addresses call', addresses)
-      setIsLoading(true)
-      setPortfolioBalances(toSingleDataResult(addresses || [], true))
+  // { address: { chainId: { [tokenAddr]: 'stringBalance' } }  }
+  const [portfolioBalances, setPortfolioBalances] = useState<{
+    [key: string]: { [key: number]: { [key: string]: string } }
+  }>({})
 
+  const updatePortfolioBalances = useCallback(
+    (addresses: string[], address?: string) => {
       const getBalances = async () => {
         // @ts-ignore: Unreachable code error
+
         const res = await connector?.sdk?.safe?.experimental_getBalances(addresses)
-        console.log('addresses res', res?.items || [], addresses)
-        setPortfolioBalances(toSingleDataResult([], isLoading))
+        console.log('updatePortfolioBalances res', res?.items || [], addresses)
+
+        // TODO: check the adders or update the balances with the current safe address
+        // TODO: update balances func
+        setPortfolioBalances({})
         setIsLoading(false)
       }
-
       getBalances()
-      return portfolioBalances
+    },
+    // @ts-ignore
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [connector?.sdk?.safe?.isServer, chainId]
+  )
+
+  const getPortfolioBalances = useCallback(
+    (addresses: string[], address?: string) => {
+      if (address && chainId) {
+        return addresses.map(([tokenAddr]) => {
+          const balance = portfolioBalances[address][chainId][tokenAddr]
+          const hasBalance = balance !== undefined
+          return {
+            valid: true,
+            result: hasBalance ? [balance] : [], // TODO; match the result
+            loading: !hasBalance,
+            syncing: !hasBalance,
+            error: false,
+          }
+        })
+      } else {
+        return []
+      }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     // @ts-ignore
-    [portfolioBalances, connector?.sdk?.safe, chainId]
+    [chainId, portfolioBalances]
+    // [isLoading]
   )
 
   return (
-    <PortfolioBalancesContext.Provider value={{ portfolioBalances, getPortfolioBalances }}>
+    <PortfolioBalancesContext.Provider value={{ getPortfolioBalances, updatePortfolioBalances }}>
       {children}
     </PortfolioBalancesContext.Provider>
   )
