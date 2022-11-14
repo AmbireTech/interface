@@ -1,10 +1,8 @@
 import { Trans } from '@lingui/macro'
 import { Currency, Percent, TradeType } from '@uniswap/sdk-core'
-import { useWeb3React } from '@web3-react/core'
 import Card from 'components/Card'
 import { LoadingRows } from 'components/Loader/styled'
 import { RedesignVariant, useRedesignFlag } from 'featureFlags/flags/redesign'
-import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 import { useMemo } from 'react'
 import { InterfaceTrade } from 'state/routing/types'
 import styled, { useTheme } from 'styled-components/macro'
@@ -52,8 +50,8 @@ export function AdvancedSwapDetails({
   hideInfoTooltips = false,
 }: AdvancedSwapDetailsProps) {
   const theme = useTheme()
-  const { chainId } = useWeb3React()
-  const nativeCurrency = useNativeCurrency()
+  // const { chainId } = useWeb3React()
+  // const nativeCurrency = useNativeCurrency()
   const redesignFlag = useRedesignFlag()
   const redesignFlagEnabled = redesignFlag === RedesignVariant.Enabled
 

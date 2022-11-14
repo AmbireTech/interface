@@ -1,6 +1,5 @@
 import { Trans } from '@lingui/macro'
 import { Currency, Percent, TradeType } from '@uniswap/sdk-core'
-import { useWeb3React } from '@web3-react/core'
 import { ElementName, Event, EventName } from 'analytics/constants'
 import { TraceEvent } from 'analytics/TraceEvent'
 import AnimatedDropdown from 'components/AnimatedDropdown'
@@ -126,7 +125,7 @@ export default function SwapDetailsDropdown({
   allowedSlippage,
 }: SwapDetailsInlineProps) {
   const theme = useTheme()
-  const { chainId } = useWeb3React()
+  // const { chainId } = useWeb3React()
   const [showDetails, setShowDetails] = useState(false)
   const redesignFlag = useRedesignFlag()
   const redesignFlagEnabled = redesignFlag === RedesignVariant.Enabled
