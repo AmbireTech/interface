@@ -3,6 +3,7 @@ import { Currency, Token } from '@uniswap/sdk-core'
 
 import { SupportedChainId } from './chains'
 import {
+  ADX,
   AMPL,
   CEUR_CELO,
   CEUR_CELO_ALFAJORES,
@@ -41,6 +42,7 @@ import {
   USDT_ARBITRUM_ONE,
   USDT_OPTIMISM,
   USDT_POLYGON,
+  WALLET,
   WBTC,
   WBTC_ARBITRUM_ONE,
   WBTC_OPTIMISM,
@@ -132,6 +134,8 @@ export const CUSTOM_BASES: { [chainId: number]: { [tokenAddress: string]: Token[
 export const COMMON_BASES: ChainCurrencyList = {
   [SupportedChainId.MAINNET]: [
     nativeOnChain(SupportedChainId.MAINNET),
+    WALLET,
+    ADX,
     DAI,
     USDC_MAINNET,
     USDT,

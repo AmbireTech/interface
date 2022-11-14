@@ -181,6 +181,20 @@ export const DAI_OPTIMISM = new Token(
   'DAI',
   'Dai stable coin'
 )
+export const WALLET = new Token(
+  SupportedChainId.MAINNET,
+  '0x88800092fF476844f74dC2FC427974BBee2794Ae',
+  18,
+  'WALLET',
+  'Ambire Wallet'
+)
+export const ADX = new Token(
+  SupportedChainId.MAINNET,
+  '0xADE00C28244d5CE17D72E40330B1c318cD12B7c3',
+  18,
+  'ADX',
+  'AdEx Network'
+)
 export const USDC: { [chainId in USDCSupportedChainId]: Token } = {
   [SupportedChainId.MAINNET]: USDC_MAINNET,
   [SupportedChainId.ARBITRUM_ONE]: USDC_ARBITRUM,
