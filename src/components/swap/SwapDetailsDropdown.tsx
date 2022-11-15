@@ -1,6 +1,5 @@
 import { Trans } from '@lingui/macro'
 import { Currency, Percent, TradeType } from '@uniswap/sdk-core'
-import { useWeb3React } from '@web3-react/core'
 import { ElementName, Event, EventName } from 'analytics/constants'
 import { TraceEvent } from 'analytics/TraceEvent'
 import AnimatedDropdown from 'components/AnimatedDropdown'
@@ -9,7 +8,6 @@ import { AutoColumn } from 'components/Column'
 import { LoadingOpacityContainer } from 'components/Loader/styled'
 import Row, { RowBetween, RowFixed } from 'components/Row'
 import { MouseoverTooltipContent } from 'components/Tooltip'
-import { SUPPORTED_GAS_ESTIMATE_CHAIN_IDS } from 'constants/chains'
 import { RedesignVariant, useRedesignFlag } from 'featureFlags/flags/redesign'
 import { useState } from 'react'
 import { ChevronDown, Info } from 'react-feather'
@@ -18,7 +16,6 @@ import styled, { keyframes, useTheme } from 'styled-components/macro'
 import { HideSmall, ThemedText } from 'theme'
 
 import { AdvancedSwapDetails } from './AdvancedSwapDetails'
-import GasEstimateBadge from './GasEstimateBadge'
 import { ResponsiveTooltipContainer } from './styleds'
 import SwapRoute from './SwapRoute'
 import TradePrice from './TradePrice'
@@ -128,7 +125,7 @@ export default function SwapDetailsDropdown({
   allowedSlippage,
 }: SwapDetailsInlineProps) {
   const theme = useTheme()
-  const { chainId } = useWeb3React()
+  // const { chainId } = useWeb3React()
   const [showDetails, setShowDetails] = useState(false)
   const redesignFlag = useRedesignFlag()
   const redesignFlagEnabled = redesignFlag === RedesignVariant.Enabled
@@ -193,7 +190,7 @@ export default function SwapDetailsDropdown({
               ) : null}
             </RowFixed>
             <RowFixed>
-              {!trade?.gasUseEstimateUSD ||
+              {/* {!trade?.gasUseEstimateUSD ||
               showDetails ||
               !chainId ||
               !SUPPORTED_GAS_ESTIMATE_CHAIN_IDS.includes(chainId) ? null : (
@@ -203,7 +200,7 @@ export default function SwapDetailsDropdown({
                   showRoute={!showDetails}
                   disableHover={showDetails}
                 />
-              )}
+              )} */}
               <RotatingArrow
                 stroke={trade ? theme.deprecated_text3 : theme.deprecated_bg3}
                 open={Boolean(trade && showDetails)}

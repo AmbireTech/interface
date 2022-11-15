@@ -18,9 +18,10 @@ const transactionSlice = createSlice({
   initialState,
   reducers: {
     addTransaction(transactions, { payload: { chainId, from, hash, info } }) {
-      if (transactions[chainId]?.[hash]) {
-        throw Error('Attempted to add existing transaction.')
-      }
+      // NOTE: Do no throw, because with ambire wallet this is expected degen behavior
+      // if (transactions[chainId]?.[hash]) {
+      //   throw Error('Attempted to add existing transaction.')
+      // }
       const txs = transactions[chainId] ?? {}
       txs[hash] = { hash, info, from, addedTime: now() }
       transactions[chainId] = txs

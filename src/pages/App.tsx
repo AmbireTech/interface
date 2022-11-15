@@ -13,13 +13,11 @@ import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import { useIsDarkMode } from 'state/user/hooks'
 import styled from 'styled-components/macro'
 import { SpinnerSVG } from 'theme/components'
-import { Z_INDEX } from 'theme/zIndex'
 import { getBrowser } from 'utils/browser'
 import { getCLS, getFCP, getFID, getLCP, Metric } from 'web-vitals'
 
 import { useAnalyticsReporter } from '../components/analytics'
 import ErrorBoundary from '../components/ErrorBoundary'
-import { PageTabs } from '../components/NavBar'
 import Popups from '../components/Popups'
 import { LoadingTokenDetails } from '../components/Tokens/TokenDetails/LoadingTokenDetails'
 import { useIsExpertMode } from '../state/user/hooks'
@@ -65,14 +63,14 @@ const BodyWrapper = styled.div<{ hasHeader: boolean }>`
   flex: 1;
 `
 
-const HeaderWrapper = styled.div`
-  ${({ theme }) => theme.flexRowNoWrap}
-  width: 100%;
-  justify-content: space-between;
-  position: fixed;
-  top: 0;
-  z-index: ${Z_INDEX.sticky};
-`
+// const HeaderWrapper = styled.div`
+//   ${({ theme }) => theme.flexRowNoWrap}
+//   width: 100%;
+//   justify-content: space-between;
+//   position: fixed;
+//   top: 0;
+//   z-index: ${Z_INDEX.sticky};
+// `
 
 const Marginer = styled.div`
   margin-top: 5rem;
@@ -152,7 +150,7 @@ export default function App() {
       <ApeModeQueryParamReader />
       <AppWrapper redesignFlagEnabled={redesignFlagEnabled}>
         <Trace page={currentPage}>
-          {!!isExpertMode && <HeaderWrapper>{<PageTabs />}</HeaderWrapper>}
+          {/* {!!isExpertMode && <HeaderWrapper>{<PageTabs />}</HeaderWrapper>} */}
           <BodyWrapper hasHeader={!!isExpertMode}>
             <Popups />
             {/* <Polling /> */}

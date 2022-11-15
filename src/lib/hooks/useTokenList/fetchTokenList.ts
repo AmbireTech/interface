@@ -1,4 +1,5 @@
 import type { TokenList } from '@uniswap/token-lists'
+import { LIST_FORMATTERS } from 'constants/lists'
 import contenthashToUri from 'lib/utils/contenthashToUri'
 import parseENSAddress from 'lib/utils/parseENSAddress'
 import uriToHttp from 'lib/utils/uriToHttp'
@@ -64,7 +65,11 @@ export default async function fetchTokenList(
       continue
     }
 
-    const json = await response.json()
+    let json = await response.json()
+    const listFormatter = LIST_FORMATTERS[url]
+    if (listFormatter) {
+      json = listFormatter(json)
+    }
     const list = skipValidation ? json : await validateTokenList(json)
     listCache?.set(listUrl, list)
     return list

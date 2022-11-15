@@ -21,10 +21,8 @@ import { MouseoverTooltip } from 'components/Tooltip'
 import { isSupportedChain, SupportedChainId } from 'constants/chains'
 import { NavBarVariant, useNavBarFlag } from 'featureFlags/flags/navBar'
 import { RedesignVariant, useRedesignFlag } from 'featureFlags/flags/redesign'
-import { useJoeBestTrade } from 'hooks/avalanche/useJoeBestTrade'
-import { useJoeSwapCallArguments } from 'hooks/avalanche/useJoeSwapCallArguments'
-import { usePancakeBestTrade } from 'hooks/binance/usePancakeBestTrade'
-import { usePancakeSwapCallArguments } from 'hooks/binance/usePancakeSwapCallArguments'
+import { useCustomBestTrade } from 'hooks/customNetwork/useCustomBestTrade'
+import { useCustomSwapCallArguments } from 'hooks/customNetwork/useCustomSwapCallArguments'
 import { useBestTrade } from 'hooks/useBestTrade'
 import { useSwapCallArguments } from 'hooks/useSwapCallArguments'
 import { useSwapCallback } from 'hooks/useSwapCallback'
@@ -186,26 +184,27 @@ export function SwapDefault() {
   return <BaseSwap useBestTradeHook={useBestTrade} useSwapCallArgumentsHook={useSwapCallArguments} />
 }
 
-export function SwapAvalanche() {
-  return <BaseSwap useBestTradeHook={useJoeBestTrade} useSwapCallArgumentsHook={useJoeSwapCallArguments} />
-}
-
-export function SwapBinance() {
-  return <BaseSwap useBestTradeHook={usePancakeBestTrade} useSwapCallArgumentsHook={usePancakeSwapCallArguments} />
+export function SwapCustom() {
+  return <BaseSwap useBestTradeHook={useCustomBestTrade} useSwapCallArgumentsHook={useCustomSwapCallArguments} />
 }
 
 export default function Swap() {
   const { chainId } = useWeb3React()
 
-  let swapComponent = <SwapDefault />
+  const swapComponent = <SwapDefault />
+  const swapComponentCustom = <SwapCustom />
 
-  switch (chainId) {
-    case SupportedChainId.AVALANCHE:
-      swapComponent = <SwapAvalanche />
-      break
-    case SupportedChainId.BINANCE:
-      swapComponent = <SwapBinance />
-      break
+  if (
+    chainId === SupportedChainId.AVALANCHE ||
+    chainId === SupportedChainId.BINANCE ||
+    chainId === SupportedChainId.MOONBEAM ||
+    chainId === SupportedChainId.MOONRIVER ||
+    chainId === SupportedChainId.FANTOM ||
+    chainId === SupportedChainId.ANDROMEDA ||
+    chainId === SupportedChainId.GNOSIS ||
+    chainId === SupportedChainId.KUCOIN
+  ) {
+    return swapComponentCustom
   }
 
   return swapComponent
@@ -430,10 +429,22 @@ export function BaseSwap(props: { useBestTradeHook: TradeHook; useSwapCallArgume
     if (stablecoinPriceImpact && !confirmPriceImpactWithoutFee(stablecoinPriceImpact)) {
       return
     }
-    setSwapState({ attemptingTxn: true, tradeToConfirm, showConfirm, swapErrorMessage: undefined, txHash: undefined })
+    setSwapState({
+      attemptingTxn: true,
+      tradeToConfirm,
+      showConfirm: false, // Wallet specific
+      swapErrorMessage: undefined,
+      txHash: undefined,
+    })
     swapCallback()
       .then((hash) => {
-        setSwapState({ attemptingTxn: false, tradeToConfirm, showConfirm, swapErrorMessage: undefined, txHash: hash })
+        setSwapState({
+          attemptingTxn: false,
+          tradeToConfirm,
+          showConfirm: false, // Wallet specific
+          swapErrorMessage: undefined,
+          txHash: hash,
+        })
         sendEvent({
           category: 'Swap',
           action: 'transaction hash',
@@ -453,19 +464,20 @@ export function BaseSwap(props: { useBestTradeHook: TradeHook; useSwapCallArgume
         })
       })
       .catch((error) => {
-        setSwapState({
-          attemptingTxn: false,
-          tradeToConfirm,
-          showConfirm,
-          swapErrorMessage: error.message,
-          txHash: undefined,
-        })
+        // NOTE: let wallet show the errors
+        // setSwapState({
+        //   attemptingTxn: false,
+        //   tradeToConfirm,
+        //   showConfirm: false, // Wallet specific
+        //   swapErrorMessage: error.message,
+        //   txHash: undefined,
+        // })
       })
   }, [
     swapCallback,
     stablecoinPriceImpact,
     tradeToConfirm,
-    showConfirm,
+    // showConfirm,
     recipient,
     recipientAddress,
     account,
@@ -792,17 +804,18 @@ export function BaseSwap(props: { useBestTradeHook: TradeHook; useSwapCallArgume
                       </ButtonConfirmed>
                       <ButtonError
                         onClick={() => {
-                          if (isExpertMode) {
-                            handleSwap()
-                          } else {
-                            setSwapState({
-                              tradeToConfirm: trade,
-                              attemptingTxn: false,
-                              swapErrorMessage: undefined,
-                              showConfirm: true,
-                              txHash: undefined,
-                            })
-                          }
+                          // Show swap confirm always
+                          // if (isExpertMode) {
+                          //   handleSwap()
+                          // } else {
+                          setSwapState({
+                            tradeToConfirm: trade,
+                            attemptingTxn: false,
+                            swapErrorMessage: undefined,
+                            showConfirm: true,
+                            txHash: undefined,
+                          })
+                          // }
                         }}
                         width="100%"
                         id="swap-button"
@@ -830,17 +843,18 @@ export function BaseSwap(props: { useBestTradeHook: TradeHook; useSwapCallArgume
                 ) : (
                   <ButtonError
                     onClick={() => {
-                      if (isExpertMode) {
-                        handleSwap()
-                      } else {
-                        setSwapState({
-                          tradeToConfirm: trade,
-                          attemptingTxn: false,
-                          swapErrorMessage: undefined,
-                          showConfirm: true,
-                          txHash: undefined,
-                        })
-                      }
+                      // Show swap confirm always
+                      // if (isExpertMode) {
+                      //   handleSwap()
+                      // } else {
+                      setSwapState({
+                        tradeToConfirm: trade,
+                        attemptingTxn: false,
+                        swapErrorMessage: undefined,
+                        showConfirm: true,
+                        txHash: undefined,
+                      })
+                      // }
                     }}
                     id="swap-button"
                     disabled={!isValid || routeIsSyncing || routeIsLoading || priceImpactTooHigh || !!swapCallbackError}
