@@ -50,12 +50,7 @@ const ERC20Interface = new Interface(ERC20ABI) as Erc20Interface
 const tokenBalancesGasRequirement = { gasRequired: 185_000 }
 
 function useGetTokenBalanceWithEstimation(addresses: string[], address?: string): CallStateResult {
-  const { updatePortfolioBalances, getPortfolioBalances } = usePortfolioBalances()
-
-  updatePortfolioBalances(
-    useMemo(() => addresses, [addresses]),
-    useMemo(() => address, [address])
-  )
+  const { getPortfolioBalances } = usePortfolioBalances()
 
   const portfolioBalances = getPortfolioBalances(
     useMemo(() => addresses, [addresses]),
