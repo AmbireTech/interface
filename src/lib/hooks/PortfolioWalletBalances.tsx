@@ -67,6 +67,27 @@ const PortfolioBalances: FC<PropsWithChildren> = ({ children }: PropsWithChildre
 
         // @ts-ignore: Unreachable code error
         const res = await connector?.sdk?.safe?.experimental_getBalances({ currency: addresses })
+
+        const withBalances = res.filter((x: { balance?: undefined }) => x?.balance !== undefined)
+
+        setPortfolioBalances((prevBalances) => {
+          const newBalances = { ...prevBalances }
+          newBalances[address] = { ...(newBalances[address] || {}) }
+          newBalances[address][chainId] = { ...(newBalances[address][chainId] || {}) }
+
+          // @ts-ignore: Unreachable code error
+          withBalances.forEach(({ address, balance }) => {
+            newBalances[address][chainId][address] = newBalances[address][chainId][address] || {
+              loading: true,
+              syncing: true,
+              balance,
+            }
+          })
+
+          return newBalances
+        })
+
+        // console.log('gnosisres res', res)
         // console.log('updatePortfolioBalances res', res?.items || [], addresses)
         // TODO: check the adders or update the balances with the current safe address
         // TODO: update balances func
