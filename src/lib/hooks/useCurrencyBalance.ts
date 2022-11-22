@@ -56,7 +56,7 @@ function useGetTokenBalanceWithEstimation(addresses: string[], address?: string)
     useMemo(() => addresses, [addresses]),
     useMemo(() => address, [address])
   )
-  console.log('getPortfolioBalances', portfolioBalances)
+  // console.log('getPortfolioBalances', portfolioBalances)
 
   const balances = useMultipleContractSingleData(
     addresses,
@@ -66,11 +66,13 @@ function useGetTokenBalanceWithEstimation(addresses: string[], address?: string)
     tokenBalancesGasRequirement
   )
 
-  // console.log({ balances })
+  console.log('balances wwwwww', balances)
+  console.log('balances wwwwww portfolioBalances', portfolioBalances)
   // console.log({ portfolioBalances })
 
   // TODO: concat and dedup gnosis balances and multcall balances
-  return balances //.concat(portfolioBalances)
+  // return balances //.concat(portfolioBalances)
+  return portfolioBalances //.concat(portfolioBalances)
 }
 
 /**
