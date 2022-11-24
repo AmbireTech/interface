@@ -5,7 +5,7 @@ import ERC20ABI from 'abis/erc20.json'
 import { Erc20Interface } from 'abis/types/Erc20'
 import JSBI from 'jsbi'
 import { CallStateResult, useMultipleContractSingleData, useSingleContractMultipleData } from 'lib/hooks/multicall'
-import { useEffect, useMemo } from 'react' // re-export for convenience
+import { useMemo } from 'react' // re-export for convenience
 
 import { nativeOnChain } from '../../constants/tokens'
 import { useInterfaceMulticall } from '../../hooks/useContract'
@@ -56,7 +56,6 @@ function useGetTokenBalanceWithEstimation(addresses: string[], address?: string)
     useMemo(() => addresses, [addresses]),
     useMemo(() => address, [address])
   )
-  // console.log('getPortfolioBalances', portfolioBalances)
 
   const balances = useMultipleContractSingleData(
     addresses,
@@ -67,8 +66,6 @@ function useGetTokenBalanceWithEstimation(addresses: string[], address?: string)
   )
 
   console.log('balances wwwwww', balances)
-  console.log('balances wwwwww portfolioBalances', portfolioBalances)
-  // console.log({ portfolioBalances })
 
   // TODO: concat and dedup gnosis balances and multcall balances
   // return balances //.concat(portfolioBalances)
@@ -114,14 +111,6 @@ export function useTokenBalances(
   address?: string,
   tokens?: (Token | undefined)[]
 ): { [tokenAddress: string]: CurrencyAmount<Token> | undefined } {
-  useEffect(() => {
-    console.log('useTokenBalances kor')
-  }, [])
-
-  useEffect(() => {
-    console.log('useTokenBalances address', address)
-  }, [address])
-
   return useTokenBalancesWithLoadingIndicator(address, tokens)[0]
 }
 
