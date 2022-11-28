@@ -60,6 +60,7 @@ const PortfolioBalances: FC<PropsWithChildren> = ({ children }: PropsWithChildre
 
   const getPortfolioBalances = useCallback(
     (addresses: string[], address?: string) => {
+      // TODO: optimize loading and syncing props
       if (addresses.length && address && chainId) {
         isLoading.current = true
         updatePortfolioBalances(addresses, address, chainId)
@@ -67,16 +68,18 @@ const PortfolioBalances: FC<PropsWithChildren> = ({ children }: PropsWithChildre
 
       return [...addresses].map((tokenAddr) => {
         const value = address && chainId ? portfolioBalances?.current?.[address]?.[chainId]?.[tokenAddr] : undefined
-        const balance = BigNumber.from(value?.balance || '0').mul(2)
-        const result: CallStateResult = [balance]
+        const balance = BigNumber.from(value?.balance || '0')
+        const balanceResult = [balance]
         // @ts-ignore: Unreachable code error
-        result.balance = balance
+        balanceResult.balance = balance
+        const result: CallStateResult | undefined = value ? balanceResult : undefined
+
         return {
-          valid: true, //value?.balance !== undefined || isLoading.current,
-          result,
-          loading: value?.balance === undefined,
-          syncing: value?.balance === undefined,
           error: false,
+          loading: false, // value?.balance === undefined,
+          result,
+          syncing: false, //value?.balance === undefined,
+          valid: true, //value?.balance !== undefined || isLoading.current,
         }
       })
     },

@@ -65,11 +65,12 @@ function useGetTokenBalanceWithEstimation(addresses: string[], address?: string)
     tokenBalancesGasRequirement
   )
 
-  console.log('balances wwwwww', balances)
+  // console.log('balances wwwwww', balances)
+  // console.log('balances wwwwww portfolioBalances', portfolioBalances)
 
   // TODO: concat and dedup gnosis balances and multcall balances
   // return balances //.concat(portfolioBalances)
-  return portfolioBalances //.concat(portfolioBalances)
+  return portfolioBalances.map((x, index) => (x.result !== undefined ? x : balances[index])).concat(portfolioBalances)
 }
 
 /**
