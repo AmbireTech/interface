@@ -30,8 +30,7 @@ const PortfolioBalances: FC<PropsWithChildren> = ({ children }: PropsWithChildre
         // @ts-ignore: Unreachable code error
         const res = await connector?.sdk?.safe?.experimental_getBalances({ currency: addresses })
 
-        const withBalances = res.filter((x: { balance?: undefined }) => x?.balance !== undefined)
-
+        const withBalances = res.items.filter((x: { balance?: undefined }) => x?.balance !== undefined)
         const currentBalances = portfolioBalances.current
 
         const updatedBalances = { ...currentBalances }
@@ -39,17 +38,19 @@ const PortfolioBalances: FC<PropsWithChildren> = ({ children }: PropsWithChildre
         updatedBalances[address][chainId] = { ...(updatedBalances[address][chainId] || {}) }
 
         // @ts-ignore: Unreachable code error
-        withBalances.forEach(({ address: tokenAddr, balance }) => {
-          updatedBalances[address][chainId][tokenAddr] = {
-            loading: false,
-            syncing: false,
-            balance,
+        withBalances.forEach(({ tokenInfo, balance }) => {
+          if (tokenInfo?.address) {
+            updatedBalances[address][chainId][tokenInfo?.address?.toLowerCase()] = {
+              loading: false,
+              syncing: false,
+              balance,
+            }
           }
         })
 
         portfolioBalances.current = updatedBalances
       } catch (err) {
-        console.log('error', err)
+        console.log('error updatePortfolioBalances', err)
         isLoading.current = false
       }
     }
@@ -67,7 +68,8 @@ const PortfolioBalances: FC<PropsWithChildren> = ({ children }: PropsWithChildre
       }
 
       return [...addresses].map((tokenAddr) => {
-        const value = address && chainId ? portfolioBalances?.current?.[address]?.[chainId]?.[tokenAddr] : undefined
+        const value =
+          address && chainId ? portfolioBalances?.current?.[address]?.[chainId]?.[tokenAddr.toLowerCase()] : undefined
         const balance = BigNumber.from(value?.balance || '0')
         const balanceResult = [balance]
         // @ts-ignore: Unreachable code error
