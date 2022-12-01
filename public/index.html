@@ -15,7 +15,11 @@
     <link rel="apple-touch-icon" sizes="512x512" href="%PUBLIC_URL%/images/512x512_App_Icon.png" />
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <meta name="theme-color" content="#ff007a" />
+    <meta name="theme-color" content="#FC72FF" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="script-src 'self' https://www.google-analytics.com https://www.googletagmanager.com 'unsafe-inline'"
+    />
 
     <!--
       manifest.json provides metadata used when the app is installed as a PWA.
@@ -77,6 +81,7 @@
       }
 
       #background-radial-gradient {
+        background: linear-gradient(180deg, #202738 0%, #070816 100%);
         position: fixed;
         top: 0;
         left: 0;
@@ -84,7 +89,6 @@
         pointer-events: none;
         width: 200vw;
         height: 200vh;
-        background: radial-gradient(50% 50% at 50% 50%, #fc077d10 0%, rgba(255, 255, 255, 0) 100%);
         transform: translate(-50vw, -100vh);
         z-index: -1;
       }
@@ -98,6 +102,7 @@
           background-color: transparent;
         }
       }
+
       @media (prefers-color-scheme: light) {
         html {
           background-color: transparent;
@@ -105,10 +110,10 @@
       }
     </style>
   </head>
+
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
 
-    <!-- The root is the container of the app -->
     <div id="root">
       <!-- Triggers the font to load immediately and then is replaced by the app -->
       <div>&emsp;</div>
@@ -126,5 +131,6 @@
       To begin the development, run `npm start` or `yarn start`.
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
+    <!-- <div id="background-radial-gradient"></div> -->
   </body>
 </html>

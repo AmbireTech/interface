@@ -2,7 +2,6 @@ import { Trans } from '@lingui/macro'
 import { Currency, Percent, TradeType } from '@uniswap/sdk-core'
 import Card from 'components/Card'
 import { LoadingRows } from 'components/Loader/styled'
-import { RedesignVariant, useRedesignFlag } from 'featureFlags/flags/redesign'
 import { useMemo } from 'react'
 import { InterfaceTrade } from 'state/routing/types'
 import styled, { useTheme } from 'styled-components/macro'
@@ -52,8 +51,8 @@ export function AdvancedSwapDetails({
   const theme = useTheme()
   // const { chainId } = useWeb3React()
   // const nativeCurrency = useNativeCurrency()
-  const redesignFlag = useRedesignFlag()
-  const redesignFlagEnabled = redesignFlag === RedesignVariant.Enabled
+  // const redesignFlag = useRedesignFlag()
+  // const redesignFlagEnabled = redesignFlag === RedesignVariant.Enabled
 
   const { expectedOutputAmount, priceImpact } = useMemo(() => {
     return {
@@ -106,7 +105,7 @@ export function AdvancedSwapDetails({
             </ThemedText.DeprecatedBlack>
           </TextWithLoadingPlaceholder>
         </RowBetween>
-        <Separator redesignFlag={redesignFlagEnabled} />
+        <Separator />
         <RowBetween>
           <RowFixed style={{ marginRight: '20px' }}>
             <MouseoverTooltip

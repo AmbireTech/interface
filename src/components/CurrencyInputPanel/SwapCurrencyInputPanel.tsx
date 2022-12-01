@@ -2,63 +2,57 @@ import { Trans } from '@lingui/macro'
 import { Currency, CurrencyAmount, Percent, Token } from '@uniswap/sdk-core'
 import { Pair } from '@uniswap/v2-sdk'
 import { useWeb3React } from '@web3-react/core'
-import { ElementName, Event, EventName } from 'analytics/constants'
-import { TraceEvent } from 'analytics/TraceEvent'
 import { AutoColumn } from 'components/Column'
 import { LoadingOpacityContainer, loadingOpacityMixin } from 'components/Loader/styled'
+import CurrencyLogo from 'components/Logo/CurrencyLogo'
 import { isSupportedChain } from 'constants/chains'
-import { RedesignVariant, useRedesignFlag } from 'featureFlags/flags/redesign'
 import { darken } from 'polished'
 import { ReactNode, useCallback, useState } from 'react'
 import { Lock } from 'react-feather'
-import styled, { css, useTheme } from 'styled-components/macro'
+import styled, { useTheme } from 'styled-components/macro'
+import { flexColumnNoWrap, flexRowNoWrap } from 'theme/styles'
 import { formatCurrencyAmount } from 'utils/formatCurrencyAmount'
 
 import { ReactComponent as DropDown } from '../../assets/images/dropdown.svg'
 import { useCurrencyBalance } from '../../state/connection/hooks'
 import { ThemedText } from '../../theme'
 import { ButtonGray } from '../Button'
-import CurrencyLogo from '../CurrencyLogo'
 import DoubleCurrencyLogo from '../DoubleLogo'
 import { Input as NumericalInput } from '../NumericalInput'
 import { RowBetween, RowFixed } from '../Row'
 import CurrencySearchModal from '../SearchModal/CurrencySearchModal'
 import { FiatValue } from './FiatValue'
 
-const InputPanel = styled.div<{ hideInput?: boolean; redesignFlag: boolean }>`
-  ${({ theme }) => theme.flexColumnNoWrap}
+const InputPanel = styled.div<{ hideInput?: boolean }>`
+  ${flexColumnNoWrap};
   position: relative;
   border-radius: 12px;
-  background-color: ${({ theme, redesignFlag, hideInput }) =>
-    redesignFlag ? 'transparent' : hideInput ? 'transparent' : theme.deprecated_bg2};
+  background-color: ${({ theme, hideInput }) => (hideInput ? 'transparent' : theme.deprecated_bg2)};
   z-index: 1;
   width: ${({ hideInput }) => (hideInput ? '100%' : 'initial')};
   transition: height 1s ease;
   will-change: height;
 `
 
-const FixedContainer = styled.div<{ redesignFlag: boolean }>`
+const FixedContainer = styled.div`
   width: 100%;
   height: 100%;
   position: absolute;
   border-radius: 12px;
-  background-color: ${({ theme, redesignFlag }) => (redesignFlag ? 'transparent' : theme.deprecated_bg2)};
+  background-color: ${({ theme }) => 'transparent'};
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 2;
 `
 
-const Container = styled.div<{ hideInput: boolean; disabled: boolean; redesignFlag: boolean }>`
-  min-height: ${({ redesignFlag }) => redesignFlag && '69px'};
+const Container = styled.div<{ hideInput: boolean }>`
+  min-height: 69px;
   border-radius: 12px;
-  // border: 1px solid ${({ theme, redesignFlag }) => (redesignFlag ? 'transparent' : theme.deprecated_bg0)};
   background-color: #2d314d;
   width: ${({ hideInput }) => (hideInput ? '100%' : 'initial')};
   opacity: 0.9;
-  ${({ theme, hideInput, disabled, redesignFlag }) =>
-    !redesignFlag &&
-    !disabled &&
+  ${({ theme, hideInput }) =>
     `
     :focus,
     :hover {
@@ -73,7 +67,6 @@ const CurrencySelect = styled(ButtonGray)<{
   selected: boolean
   hideInput?: boolean
   disabled?: boolean
-  redesignFlag: boolean
 }>`
   align-items: center;
   background-color: transparent;
@@ -81,64 +74,60 @@ const CurrencySelect = styled(ButtonGray)<{
   box-shadow: none;
   color: ${({ selected, theme }) => (selected ? theme.deprecated_text1 : theme.deprecated_white)};
   cursor: pointer;
-  height: ${({ hideInput, redesignFlag }) => (redesignFlag ? 'unset' : hideInput ? '2.8rem' : '2.4rem')};
   border-radius: 12px;
+  height: unset;
   outline: none;
   user-select: none;
   border: none;
   font-size: 10px;
   font-weight: 400;
   width: ${({ hideInput }) => (hideInput ? '100%' : 'initial')};
-  padding: ${({ selected, redesignFlag }) =>
-    redesignFlag ? (selected ? '4px 8px 4px 4px' : '6px 6px 6px 8px') : '0 8px'};
-  gap: ${({ redesignFlag }) => (redesignFlag ? '8px' : '0px')};
+  padding: ${({ selected }) => (selected ? '4px 8px 4px 4px' : '6px 6px 6px 8px')};
+  gap: 8px;
   justify-content: space-between;
   margin-left: ${({ hideInput }) => (hideInput ? '0' : '12px')};
 
   &:hover,
   &:active {
+    background-color: ${({ theme, selected }) => (selected ? theme.backgroundInteractive : theme.accentAction)};
+  }
+
+  &:before {
+    background-size: 100%;
+    border-radius: inherit;
+
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+    content: '';
+  }
+
+  &:hover:before {
     background-color: ${({ theme }) => theme.stateOverlayHover};
   }
 
-  ${({ selected }) =>
-    css`
-      &:hover,
-      &:active {
-        background-color: ${({ theme }) => theme.stateOverlayHover};
-      }
-
-      &:before {
-        background-size: 100%;
-        border-radius: inherit;
-
-        position: absolute;
-        top: 0;
-        left: 0;
-
-        width: 100%;
-        height: 100%;
-        content: '';
-      }
-    `}
+  &:active:before {
+    background-color: ${({ theme }) => theme.stateOverlayPressed};
+  }
 
   visibility: ${({ visible }) => (visible ? 'visible' : 'hidden')};
 `
 
-const InputRow = styled.div<{ selected: boolean; redesignFlag: boolean }>`
-  ${({ theme }) => theme.flexRowNoWrap}
+const InputRow = styled.div`
+  ${flexRowNoWrap};
   align-items: center;
   justify-content: space-between;
-  padding: ${({ selected, redesignFlag }) =>
-    redesignFlag ? '0px' : selected ? ' 1rem 1rem 0.75rem 1rem' : '1rem 1rem 1rem 1rem'};
 `
 
-const LabelRow = styled.div<{ redesignFlag: boolean }>`
-  ${({ theme }) => theme.flexRowNoWrap}
+const LabelRow = styled.div`
+  ${flexRowNoWrap};
   align-items: center;
-  color: ${({ theme, redesignFlag }) => (redesignFlag ? theme.textSecondary : theme.deprecated_text1)};
+  color: ${({ theme }) => theme.textSecondary};
   font-size: 0.75rem;
   line-height: 1rem;
-  padding: ${({ redesignFlag }) => (redesignFlag ? '0px' : '0 1rem 1rem')};
 
   span:hover {
     cursor: pointer;
@@ -146,11 +135,10 @@ const LabelRow = styled.div<{ redesignFlag: boolean }>`
   }
 `
 
-const FiatRow = styled(LabelRow)<{ redesignFlag: boolean }>`
+const FiatRow = styled(LabelRow)`
   justify-content: flex-end;
-  min-height: ${({ redesignFlag }) => redesignFlag && '20px'};
-  padding: ${({ redesignFlag }) => redesignFlag && '8px 0px 0px 0px'};
-  height: ${({ redesignFlag }) => !redesignFlag && '24px'};
+  min-height: 20px;
+  padding: 8px 0px 0px 0px;
 `
 
 const Aligner = styled.span`
@@ -160,33 +148,32 @@ const Aligner = styled.span`
   width: 100%;
 `
 
-const StyledDropDown = styled(DropDown)<{ selected: boolean; redesignFlag: boolean }>`
+const StyledDropDown = styled(DropDown)<{ selected: boolean }>`
   margin: 0 0.25rem 0 0.35rem;
   height: 35%;
-  margin-left: ${({ redesignFlag }) => redesignFlag && '8px'};
+  margin-left: 8px;
 
   path {
     stroke: ${({ selected, theme }) => (selected ? theme.deprecated_text1 : theme.deprecated_white)};
-    stroke-width: ${({ redesignFlag }) => (redesignFlag ? '2px' : '1.5px')};
+    stroke-width: 2px;
   }
 `
 
-const StyledTokenName = styled.span<{ active?: boolean; redesignFlag: boolean }>`
+const StyledTokenName = styled.span<{ active?: boolean }>`
   ${({ active }) => (active ? '  margin: 0 0.25rem 0 0.25rem;' : '  margin: 0 0.25rem 0 0.25rem;')}
-  font-size: ${({ redesignFlag }) => (redesignFlag ? '20px' : '18px')};
-  font-weight: ${({ redesignFlag }) => (redesignFlag ? '600' : '500')};
+  font-size: 20px;
+  font-weight: 600;
 `
 
-const StyledBalanceMax = styled.button<{ disabled?: boolean; redesignFlag: boolean }>`
+const StyledBalanceMax = styled.button<{ disabled?: boolean }>`
   background-color: transparent;
   border: 1px solid #27e8a7;
-  text-transform: ${({ redesignFlag }) => !redesignFlag && 'uppercase'};
+  text-transform: uppercase;
   border-radius: 12px;
   color: #27e8a7;
   cursor: pointer;
-  font-size: ${({ redesignFlag }) => (redesignFlag ? '14px' : '11px')};
-  font-weight: ${({ redesignFlag }) => (redesignFlag ? '600' : '500')};
-  margin-left: ${({ redesignFlag }) => (redesignFlag ? '0px' : '0.25rem')};
+  font-size: 14px;
+  font-weight: 600;
   opacity: ${({ disabled }) => (!disabled ? 1 : 0.4)};
   padding: 4px 6px;
   pointer-events: ${({ disabled }) => (!disabled ? 'initial' : 'none')};
@@ -200,12 +187,12 @@ const StyledBalanceMax = styled.button<{ disabled?: boolean; redesignFlag: boole
   }
 `
 
-const StyledNumericalInput = styled(NumericalInput)<{ $loading: boolean; redesignFlag: boolean }>`
+const StyledNumericalInput = styled(NumericalInput)<{ $loading: boolean }>`
   ${loadingOpacityMixin};
   text-align: left;
-  // font-size: ${({ redesignFlag }) => redesignFlag && '36px'};
-  // line-height: ${({ redesignFlag }) => redesignFlag && '44px'};
-  // font-variant: ${({ redesignFlag }) => redesignFlag && 'small-caps'};
+  // font-size: 36px;
+  // line-height: 44px;
+  // font-variant: small-caps;
 `
 
 interface SwapCurrencyInputPanelProps {
@@ -255,8 +242,6 @@ export default function SwapCurrencyInputPanel({
 }: SwapCurrencyInputPanelProps) {
   const [modalOpen, setModalOpen] = useState(false)
   const { account, chainId } = useWeb3React()
-  const redesignFlag = useRedesignFlag()
-  const redesignFlagEnabled = redesignFlag === RedesignVariant.Enabled
   const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined)
   const theme = useTheme()
 
@@ -267,9 +252,9 @@ export default function SwapCurrencyInputPanel({
   const chainAllowed = isSupportedChain(chainId)
 
   return (
-    <InputPanel id={id} hideInput={hideInput} {...rest} redesignFlag={redesignFlagEnabled}>
+    <InputPanel id={id} hideInput={hideInput} {...rest}>
       {locked && (
-        <FixedContainer redesignFlag={redesignFlagEnabled}>
+        <FixedContainer>
           <AutoColumn gap="sm" justify="center">
             <Lock />
             <ThemedText.DeprecatedLabel fontSize="12px" textAlign="center" padding="0 12px">
@@ -278,12 +263,8 @@ export default function SwapCurrencyInputPanel({
           </AutoColumn>
         </FixedContainer>
       )}
-      <Container hideInput={hideInput} disabled={!chainAllowed} redesignFlag={redesignFlagEnabled}>
-        <InputRow
-          style={hideInput ? { padding: '0', borderRadius: '8px' } : {}}
-          selected={!onCurrencySelect}
-          redesignFlag={redesignFlagEnabled}
-        >
+      <Container hideInput={hideInput}>
+        <InputRow style={hideInput ? { padding: '0', borderRadius: '8px' } : {}}>
           {!hideInput && (
             <StyledNumericalInput
               className="token-amount-input"
@@ -291,7 +272,6 @@ export default function SwapCurrencyInputPanel({
               onUserInput={onUserInput}
               disabled={!chainAllowed}
               $loading={loading}
-              redesignFlag={redesignFlagEnabled}
             />
           )}
 
@@ -300,7 +280,6 @@ export default function SwapCurrencyInputPanel({
             visible={currency !== undefined}
             selected={!!currency}
             hideInput={hideInput}
-            redesignFlag={redesignFlagEnabled}
             className="open-currency-select-button"
             onClick={() => {
               if (onCurrencySelect) {
@@ -315,18 +294,14 @@ export default function SwapCurrencyInputPanel({
                     <DoubleCurrencyLogo currency0={pair.token0} currency1={pair.token1} size={24} margin={true} />
                   </span>
                 ) : currency ? (
-                  <CurrencyLogo style={{ marginRight: '2px' }} currency={currency} size={'24px'} />
+                  <CurrencyLogo style={{ marginRight: '2px' }} currency={currency} size="24px" />
                 ) : null}
                 {pair ? (
-                  <StyledTokenName className="pair-name-container" redesignFlag={redesignFlagEnabled}>
+                  <StyledTokenName className="pair-name-container">
                     {pair?.token0.symbol}:{pair?.token1.symbol}
                   </StyledTokenName>
                 ) : (
-                  <StyledTokenName
-                    className="token-symbol-container"
-                    active={Boolean(currency && currency.symbol)}
-                    redesignFlag={redesignFlagEnabled}
-                  >
+                  <StyledTokenName className="token-symbol-container" active={Boolean(currency && currency.symbol)}>
                     {(currency && currency.symbol && currency.symbol.length > 20
                       ? currency.symbol.slice(0, 4) +
                         '...' +
@@ -335,12 +310,12 @@ export default function SwapCurrencyInputPanel({
                   </StyledTokenName>
                 )}
               </RowFixed>
-              {onCurrencySelect && <StyledDropDown selected={!!currency} redesignFlag={redesignFlagEnabled} />}
+              {onCurrencySelect && <StyledDropDown selected={!!currency} />}
             </Aligner>
           </CurrencySelect>
         </InputRow>
-        {!hideInput && !hideBalance && currency && (
-          <FiatRow redesignFlag={redesignFlagEnabled}>
+        {Boolean(!hideInput && !hideBalance) && (
+          <FiatRow>
             <RowBetween>
               <LoadingOpacityContainer $loading={loading}>
                 <FiatValue fiatValue={fiatValue} priceImpact={priceImpact} />
@@ -348,8 +323,8 @@ export default function SwapCurrencyInputPanel({
               {account ? (
                 <RowFixed style={{ height: '17px' }}>
                   <ThemedText.DeprecatedBody
-                    color={redesignFlag ? theme.textSecondary : theme.deprecated_text3}
-                    fontWeight={redesignFlag ? 400 : 500}
+                    color={theme.textSecondary}
+                    fontWeight={400}
                     fontSize={14}
                     style={{ display: 'inline' }}
                   >
@@ -362,16 +337,16 @@ export default function SwapCurrencyInputPanel({
                     ) : null}
                   </ThemedText.DeprecatedBody>
                   {showMaxButton && selectedCurrencyBalance ? (
-                    <TraceEvent
-                      events={[Event.onClick]}
-                      name={EventName.SWAP_MAX_TOKEN_AMOUNT_SELECTED}
-                      element={ElementName.MAX_TOKEN_AMOUNT_BUTTON}
-                    >
-                      <StyledBalanceMax onClick={onMax} redesignFlag={redesignFlagEnabled}>
-                        <Trans>Max</Trans>
-                      </StyledBalanceMax>
-                    </TraceEvent>
-                  ) : null}
+                    // <TraceEvent
+                    //   events={[BrowserEvent.onClick]}
+                    //   name={EventName.SWAP_MAX_TOKEN_AMOUNT_SELECTED}
+                    //   element={ElementName.MAX_TOKEN_AMOUNT_BUTTON}
+                    // >
+                    <StyledBalanceMax onClick={onMax}>
+                      <Trans>Max</Trans>
+                    </StyledBalanceMax>
+                  ) : // </TraceEvent>
+                  null}
                 </RowFixed>
               ) : (
                 <span />
