@@ -77,7 +77,7 @@ const ArrowContainer = styled.div`
 
 const SwapSection = styled.div`
   position: relative;
-  background-color: ${({ theme }) => theme.backgroundModule};
+  background-color: #2d314d;
   border-radius: 12px;
   padding: 16px;
   color: ${({ theme }) => theme.textSecondary};
@@ -98,20 +98,20 @@ const SwapSection = styled.div`
     height: 100%;
     pointer-events: none;
     content: '';
-    border: 1px solid ${({ theme }) => theme.backgroundModule};
+    // border: 1px solid ${({ theme }) => theme.backgroundModule};
   }
 
-  &:hover:before {
-    border-color: ${({ theme }) => theme.stateOverlayHover};
-  }
+  // &:hover:before {
+  //   border-color: ${({ theme }) => theme.stateOverlayHover};
+  // }
 
-  &:focus-within:before {
-    border-color: ${({ theme }) => theme.stateOverlayPressed};
-  }
+  // &:focus-within:before {
+  //   border-color: ${({ theme }) => theme.stateOverlayPressed};
+  // }
 `
 
 const OutputSwapSection = styled(SwapSection)<{ showDetailsDropdown: boolean }>`
-  border-bottom: ${({ theme }) => `1px solid ${theme.backgroundSurface}`};
+  border-bottom: ${({ theme, showDetailsDropdown }) => (showDetailsDropdown ? `1px solid #1B2236` : 'none')};
   border-bottom-left-radius: ${({ showDetailsDropdown }) => showDetailsDropdown && '0'};
   border-bottom-right-radius: ${({ showDetailsDropdown }) => showDetailsDropdown && '0'};
 `

@@ -30,21 +30,21 @@ import CurrencyList from './CurrencyList'
 import { PaddedColumn, SearchInput, Separator } from './styleds'
 
 const ContentWrapper = styled(Column)`
-  background-color: ${({ theme }) => theme.backgroundSurface};
+  background-color: #24263d;
   width: 100%;
   flex: 1 1;
   position: relative;
 `
 
-const Footer = styled.div`
-  width: 100%;
-  border-radius: 12px;
-  padding: 20px;
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
-  background-color: #24263d;
-  border-top: 1px solid ${({ theme }) => theme.deprecated_bg2};
-`
+// const Footer = styled.div`
+//   width: 100%;
+//   border-radius: 12px;
+//   padding: 20px;
+//   border-top-left-radius: 0;
+//   border-top-right-radius: 0;
+//   background-color: #24263d;
+//   border-top: 1px solid ${({ theme }) => theme.deprecated_bg2};
+// `
 
 interface CurrencySearchProps {
   isOpen: boolean

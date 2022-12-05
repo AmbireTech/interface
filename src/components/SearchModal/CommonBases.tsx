@@ -27,9 +27,9 @@ const BaseWrapper = styled.div<{ disable?: boolean; redesignFlag?: boolean }>`
     background-color: #3e436b;
   }
 
-  color: ${({ theme, disable }) => disable && theme.accentActionSoft};
+  color: ${({ theme, disable }) => disable && '#6770b3'};
   background-color: ${({ disable }) => disable && '#3E436B'};
-  filter: ${({ disable }) => disable && 'opacity(0.8)'};
+  filter: ${({ disable }) => disable && 'opacity(0.9)'};
 `
 
 // const formatAnalyticsEventProperties = (currency: Currency, searchQuery: string, isAddressSearch: string | false) => ({

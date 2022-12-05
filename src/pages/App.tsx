@@ -68,22 +68,21 @@ const AppWrapper = styled.div`
   align-items: flex-start;
 `
 
-const BodyWrapper = styled.div<{ hasHeader: boolean }>`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  margin-top: ${({ hasHeader }) => (hasHeader ? '90px' : '0')};
-`
-
-// const BodyWrapper = styled.div`
+// const BodyWrapper = styled.div<{ hasHeader: boolean }>`
 //   display: flex;
 //   flex-direction: column;
 //   width: 100%;
-//   padding: 72px 0px 0px 0px;
-//   align-items: center;
-//   flex: 1;
+//   margin-top: ${({ hasHeader }) => (hasHeader ? '90px' : '0')};
 // `
 
+const BodyWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  // padding: 72px 0px 0px 0px;
+  align-items: center;
+  flex: 1;
+`
 // const HeaderWrapper = styled.div`
 //   ${({ theme }) => theme.flexRowNoWrap}
 //   width: 100%;
@@ -202,7 +201,9 @@ export default function App() {
       <AppWrapper>
         {/* <Trace page={currentPage}> */}
         {/* {!!isExpertMode && <HeaderWrapper>{<PageTabs />}</HeaderWrapper>} */}
-        <BodyWrapper hasHeader={!!isExpertMode}>
+        <BodyWrapper
+        //  hasHeader={!!isExpertMode}
+        >
           <Popups />
           {/* <Polling /> */}
           <TopLevelModals />

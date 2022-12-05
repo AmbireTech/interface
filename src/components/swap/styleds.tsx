@@ -46,6 +46,7 @@ export const ArrowWrapper = styled.div<{ clickable: boolean }>`
   // border-color: ${({ theme }) => theme.backgroundSurface};
   margin-left: auto;
   margin-right: auto;
+  opacity: 0.9;
 
   z-index: 2;
   ${({ clickable }) =>
@@ -53,7 +54,7 @@ export const ArrowWrapper = styled.div<{ clickable: boolean }>`
       ? css`
           :hover {
             cursor: pointer;
-            opacity: 0.8;
+            opacity: 1;
           }
         `
       : null}

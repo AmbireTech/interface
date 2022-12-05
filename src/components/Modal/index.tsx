@@ -41,7 +41,7 @@ const StyledDialogContent = styled(AnimatedDialogContent)<StyledDialogProps>`
     margin: 0 0 2rem 0;
     background-color: #24263d;
     margin: auto;
-    border: ${({ theme, $hideBorder }) => !$hideBorder && `1px solid ${theme.deprecated_bg1}`};
+    border: ${({ theme, $hideBorder }) => !$hideBorder && `1px solid ${theme.backgroundOutline}`};
     box-shadow: ${({ theme }) => theme.deepShadow};
     padding: 0px;
     width: 50vw;

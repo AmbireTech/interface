@@ -89,28 +89,7 @@ const CurrencySelect = styled(ButtonGray)<{
 
   &:hover,
   &:active {
-    background-color: ${({ theme, selected }) => (selected ? theme.backgroundInteractive : theme.accentAction)};
-  }
-
-  &:before {
-    background-size: 100%;
-    border-radius: inherit;
-
-    position: absolute;
-    top: 0;
-    left: 0;
-
-    width: 100%;
-    height: 100%;
-    content: '';
-  }
-
-  &:hover:before {
-    background-color: ${({ theme }) => theme.stateOverlayHover};
-  }
-
-  &:active:before {
-    background-color: ${({ theme }) => theme.stateOverlayPressed};
+    background-color: ${({ theme, selected }) => theme.backgroundInteractive};
   }
 
   visibility: ${({ visible }) => (visible ? 'visible' : 'hidden')};
@@ -172,11 +151,12 @@ const StyledBalanceMax = styled.button<{ disabled?: boolean }>`
   border-radius: 12px;
   color: #27e8a7;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 11px;
   font-weight: 600;
   opacity: ${({ disabled }) => (!disabled ? 1 : 0.4)};
   padding: 4px 6px;
   pointer-events: ${({ disabled }) => (!disabled ? 'initial' : 'none')};
+  margin-left: 8px;
 
   :hover {
     opacity: ${({ disabled }) => (!disabled ? 0.8 : 0.4)};

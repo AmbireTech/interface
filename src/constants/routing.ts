@@ -268,5 +268,7 @@ export const PINNED_PAIRS: { readonly [chainId: number]: [Token, Token][] } = {
     ],
     [USDC_MAINNET, USDT],
     [DAI, USDT],
+    [WALLET, WRAPPED_NATIVE_CURRENCY[SupportedChainId.MAINNET] as Token],
+    [ADX, WRAPPED_NATIVE_CURRENCY[SupportedChainId.MAINNET] as Token],
   ],
 }
