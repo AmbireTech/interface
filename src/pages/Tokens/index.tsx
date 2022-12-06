@@ -1,6 +1,4 @@
 import { Trans } from '@lingui/macro'
-import { Trace } from '@uniswap/analytics'
-import { PageName } from '@uniswap/analytics-events'
 import { useWeb3React } from '@web3-react/core'
 import { MAX_WIDTH_MEDIA_BREAKPOINT, MEDIUM_MEDIA_BREAKPOINT } from 'components/Tokens/constants'
 import { filterStringAtom } from 'components/Tokens/state'
@@ -94,27 +92,27 @@ const Tokens = () => {
   })
 
   return (
-    <Trace page={PageName.TOKENS_PAGE} shouldLogImpression>
-      <ExploreContainer>
-        <TitleContainer>
-          <ThemedText.LargeHeader>
-            <Trans>Top tokens on Uniswap</Trans>
-          </ThemedText.LargeHeader>
-        </TitleContainer>
-        <FiltersWrapper>
-          <FiltersContainer>
-            <NetworkFilter />
-            <TimeSelector />
-          </FiltersContainer>
-          <SearchContainer>
-            <SearchBar />
-          </SearchContainer>
-        </FiltersWrapper>
-        <Suspense fallback={<LoadingTokenTable rowCount={rowCount} />}>
-          <TokenTable setRowCount={setRowCount} />
-        </Suspense>
-      </ExploreContainer>
-    </Trace>
+    // <Trace page={PageName.TOKENS_PAGE} shouldLogImpression>
+    <ExploreContainer>
+      <TitleContainer>
+        <ThemedText.LargeHeader>
+          <Trans>Top tokens on Uniswap</Trans>
+        </ThemedText.LargeHeader>
+      </TitleContainer>
+      <FiltersWrapper>
+        <FiltersContainer>
+          <NetworkFilter />
+          <TimeSelector />
+        </FiltersContainer>
+        <SearchContainer>
+          <SearchBar />
+        </SearchContainer>
+      </FiltersWrapper>
+      <Suspense fallback={<LoadingTokenTable rowCount={rowCount} />}>
+        <TokenTable setRowCount={setRowCount} />
+      </Suspense>
+    </ExploreContainer>
+    // </Trace>
   )
 }
 

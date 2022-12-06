@@ -1,6 +1,4 @@
 import { Trans } from '@lingui/macro'
-import { TraceEvent } from '@uniswap/analytics'
-import { BrowserEvent, ElementName, EventName } from '@uniswap/analytics-events'
 import { Currency, CurrencyAmount, Percent, Token } from '@uniswap/sdk-core'
 import { Pair } from '@uniswap/v2-sdk'
 import { useWeb3React } from '@web3-react/core'
@@ -316,16 +314,16 @@ export default function CurrencyInputPanel({
                     ) : null}
                   </ThemedText.DeprecatedBody>
                   {showMaxButton && selectedCurrencyBalance ? (
-                    <TraceEvent
-                      events={[BrowserEvent.onClick]}
-                      name={EventName.SWAP_MAX_TOKEN_AMOUNT_SELECTED}
-                      element={ElementName.MAX_TOKEN_AMOUNT_BUTTON}
-                    >
-                      <StyledBalanceMax onClick={onMax}>
-                        <Trans>MAX</Trans>
-                      </StyledBalanceMax>
-                    </TraceEvent>
-                  ) : null}
+                    // <TraceEvent
+                    //   events={[BrowserEvent.onClick]}
+                    //   name={EventName.SWAP_MAX_TOKEN_AMOUNT_SELECTED}
+                    //   element={ElementName.MAX_TOKEN_AMOUNT_BUTTON}
+                    // >
+                    <StyledBalanceMax onClick={onMax}>
+                      <Trans>MAX</Trans>
+                    </StyledBalanceMax>
+                  ) : // </TraceEvent>
+                  null}
                 </RowFixed>
               ) : (
                 <span />

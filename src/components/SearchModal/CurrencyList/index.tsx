@@ -1,5 +1,3 @@
-import { TraceEvent } from '@uniswap/analytics'
-import { BrowserEvent, ElementName, EventName } from '@uniswap/analytics-events'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 import TokenSafetyIcon from 'components/TokenSafety/TokenSafetyIcon'
@@ -129,59 +127,55 @@ export function CurrencyRow({
 
   // only show add or remove buttons if not on selected list
   return (
-    <TraceEvent
-      events={[BrowserEvent.onClick, BrowserEvent.onKeyPress]}
-      name={EventName.TOKEN_SELECTED}
-      properties={{ is_imported_by_user: customAdded, ...eventProperties }}
-      element={ElementName.TOKEN_SELECTOR_ROW}
+    // <TraceEvent
+    //   events={[BrowserEvent.onClick, BrowserEvent.onKeyPress]}
+    //   name={EventName.TOKEN_SELECTED}
+    //   properties={{ is_imported_by_user: customAdded, ...eventProperties }}
+    //   element={ElementName.TOKEN_SELECTOR_ROW}
+    // >
+    <MenuItem
+      tabIndex={0}
+      style={style}
+      className={`token-item-${key}`}
+      onKeyPress={(e) => (!isSelected && e.key === 'Enter' ? onSelect(!!warning) : null)}
+      onClick={() => (isSelected ? null : onSelect(!!warning))}
+      disabled={isSelected}
+      selected={otherSelected}
+      dim={isBlockedToken}
     >
-      <MenuItem
-        tabIndex={0}
-        style={style}
-        className={`token-item-${key}`}
-        onKeyPress={(e) => (!isSelected && e.key === 'Enter' ? onSelect(!!warning) : null)}
-        onClick={() => (isSelected ? null : onSelect(!!warning))}
-        disabled={isSelected}
-        selected={otherSelected}
-        dim={isBlockedToken}
-      >
-        <Column>
-          <CurrencyLogo
-            currency={currency}
-            size="36px"
-            style={{ opacity: isBlockedToken ? blockedTokenOpacity : '1' }}
-          />
-        </Column>
-        <AutoColumn style={{ opacity: isBlockedToken ? blockedTokenOpacity : '1' }}>
-          <Row>
-            <CurrencyName title={currency.name}>{currency.name}</CurrencyName>
-            <WarningContainer>
-              <TokenSafetyIcon warning={warning} />
-            </WarningContainer>
-          </Row>
-          <ThemedText.DeprecatedDarkGray ml="0px" fontSize="12px" fontWeight={300}>
-            {currency.symbol}
-          </ThemedText.DeprecatedDarkGray>
-        </AutoColumn>
-        <Column>
+      <Column>
+        <CurrencyLogo currency={currency} size="36px" style={{ opacity: isBlockedToken ? blockedTokenOpacity : '1' }} />
+      </Column>
+      <AutoColumn style={{ opacity: isBlockedToken ? blockedTokenOpacity : '1' }}>
+        <Row>
+          <CurrencyName title={currency.name}>{currency.name}</CurrencyName>
+          <WarningContainer>
+            <TokenSafetyIcon warning={warning} />
+          </WarningContainer>
+        </Row>
+        <ThemedText.DeprecatedDarkGray ml="0px" fontSize="12px" fontWeight={300}>
+          {currency.symbol}
+        </ThemedText.DeprecatedDarkGray>
+      </AutoColumn>
+      <Column>
+        <RowFixed style={{ justifySelf: 'flex-end' }}>
+          <TokenTags currency={currency} />
+        </RowFixed>
+      </Column>
+      {showCurrencyAmount ? (
+        <RowFixed style={{ justifySelf: 'flex-end' }}>
+          {balance ? <Balance balance={balance} /> : account ? <Loader /> : null}
+          {isSelected && <CheckIcon />}
+        </RowFixed>
+      ) : (
+        isSelected && (
           <RowFixed style={{ justifySelf: 'flex-end' }}>
-            <TokenTags currency={currency} />
+            <CheckIcon />
           </RowFixed>
-        </Column>
-        {showCurrencyAmount ? (
-          <RowFixed style={{ justifySelf: 'flex-end' }}>
-            {balance ? <Balance balance={balance} /> : account ? <Loader /> : null}
-            {isSelected && <CheckIcon />}
-          </RowFixed>
-        ) : (
-          isSelected && (
-            <RowFixed style={{ justifySelf: 'flex-end' }}>
-              <CheckIcon />
-            </RowFixed>
-          )
-        )}
-      </MenuItem>
-    </TraceEvent>
+        )
+      )}
+    </MenuItem>
+    // </TraceEvent>
   )
 }
 

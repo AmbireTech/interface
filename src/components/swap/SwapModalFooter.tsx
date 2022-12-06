@@ -1,6 +1,5 @@
 import { Trans } from '@lingui/macro'
-import { TraceEvent } from '@uniswap/analytics'
-import { BrowserEvent, ElementName, EventName } from '@uniswap/analytics-events'
+import { ElementName } from '@uniswap/analytics-events'
 import { Currency, CurrencyAmount, Percent, Token, TradeType } from '@uniswap/sdk-core'
 import useTransactionDeadline from 'hooks/useTransactionDeadline'
 import {
@@ -129,7 +128,7 @@ export default function SwapModalFooter({
   return (
     <>
       <AutoRow>
-        <TraceEvent
+        {/* <TraceEvent
           events={[BrowserEvent.onClick]}
           element={ElementName.CONFIRM_SWAP_BUTTON}
           name={EventName.SWAP_SUBMITTED_BUTTON_CLICKED}
@@ -145,18 +144,18 @@ export default function SwapModalFooter({
             fiatValueInput,
             fiatValueOutput,
           })}
+        > */}
+        <ButtonError
+          onClick={onConfirm}
+          disabled={disabledConfirm}
+          style={{ margin: '10px 0 0 0' }}
+          id={ElementName.CONFIRM_SWAP_BUTTON}
         >
-          <ButtonError
-            onClick={onConfirm}
-            disabled={disabledConfirm}
-            style={{ margin: '10px 0 0 0' }}
-            id={ElementName.CONFIRM_SWAP_BUTTON}
-          >
-            <Text fontSize={20} fontWeight={500}>
-              <Trans>Confirm Swap</Trans>
-            </Text>
-          </ButtonError>
-        </TraceEvent>
+          <Text fontSize={20} fontWeight={500}>
+            <Trans>Confirm Swap</Trans>
+          </Text>
+        </ButtonError>
+        {/* </TraceEvent> */}
 
         {swapErrorMessage ? <SwapCallbackError error={swapErrorMessage} /> : null}
       </AutoRow>
