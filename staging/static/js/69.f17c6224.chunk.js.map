@@ -1,0 +1,1 @@
+{"version":3,"sources":["../node_modules/@uniswap/widgets/dist/locales/nl-NL.js"],"names":["nlNL","messages"],"mappings":"kIAAA,+CAEA,IAAIA,EAAK,CAACC,SAAS","file":"static/js/69.f17c6224.chunk.js","sourcesContent":["/*eslint-disable*/\n\nvar nlNL={messages:{}};\n\nexport { nlNL as default };\n"],"sourceRoot":""}

@@ -1,0 +1,1 @@
+{"version":3,"sources":["../node_modules/@uniswap/widgets/dist/locales/cs-CZ.js"],"names":["csCZ","messages"],"mappings":"kIAAA,+CAEA,IAAIA,EAAK,CAACC,SAAS","file":"static/js/55.29a3ab1d.chunk.js","sourcesContent":["/*eslint-disable*/\n\nvar csCZ={messages:{}};\n\nexport { csCZ as default };\n"],"sourceRoot":""}
