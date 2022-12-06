@@ -1,5 +1,3 @@
-import { useTrace } from '@uniswap/analytics'
-import { ModalName } from '@uniswap/analytics-events'
 import clsx from 'clsx'
 import { OpacityHoverState } from 'components/Common'
 import { Box } from 'nft/components/Box'
@@ -56,7 +54,7 @@ const TxCompleteModal = () => {
   const isMobile = useIsMobile()
   const txHashUrl = getExplorerLink(1, txHash, ExplorerDataType.TRANSACTION)
   const shouldShowModal = (txState === TxStateType.Success || txState === TxStateType.Failed) && txState
-  const trace = useTrace({ modal: ModalName.NFT_TX_COMPLETE })
+  // const trace = useTrace({ modal: ModalName.NFT_TX_COMPLETE })
   const {
     nftsPurchased,
     nftsNotPurchased,
