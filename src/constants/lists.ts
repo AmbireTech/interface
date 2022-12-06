@@ -7,6 +7,7 @@ import {
 } from 'lib/hooks/useTokenList/listFormatters'
 
 export const UNI_LIST = 'https://tokens.uniswap.org'
+export const AMBIRE_LIST = 'https://ambiretech.github.io/ambire-tokens-list/list.json'
 export const UNI_EXTENDED_LIST = 'https://extendedtokens.uniswap.org/'
 const UNI_UNSUPPORTED_LIST = 'https://unsupportedtokens.uniswap.org/'
 const AAVE_LIST = 'tokenlist.aave.eth'
@@ -51,6 +52,7 @@ export const UNSUPPORTED_LIST_URLS: string[] = [BA_LIST, UNI_UNSUPPORTED_LIST]
 
 // default lists to be 'active' aka searched across
 export const DEFAULT_ACTIVE_LIST_URLS: string[] = [
+  AMBIRE_LIST,
   UNI_LIST,
   GEMINI_LIST,
   AVAX_TRADER_JOE_LIST,
