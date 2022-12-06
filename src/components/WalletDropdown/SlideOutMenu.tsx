@@ -1,3 +1,4 @@
+import { ScrollBarStyles } from 'components/Common'
 import { ChevronLeft } from 'react-feather'
 import styled from 'styled-components/macro'
 
@@ -6,6 +7,7 @@ const Menu = styled.div`
   height: 100%;
   font-size: 16px;
   overflow: auto;
+  max-height: 450px;
 
   // // Firefox scrollbar styling
   // scrollbar-width: thin;
@@ -23,6 +25,12 @@ const Menu = styled.div`
   //   background: ${({ theme }) => theme.backgroundOutline};
   //   border-radius: 8px;
   // }
+
+  // ::-webkit-scrollbar-track {
+  //   margin-top: 40px;
+  // }
+
+  ${ScrollBarStyles}
 `
 
 const Header = styled.span`

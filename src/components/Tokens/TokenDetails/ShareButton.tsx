@@ -1,4 +1,7 @@
 import { Trans } from '@lingui/macro'
+import { Currency } from '@uniswap/sdk-core'
+import { NATIVE_CHAIN_ID } from 'constants/tokens'
+import { chainIdToBackendName } from 'graphql/data/util'
 import { useOnClickOutside } from 'hooks/useOnClickOutside'
 import { useRef } from 'react'
 import { Twitter } from 'react-feather'
@@ -61,13 +64,7 @@ const ShareAction = styled.div`
   }
 `
 
-interface TokenInfo {
-  tokenName: string
-  tokenSymbol: string
-  tokenAddress: string
-}
-
-export default function ShareButton(tokenInfo: TokenInfo) {
+export default function ShareButton({ currency }: { currency: Currency }) {
   const theme = useTheme()
   const node = useRef<HTMLDivElement | null>(null)
   const open = useModalIsOpen(ApplicationModal.SHARE)
@@ -75,11 +72,16 @@ export default function ShareButton(tokenInfo: TokenInfo) {
   useOnClickOutside(node, open ? toggleShare : undefined)
   const positionX = (window.screen.width - TWITTER_WIDTH) / 2
   const positionY = (window.screen.height - TWITTER_HEIGHT) / 2
+  const address = currency.isNative ? NATIVE_CHAIN_ID : currency.wrapped.address
 
   const shareTweet = () => {
     toggleShare()
     window.open(
-      `https://twitter.com/intent/tweet?text=Check%20out%20${tokenInfo.tokenName}%20(${tokenInfo.tokenSymbol})%20https://app.uniswap.org/%23/tokens/${tokenInfo.tokenAddress}%20via%20@uniswap`,
+      `https://twitter.com/intent/tweet?text=Check%20out%20${currency.name}%20(${
+        currency.symbol
+      })%20https://app.uniswap.org/%23/tokens/${chainIdToBackendName(
+        currency.chainId
+      ).toLowerCase()}/${address}%20via%20@uniswap`,
       'newwindow',
       `left=${positionX}, top=${positionY}, width=${TWITTER_WIDTH}, height=${TWITTER_HEIGHT}`
     )
@@ -89,7 +91,7 @@ export default function ShareButton(tokenInfo: TokenInfo) {
 
   return (
     <ShareButtonDisplay ref={node}>
-      <Share onClick={toggleShare} aria-label={`ShareOptions`} open={open} />
+      <Share onClick={toggleShare} aria-label="ShareOptions" open={open} />
       {open && (
         <ShareActions>
           <ShareAction onClick={() => copyHelperRef.current?.forceCopy()}>
