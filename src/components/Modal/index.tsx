@@ -13,11 +13,11 @@ const StyledDialogOverlay = styled(AnimatedDialogOverlay)<{ scrollOverlay?: bool
   &[data-reach-dialog-overlay] {
     z-index: ${Z_INDEX.modalBackdrop};
     background-color: transparent;
-    overflow: hidden;
+    overflow-x: hidden;
 
     display: flex;
     align-items: center;
-    overflow-y: ${({ scrollOverlay }) => scrollOverlay && 'scroll'};
+    overflow-y: auto;
     justify-content: center;
     // Because of the gradient Ambire wallet background it will not work with background
     backdrop-filter: blur(3px);
