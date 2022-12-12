@@ -24,7 +24,7 @@ import { RowBetween, RowFixed } from '../Row'
 import AnimatedConfirmation from './AnimatedConfirmation'
 
 const Wrapper = styled.div`
-  background-color: ${({ theme }) => theme.backgroundSurface};
+  background-color: #24263d;
   border-radius: 20px;
   outline: 1px solid ${({ theme }) => theme.backgroundOutline};
   width: 100%;
