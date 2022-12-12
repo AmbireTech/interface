@@ -25,8 +25,8 @@ import AnimatedConfirmation from './AnimatedConfirmation'
 
 const Wrapper = styled.div`
   background-color: #24263d;
-  border-radius: 20px;
-  outline: 1px solid ${({ theme }) => theme.backgroundOutline};
+  border-radius: 12px;
+  // outline: 1px solid ${({ theme }) => theme.backgroundOutline};
   width: 100%;
   padding: 1rem;
 `
@@ -35,8 +35,8 @@ const Section = styled(AutoColumn)<{ inline?: boolean }>`
 `
 
 const BottomSection = styled(Section)`
-  border-bottom-left-radius: 20px;
-  border-bottom-right-radius: 20px;
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
   padding-bottom: 10px;
 `
 

@@ -35,9 +35,9 @@ const ArrowWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: ${({ theme }) => theme.backgroundSurface};
+  background-color: #1e2033;
   border: 4px solid;
-  border-color: ${({ theme }) => theme.backgroundModule};
+  border-color: #24263d;
   z-index: 2;
 `
 

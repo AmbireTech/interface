@@ -4,14 +4,14 @@ import styled from 'styled-components/macro'
 const Card = styled(Box)<{ width?: string; padding?: string; border?: string; $borderRadius?: string }>`
   width: ${({ width }) => width ?? '100%'};
   padding: ${({ padding }) => padding ?? '1rem'};
-  border-radius: ${({ $borderRadius }) => $borderRadius ?? '16px'};
+  border-radius: ${({ $borderRadius }) => $borderRadius ?? '12px'};
   border: ${({ border }) => border};
 `
 export default Card
 
 export const LightCard = styled(Card)`
-  border: 1px solid ${({ theme }) => theme.deprecated_bg2};
-  background-color: ${({ theme }) => theme.deprecated_bg1};
+  // border: 1px solid ${({ theme }) => theme.deprecated_bg2};
+  background-color: #1e2033;
 `
 
 export const LightGrayCard = styled(Card)`
