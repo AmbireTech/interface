@@ -1,0 +1,24 @@
+name: Release
+on:
+  push:
+    branches:
+      - tokens-and-balances
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/setup
+      - run: yarn prepare
+      - run: yarn build
+
+      - name: Release
+        if: github.ref == 'refs/heads/tokens-and-balances'
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./build
+          destination_dir: ./portfolio
+          cname: swap.ambire.com
