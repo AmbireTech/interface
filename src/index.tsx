@@ -15,7 +15,6 @@ import { Provider } from 'react-redux'
 import { RelayEnvironmentProvider } from 'react-relay'
 import { HashRouter } from 'react-router-dom'
 
-import Blocklist from './components/Blocklist'
 import Web3Provider from './components/Web3Provider'
 import { LanguageProvider } from './i18n'
 import App from './pages/App'
@@ -27,7 +26,7 @@ import LogsUpdater from './state/logs/updater'
 import TransactionUpdater from './state/transactions/updater'
 import UserUpdater from './state/user/updater'
 import ThemeProvider, { ThemedGlobalStyle } from './theme'
-import RadialGradientByChainUpdater from './theme/RadialGradientByChainUpdater'
+import RadialGradientByChainUpdater from './theme/components/RadialGradientByChainUpdater'
 
 const queryClient = new QueryClient()
 
@@ -60,17 +59,15 @@ createRoot(container).render(
             <LanguageProvider>
               <Web3Provider>
                 <RelayEnvironmentProvider environment={RelayEnvironment}>
-                  <Blocklist>
-                    <BlockNumberProvider>
-                      <PortfolioBalances>
-                        <Updaters />
-                        <ThemeProvider>
-                          <ThemedGlobalStyle />
-                          <App />
-                        </ThemeProvider>
-                      </PortfolioBalances>
-                    </BlockNumberProvider>
-                  </Blocklist>
+                  <BlockNumberProvider>
+                    <PortfolioBalances>
+                      <Updaters />
+                      <ThemeProvider>
+                        <ThemedGlobalStyle />
+                        <App />
+                      </ThemeProvider>
+                    </PortfolioBalances>
+                  </BlockNumberProvider>
                 </RelayEnvironmentProvider>
               </Web3Provider>
             </LanguageProvider>

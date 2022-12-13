@@ -8,37 +8,34 @@ import { Z_INDEX } from 'theme/zIndex'
 
 import { AutoColumn } from '../Column'
 
-export const PageWrapper = styled.div<{ redesignFlag: boolean; navBarFlag: boolean }>`
-  padding: ${({ navBarFlag }) => (navBarFlag ? '68px 8px 0px' : '0px 8px')};
+export const PageWrapper = styled.div`
+  padding: 68px 8px 0px;
   max-width: 480px;
   width: 100%;
 
   @media only screen and (max-width: ${({ theme }) => `${theme.breakpoint.md}px`}) {
-    padding-top: ${({ navBarFlag }) => (navBarFlag ? '48px' : '0px')};
+    padding-top: 48px;
   }
 
   @media only screen and (max-width: ${({ theme }) => `${theme.breakpoint.sm}px`}) {
-    padding-top: ${({ navBarFlag }) => (navBarFlag ? '20px' : '0px')};
+    padding-top: 20px;
   }
 `
 
 // Mostly copied from `AppBody` but it was getting too hard to maintain backwards compatibility.
-export const SwapWrapper = styled.main<{ margin?: string; maxWidth?: string; redesignFlag: boolean }>`
+export const SwapWrapper = styled.main<{ margin?: string; maxWidth?: string }>`
   position: relative;
   background: #24263d;
   border-radius: 12px;
   // border: 1px solid #3e436b;
   padding: 12px;
   z-index: ${Z_INDEX.deprecated_content};
-  box-shadow: ${({ redesignFlag }) =>
-    !redesignFlag &&
-    '0px 0px 1px rgba(0, 0, 0, 0.01), 0px 4px 8px rgba(0, 0, 0, 0.04), 0px 16px 24px rgba(0, 0, 0, 0.04), 0px 24px 32px rgba(0, 0, 0, 0.01)'};
 `
 
-export const ArrowWrapper = styled.div<{ clickable: boolean; redesignFlag: boolean }>`
+export const ArrowWrapper = styled.div<{ clickable: boolean }>`
   border-radius: 12px;
-  height: ${({ redesignFlag }) => (redesignFlag ? '40px' : '32px')};
-  width: ${({ redesignFlag }) => (redesignFlag ? '40px' : '32px')};
+  height: 40px;
+  width: 40px;
   position: relative;
   margin-top: -12px;
   margin-bottom: -12px;
@@ -46,9 +43,10 @@ export const ArrowWrapper = styled.div<{ clickable: boolean; redesignFlag: boole
   /* transform: rotate(90deg); */
   background-color: #1e2033;
   // border: 4px solid;
-  // border-color: ${({ theme, redesignFlag }) => (redesignFlag ? theme.backgroundSurface : theme.deprecated_bg0)};
+  // border-color: ${({ theme }) => theme.backgroundSurface};
   margin-left: auto;
   margin-right: auto;
+  opacity: 0.9;
 
   z-index: 2;
   ${({ clickable }) =>
@@ -56,7 +54,7 @@ export const ArrowWrapper = styled.div<{ clickable: boolean; redesignFlag: boole
       ? css`
           :hover {
             cursor: pointer;
-            opacity: 0.8;
+            opacity: 1;
           }
         `
       : null}

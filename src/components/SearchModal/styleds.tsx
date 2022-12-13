@@ -22,7 +22,7 @@ export const PaddedColumn = styled(AutoColumn)`
   padding: 20px;
 `
 
-export const MenuItem = styled(RowBetween)<{ redesignFlag?: boolean; dim?: boolean }>`
+export const MenuItem = styled(RowBetween)<{ dim?: boolean }>`
   padding: 4px 20px;
   height: 56px;
   display: grid;
@@ -31,12 +31,12 @@ export const MenuItem = styled(RowBetween)<{ redesignFlag?: boolean; dim?: boole
   cursor: ${({ disabled }) => !disabled && 'pointer'};
   pointer-events: ${({ disabled }) => disabled && 'none'};
   :hover {
-    background-color: ${({ theme, disabled }) => !disabled && '#1E2033'};
+    background-color: '#1E2033';
   }
   opacity: ${({ disabled, selected, dim }) => (dim || disabled || selected ? 0.4 : 1)};
 `
 
-export const SearchInput = styled.input<{ redesignFlag?: boolean }>`
+export const SearchInput = styled.input`
   background: no-repeat scroll 7px 7px;
   background-image: url(${searchIcon});
   background-size: 20px 20px;
@@ -46,36 +46,36 @@ export const SearchInput = styled.input<{ redesignFlag?: boolean }>`
   display: flex;
   padding: 16px;
   padding-left: 40px;
-  height: ${({ redesignFlag }) => redesignFlag && '40px'};
+  height: 40px;
   align-items: center;
   width: 100%;
   white-space: nowrap;
-  background-color: ${({ theme, redesignFlag }) => redesignFlag && theme.backgroundModule};
+  background-color: ${({ theme }) => theme.backgroundModule};
   border: none;
   outline: none;
   border-radius: 12px;
   color: #ebecff;
   border-style: solid;
-  border: 1px solid ${({ theme, redesignFlag }) => (redesignFlag ? theme.backgroundOutline : theme.deprecated_bg3)};
+  border: 1px solid ${({ theme }) => theme.backgroundOutline};
   -webkit-appearance: none;
 
-  font-size: ${({ redesignFlag }) => (redesignFlag ? '16px' : '18px')};
+  font-size: 16px;
 
   ::placeholder {
     color: #6770b3;
-    font-size: ${({ redesignFlag }) => redesignFlag && '16px'};
+    font-size: 16px;
   }
   transition: border 100ms;
   :focus {
     border: 1px solid #6770b3;
-    background-color: ${({ theme, redesignFlag }) => redesignFlag && theme.backgroundSurface};
+    background-color: ${({ theme }) => theme.backgroundSurface};
     outline: none;
   }
 `
-export const Separator = styled.div<{ redesignFlag?: boolean }>`
+export const Separator = styled.div`
   width: 100%;
   height: 1px;
-  background-color: ${({ theme, redesignFlag }) => (redesignFlag ? theme.backgroundOutline : theme.deprecated_bg2)};
+  background-color: ${({ theme }) => theme.backgroundOutline};
 `
 
 export const SeparatorDark = styled.div`

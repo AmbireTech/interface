@@ -38,6 +38,10 @@ export const V2_ROUTER_ADDRESS: AddressMap = {
   [SupportedChainId.KUCOIN]: KUCOIN_ROUTER_ADDRESS, // KuCoinFinanceRouter (https://docs.kuswap.finance/protocol/building-on-kuswap)
   [SupportedChainId.GNOSIS]: SUSHI_ROUTER_ADDRESS, // SushiSwapFactory (https://docs.sushi.com/docs/Developers/Deployment%20Addresses)
 }
+export const UNISWAP_NFT_AIRDROP_CLAIM_ADDRESS = '0x8B799381ac40b838BBA4131ffB26197C432AFe78'
+
+// export const V2_FACTORY_ADDRESSES: AddressMap = constructSameAddressMap(V2_FACTORY_ADDRESS)
+// export const V2_ROUTER_ADDRESS: AddressMap = constructSameAddressMap('0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D')
 
 // celo v3 addresses
 const CELO_V3_CORE_FACTORY_ADDRESSES = '0xAfE208a311B21f13EF87E33A90049fC17A7acDEc'

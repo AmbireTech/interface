@@ -1,32 +1,10 @@
 import graphql from 'babel-plugin-relay/macro'
-import { filterTimeAtom } from 'components/Tokens/state'
-import { useAtomValue } from 'jotai/utils'
-import { useCallback, useEffect, useState } from 'react'
-import { fetchQuery, useFragment, useLazyLoadQuery, useRelayEnvironment } from 'react-relay'
+import { DEFAULT_ERC20_DECIMALS } from 'constants/tokens'
+import { WrappedTokenInfo } from 'state/lists/wrappedTokenInfo'
 
-import { Chain, TokenPriceQuery } from './__generated__/TokenPriceQuery.graphql'
-import { TokenPrices$data, TokenPrices$key } from './__generated__/TokenPrices.graphql'
-import { TokenQuery, TokenQuery$data } from './__generated__/TokenQuery.graphql'
-import { TimePeriod, toHistoryDuration } from './util'
+import { TokenQuery$data } from './__generated__/TokenQuery.graphql'
+import { CHAIN_NAME_TO_CHAIN_ID } from './util'
 
-export type PricePoint = { value: number; timestamp: number }
-
-export const projectMetaDataFragment = graphql`
-  fragment Token_TokenProject_Metadata on TokenProject {
-    description
-    homepageUrl
-    twitterName
-    name
-  }
-`
-const tokenPricesFragment = graphql`
-  fragment TokenPrices on TokenProjectMarket {
-    priceHistory(duration: $duration) {
-      timestamp
-      value
-    }
-  }
-`
 /*
 The difference between Token and TokenProject:
   Token: an on-chain entity referring to a contract (e.g. uni token on ethereum 0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984)
@@ -35,10 +13,11 @@ The difference between Token and TokenProject:
     TokenMarket is per-chain market data for contracts pulled from the graph.
     TokenProjectMarket is aggregated market data (aggregated over multiple dexes and centralized exchanges) that we get from coingecko.
 */
-const tokenQuery = graphql`
-  query TokenQuery($contract: ContractInput!, $duration: HistoryDuration!) {
+export const tokenQuery = graphql`
+  query TokenQuery($contract: ContractInput!) {
     tokens(contracts: [$contract]) {
       id @required(action: LOG)
+      decimals
       name
       chain @required(action: LOG)
       address @required(action: LOG)
@@ -48,10 +27,6 @@ const tokenQuery = graphql`
           value
           currency
         }
-        priceHistory(duration: $duration) {
-          timestamp
-          value
-        }
         price {
           value
           currency
@@ -60,6 +35,12 @@ const tokenQuery = graphql`
           value
           currency
         }
+        priceHigh52W: priceHighLow(duration: YEAR, highLow: HIGH) {
+          value
+        }
+        priceLow52W: priceHighLow(duration: YEAR, highLow: LOW) {
+          value
+        }
       }
       project {
         description
@@ -67,112 +48,27 @@ const tokenQuery = graphql`
         twitterName
         logoUrl
         tokens {
-          chain
-          address
+          chain @required(action: LOG)
+          address @required(action: LOG)
         }
       }
     }
   }
 `
+export type { Chain, ContractInput, TokenQuery } from './__generated__/TokenQuery.graphql'
 
-export function useTokenQuery(address: string, chain: Chain, timePeriod: TimePeriod) {
-  const data = useLazyLoadQuery<TokenQuery>(tokenQuery, {
-    contract: { address: address.toLowerCase(), chain },
-    duration: toHistoryDuration(timePeriod),
-  })
+export type TokenQueryData = NonNullable<TokenQuery$data['tokens']>[number]
 
-  return data
-}
-
-const tokenPriceQuery = graphql`
-  query TokenPriceQuery(
-    $contract: ContractInput!
-    $skip1H: Boolean!
-    $skip1D: Boolean!
-    $skip1W: Boolean!
-    $skip1M: Boolean!
-    $skip1Y: Boolean!
-  ) {
-    tokens(contracts: [$contract]) {
-      market(currency: USD) {
-        priceHistory1H: priceHistory(duration: HOUR) @skip(if: $skip1H) {
-          timestamp
-          value
-        }
-        priceHistory1D: priceHistory(duration: DAY) @skip(if: $skip1D) {
-          timestamp
-          value
-        }
-        priceHistory1W: priceHistory(duration: WEEK) @skip(if: $skip1W) {
-          timestamp
-          value
-        }
-        priceHistory1M: priceHistory(duration: MONTH) @skip(if: $skip1M) {
-          timestamp
-          value
-        }
-        priceHistory1Y: priceHistory(duration: YEAR) @skip(if: $skip1Y) {
-          timestamp
-          value
-        }
-      }
-    }
+// TODO: Return a QueryToken from useTokenQuery instead of TokenQueryData to make it more usable in Currency-centric interfaces.
+export class QueryToken extends WrappedTokenInfo {
+  constructor(data: NonNullable<TokenQueryData>, logoSrc?: string) {
+    super({
+      chainId: CHAIN_NAME_TO_CHAIN_ID[data.chain],
+      address: data.address,
+      decimals: data.decimals ?? DEFAULT_ERC20_DECIMALS,
+      symbol: data.symbol ?? '',
+      name: data.name ?? '',
+      logoURI: logoSrc ?? data.project?.logoUrl ?? undefined,
+    })
   }
-`
-
-export function filterPrices(prices: TokenPrices$data['priceHistory'] | undefined) {
-  return prices?.filter((p): p is PricePoint => Boolean(p && p.value))
 }
-
-export function useTokenPricesFromFragment(key: TokenPrices$key | null | undefined) {
-  const fetchedTokenPrices = useFragment(tokenPricesFragment, key ?? null)?.priceHistory
-  return filterPrices(fetchedTokenPrices)
-}
-
-export function useTokenPricesCached(token: SingleTokenData) {
-  // Attempt to use token prices already provided by TokenDetails / TopToken queries
-  const environment = useRelayEnvironment()
-  const timePeriod = useAtomValue(filterTimeAtom)
-
-  const [priceMap, setPriceMap] = useState<Map<TimePeriod, PricePoint[] | undefined>>(new Map())
-
-  const updatePrices = useCallback(
-    (key: TimePeriod, data?: PricePoint[]) => {
-      setPriceMap(new Map(priceMap.set(key, data)))
-    },
-    [priceMap]
-  )
-
-  // Fetch the other timePeriods after first render
-  useEffect(() => {
-    const fetchedTokenPrices = token?.market?.priceHistory
-    updatePrices(timePeriod, filterPrices(fetchedTokenPrices))
-    // Fetch all time periods except the one already populated
-    if (token?.chain && token?.address) {
-      fetchQuery<TokenPriceQuery>(environment, tokenPriceQuery, {
-        contract: { address: token.address, chain: token.chain },
-        skip1H: timePeriod === TimePeriod.HOUR && !!fetchedTokenPrices,
-        skip1D: timePeriod === TimePeriod.DAY && !!fetchedTokenPrices,
-        skip1W: timePeriod === TimePeriod.WEEK && !!fetchedTokenPrices,
-        skip1M: timePeriod === TimePeriod.MONTH && !!fetchedTokenPrices,
-        skip1Y: timePeriod === TimePeriod.YEAR && !!fetchedTokenPrices,
-      }).subscribe({
-        next: (data) => {
-          const market = data.tokens?.[0]?.market
-          if (market) {
-            market.priceHistory1H && updatePrices(TimePeriod.HOUR, filterPrices(market.priceHistory1H))
-            market.priceHistory1D && updatePrices(TimePeriod.DAY, filterPrices(market.priceHistory1D))
-            market.priceHistory1W && updatePrices(TimePeriod.WEEK, filterPrices(market.priceHistory1W))
-            market.priceHistory1M && updatePrices(TimePeriod.MONTH, filterPrices(market.priceHistory1M))
-            market.priceHistory1Y && updatePrices(TimePeriod.YEAR, filterPrices(market.priceHistory1Y))
-          }
-        },
-      })
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token?.chain, token?.address])
-
-  return { prices: priceMap.get(timePeriod) }
-}
-
-export type SingleTokenData = NonNullable<TokenQuery$data['tokens']>[number]

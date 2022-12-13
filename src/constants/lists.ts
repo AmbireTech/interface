@@ -7,8 +7,9 @@ import {
 } from 'lib/hooks/useTokenList/listFormatters'
 
 export const UNI_LIST = 'https://tokens.uniswap.org'
+export const AMBIRE_LIST = 'https://ambiretech.github.io/ambire-tokens-list/list.json'
 export const UNI_EXTENDED_LIST = 'https://extendedtokens.uniswap.org/'
-const UNI_UNSUPPORTED_LISTS = 'https://unsupportedtokens.uniswap.org/'
+const UNI_UNSUPPORTED_LIST = 'https://unsupportedtokens.uniswap.org/'
 const AAVE_LIST = 'tokenlist.aave.eth'
 const BA_LIST = 'https://raw.githubusercontent.com/The-Blockchain-Association/sec-notice-list/master/ba-sec-list.json'
 const CMC_ALL_LIST = 'https://api.coinmarketcap.com/data-api/v3/uniswap/all.json'
@@ -47,12 +48,24 @@ export const GNOSIS_SUSHI_SWAP_LIST =
 
 export const KUCOIN_LIST = 'https://raw.githubusercontent.com/KuSwap/kusTokenList/master/v1/kuswaptokenlist.json'
 
-export const UNSUPPORTED_LIST_URLS: string[] = [BA_LIST, UNI_UNSUPPORTED_LISTS]
+export const UNSUPPORTED_LIST_URLS: string[] = [BA_LIST, UNI_UNSUPPORTED_LIST]
 
-// this is the default list of lists that are exposed to users
-// lower index == higher priority for token import
-const DEFAULT_LIST_OF_LISTS_TO_DISPLAY: string[] = [
+// default lists to be 'active' aka searched across
+export const DEFAULT_ACTIVE_LIST_URLS: string[] = [
+  AMBIRE_LIST,
   UNI_LIST,
+  GEMINI_LIST,
+  AVAX_TRADER_JOE_LIST,
+  BINANCE_PANCAKE_SWAP_LIST,
+  MOONBEAM_BEAMSWAP_LIST,
+  MOONRIVER_SUSHI_SWAP_LIST,
+  FANTOM_SUSHI_SWAP_LIST,
+  ANDROMEDA_NET_SWAP_LIST,
+  GNOSIS_SUSHI_SWAP_LIST,
+  KUCOIN_LIST,
+]
+
+export const DEFAULT_INACTIVE_LIST_URLS: string[] = [
   UNI_EXTENDED_LIST,
   COMPOUND_LIST,
   AAVE_LIST,
@@ -66,33 +79,7 @@ const DEFAULT_LIST_OF_LISTS_TO_DISPLAY: string[] = [
   ARBITRUM_LIST,
   OPTIMISM_LIST,
   CELO_LIST,
-  AVAX_TRADER_JOE_LIST,
-  BINANCE_PANCAKE_SWAP_LIST,
-  MOONBEAM_BEAMSWAP_LIST,
-  MOONRIVER_SUSHI_SWAP_LIST,
-  FANTOM_SUSHI_SWAP_LIST,
-  ANDROMEDA_NET_SWAP_LIST,
-  GNOSIS_SUSHI_SWAP_LIST,
-  KUCOIN_LIST,
-]
-
-export const DEFAULT_LIST_OF_LISTS: string[] = [
-  ...DEFAULT_LIST_OF_LISTS_TO_DISPLAY,
-  ...UNSUPPORTED_LIST_URLS, // need to load dynamic unsupported tokens as well
-]
-
-// default lists to be 'active' aka searched across
-export const DEFAULT_ACTIVE_LIST_URLS: string[] = [
-  UNI_LIST,
-  GEMINI_LIST,
-  AVAX_TRADER_JOE_LIST,
-  BINANCE_PANCAKE_SWAP_LIST,
-  MOONBEAM_BEAMSWAP_LIST,
-  MOONRIVER_SUSHI_SWAP_LIST,
-  FANTOM_SUSHI_SWAP_LIST,
-  ANDROMEDA_NET_SWAP_LIST,
-  GNOSIS_SUSHI_SWAP_LIST,
-  KUCOIN_LIST,
+  ...UNSUPPORTED_LIST_URLS,
 ]
 
 export const LIST_FORMATTERS: { [listUrl: string]: (json: any) => TokenList } = {
@@ -101,3 +88,5 @@ export const LIST_FORMATTERS: { [listUrl: string]: (json: any) => TokenList } = 
   [GNOSIS_SUSHI_SWAP_LIST]: formatGnosisList,
   [KUCOIN_LIST]: formatKuCoinList,
 }
+
+export const DEFAULT_LIST_OF_LISTS: string[] = [...DEFAULT_ACTIVE_LIST_URLS, ...DEFAULT_INACTIVE_LIST_URLS]
