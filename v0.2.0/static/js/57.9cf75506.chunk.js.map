@@ -1,0 +1,1 @@
+{"version":3,"sources":["../node_modules/@uniswap/widgets/dist/locales/de-DE.js"],"names":["deDE","messages"],"mappings":"kIAAA,+CAEA,IAAIA,EAAK,CAACC,SAAS","file":"static/js/57.9cf75506.chunk.js","sourcesContent":["/*eslint-disable*/\n\nvar deDE={messages:{}};\n\nexport { deDE as default };\n"],"sourceRoot":""}

@@ -1,0 +1,1 @@
+{"version":3,"sources":["../node_modules/@uniswap/widgets/dist/locales/uk-UA.js"],"names":["ukUA","messages"],"mappings":"kIAAA,+CAEA,IAAIA,EAAK,CAACC,SAAS","file":"static/js/81.201a9665.chunk.js","sourcesContent":["/*eslint-disable*/\n\nvar ukUA={messages:{}};\n\nexport { ukUA as default };\n"],"sourceRoot":""}

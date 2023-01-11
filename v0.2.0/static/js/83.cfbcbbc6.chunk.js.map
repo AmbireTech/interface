@@ -1,0 +1,1 @@
+{"version":3,"sources":["../node_modules/@uniswap/widgets/dist/locales/zh-CN.js"],"names":["zhCN","messages"],"mappings":"kIAAA,+CAEA,IAAIA,EAAK,CAACC,SAAS","file":"static/js/83.cfbcbbc6.chunk.js","sourcesContent":["/*eslint-disable*/\n\nvar zhCN={messages:{}};\n\nexport { zhCN as default };\n"],"sourceRoot":""}

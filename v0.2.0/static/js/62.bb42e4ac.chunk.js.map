@@ -1,0 +1,1 @@
+{"version":3,"sources":["../node_modules/@uniswap/widgets/dist/locales/fr-FR.js"],"names":["frFR","messages"],"mappings":"kIAAA,+CAEA,IAAIA,EAAK,CAACC,SAAS","file":"static/js/62.bb42e4ac.chunk.js","sourcesContent":["/*eslint-disable*/\n\nvar frFR={messages:{}};\n\nexport { frFR as default };\n"],"sourceRoot":""}
