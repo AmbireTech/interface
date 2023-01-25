@@ -34,16 +34,25 @@ export function useNativeCurrencyBalances(uncheckedAddresses?: (string | undefin
     [uncheckedAddresses]
   )
 
+  const { getPortfolioBalances } = usePortfolioBalances()
+
+  const userAddr = useMemo(() => validAddressInputs[0]?.[0], [validAddressInputs])
+
+  const portfolioBalances = getPortfolioBalances(
+    ['0x0000000000000000000000000000000000000000'],
+    useMemo(() => userAddr, [userAddr])
+  )
+
   const results = useSingleContractMultipleData(multicallContract, 'getEthBalance', validAddressInputs)
 
   return useMemo(() => {
     return validAddressInputs.reduce<{ [address: string]: CurrencyAmount<Currency> }>((memo, [address], i) => {
-      const value = results?.[i]?.result?.[0]
+      const value = i === 0 && portfolioBalances[0]?.result ? portfolioBalances[0]?.result : results?.[i]?.result?.[0]
       if (value && chainId)
         memo[address] = CurrencyAmount.fromRawAmount(nativeOnChain(chainId), JSBI.BigInt(value.toString()))
       return memo
     }, {})
-  }, [validAddressInputs, chainId, results])
+  }, [validAddressInputs, portfolioBalances, results, chainId])
 }
 
 const ERC20Interface = new Interface(ERC20ABI) as Erc20Interface
