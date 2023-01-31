@@ -17,7 +17,18 @@ export const MEDIA_WIDTHS = {
   deprecated_upToLarge: 1280,
 }
 
-const BREAKPOINTS = {
+const deprecated_mediaWidthTemplates: { [width in keyof typeof MEDIA_WIDTHS]: typeof css } = Object.keys(
+  MEDIA_WIDTHS
+).reduce((acc, size) => {
+  acc[size] = (a: any, b: any, c: any) => css`
+    @media (max-width: ${(MEDIA_WIDTHS as any)[size]}px) {
+      ${css(a, b, c)}
+    }
+  `
+  return acc
+}, {} as any)
+
+export const BREAKPOINTS = {
   xs: 396,
   sm: 640,
   md: 768,
@@ -49,30 +60,29 @@ const opacities = {
   enabled: 1,
 }
 
-const deprecated_mediaWidthTemplates: { [width in keyof typeof MEDIA_WIDTHS]: typeof css } = Object.keys(
-  MEDIA_WIDTHS
-).reduce((accumulator, size) => {
-  ;(accumulator as any)[size] = (a: any, b: any, c: any) => css`
-    @media (max-width: ${(MEDIA_WIDTHS as any)[size]}px) {
-      ${css(a, b, c)}
-    }
-  `
-  return accumulator
-}, {}) as any
+const fonts = {
+  code: 'courier, courier new, serif',
+}
 
 function getSettings(darkMode: boolean) {
   return {
     grids: {
-      sm: 8,
-      md: 12,
-      lg: 24,
+      xs: '4px',
+      sm: '8px',
+      md: '12px',
+      lg: '24px',
+      xl: '32px',
     },
+    fonts,
 
     // shadows
     shadow1: darkMode ? '#000' : '#2F80ED',
 
     // media queries
     deprecated_mediaWidth: deprecated_mediaWidthTemplates,
+
+    navHeight: 72,
+    mobileBottomBarHeight: 52,
 
     // deprecated - please use hardcoded exported values instead of
     // adding to the theme object
@@ -82,6 +92,7 @@ function getSettings(darkMode: boolean) {
   }
 }
 
+// eslint-disable-next-line import/no-unused-modules -- used in styled.d.ts
 export function getTheme(darkMode: boolean) {
   return {
     darkMode,
@@ -98,8 +109,9 @@ export default function ThemeProvider({ children }: { children: React.ReactNode 
 }
 
 export const ThemedGlobalStyle = createGlobalStyle`
+
 html {
-  color: ${({ theme }) => theme.deprecated_text1};
+  color: ${({ theme }) => theme.textPrimary};
   background-color: transparent !important;
 }
 
@@ -135,11 +147,14 @@ summary::-webkit-details-marker {
     background: #898dcb #1e2033;
   }
 
+
   &::-webkit-scrollbar-track {
     background: #1e2033;
     border-radius: 13px;
     border: 1px solid #3e436b;
   }
+
+
 
   &::-webkit-scrollbar-thumb {
     background-color: #898dcb #1e2033;
@@ -154,8 +169,9 @@ summary::-webkit-details-marker {
   scrollbar-width: thin;
   scrollbar-color: #898dcb #1e2033;
 }
+
 a {
-  color: ${({ theme }) => theme.deprecated_blue1}; 
+  color: ${({ theme }) => theme.accentAction}; 
 }
 
 :root {

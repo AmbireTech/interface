@@ -14,8 +14,9 @@ const MobileWrapper = styled(AutoColumn)`
   `};
 `
 
-const BaseWrapper = styled.div<{ disable?: boolean; redesignFlag?: boolean }>`
-  border: 1px solid ${({ disable }) => (disable ? 'transparent' : '#3E436B')};
+// AMBIRETODO: (disable ? 'transparent : '#3E436B')};
+const BaseWrapper = styled.div<{ disable?: boolean }>`
+  border: 1px solid ${({ theme, disable }) => (disable ? theme.accentActive : '#3E436B')};
   border-radius: 12px;
   display: flex;
   padding: 6px;

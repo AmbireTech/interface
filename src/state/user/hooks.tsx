@@ -17,11 +17,8 @@ import { AppState } from '../index'
 import {
   addSerializedPair,
   addSerializedToken,
-  removeSerializedToken,
+  updateFiatOnrampAcknowledgments,
   updateHideClosedPositions,
-  updateHideNFTWelcomeModal,
-  updateShowNftPromoBanner,
-  updateShowSurveyPopup,
   updateUserClientSideRouter,
   updateUserDarkMode,
   updateUserDeadline,
@@ -108,25 +105,24 @@ export function useExpertModeManager(): [boolean, () => void] {
   return [expertMode, toggleSetExpertMode]
 }
 
-export function useShowSurveyPopup(): [boolean | undefined, (showPopup: boolean) => void] {
+interface FiatOnrampAcknowledgements {
+  renderCount: number
+  system: boolean
+  user: boolean
+}
+export function useFiatOnrampAck(): [
+  FiatOnrampAcknowledgements,
+  (acknowledgements: Partial<FiatOnrampAcknowledgements>) => void
+] {
   const dispatch = useAppDispatch()
-  const showSurveyPopup = useAppSelector((state) => state.user.showSurveyPopup)
-  const toggleShowSurveyPopup = useCallback(
-    (showPopup: boolean) => {
-      dispatch(updateShowSurveyPopup({ showSurveyPopup: showPopup }))
+  const fiatOnrampAcknowledgments = useAppSelector((state) => state.user.fiatOnrampAcknowledgments)
+  const setAcknowledgements = useCallback(
+    (acks: Partial<FiatOnrampAcknowledgements>) => {
+      dispatch(updateFiatOnrampAcknowledgments(acks))
     },
     [dispatch]
   )
-  return [showSurveyPopup, toggleShowSurveyPopup]
-}
-
-export function useHideNFTWelcomeModal(): [boolean | undefined, () => void] {
-  const dispatch = useAppDispatch()
-  const hideNFTWelcomeModal = useAppSelector((state) => state.user.hideNFTWelcomeModal)
-  const hideModal = useCallback(() => {
-    dispatch(updateHideNFTWelcomeModal({ hideNFTWelcomeModal: true }))
-  }, [dispatch])
-  return [hideNFTWelcomeModal, hideModal]
+  return [fiatOnrampAcknowledgments, setAcknowledgements]
 }
 
 export function useClientSideRouter(): [boolean, (userClientSideRouter: boolean) => void] {
@@ -235,16 +231,6 @@ export function useAddUserToken(): (token: Token) => void {
   )
 }
 
-export function useRemoveUserAddedToken(): (chainId: number, address: string) => void {
-  const dispatch = useAppDispatch()
-  return useCallback(
-    (chainId: number, address: string) => {
-      dispatch(removeSerializedToken({ chainId, address }))
-    },
-    [dispatch]
-  )
-}
-
 export function useUserAddedTokensOnChain(chainId: number | undefined | null): Token[] {
   const serializedTokensMap = useAppSelector(({ user: { tokens } }) => tokens)
 
@@ -281,17 +267,6 @@ export function usePairAdder(): (pair: Pair) => void {
 
 export function useURLWarningVisible(): boolean {
   return useAppSelector((state: AppState) => state.user.URLWarningVisible)
-}
-
-export function useHideNftPromoBanner(): [boolean, () => void] {
-  const dispatch = useAppDispatch()
-  const hideNftPromoBanner = useAppSelector((state) => state.user.hideNFTPromoBanner)
-
-  const toggleHideNftPromoBanner = useCallback(() => {
-    dispatch(updateShowNftPromoBanner({ hideNFTPromoBanner: true }))
-  }, [dispatch])
-
-  return [hideNftPromoBanner, toggleHideNftPromoBanner]
 }
 
 /**

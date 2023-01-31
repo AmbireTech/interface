@@ -95,7 +95,7 @@ export const colors = {
   networkEthereumSoft: 'rgba(98, 126, 234, 0.16)',
 }
 
-export type Theme = typeof darkTheme
+type Theme = typeof darkTheme
 
 const commonTheme = {
   white: colors.white,
@@ -156,7 +156,7 @@ export const darkTheme = {
   accentActiveSoft: opacify(24, colors.blue400),
   accentSuccessSoft: opacify(24, colors.green400),
   accentWarningSoft: opacify(24, colors.gold200),
-  accentFailureSoft: opacify(12, colors.red400),
+  accentFailureSoft: opacify(12, colors.red300),
 
   accentTextDarkPrimary: opacify(80, colors.gray900),
   accentTextDarkSecondary: opacify(60, colors.gray900),
@@ -208,7 +208,7 @@ export const lightTheme: Theme = {
 
   accentActionSoft: opacify(24, colors.pink400),
   accentActiveSoft: opacify(24, colors.blue400),
-  accentSuccessSoft: opacify(24, colors.green400),
+  accentSuccessSoft: opacify(24, colors.green300),
   accentWarningSoft: opacify(24, colors.gold200),
   accentFailureSoft: opacify(12, colors.red400),
 
@@ -217,7 +217,7 @@ export const lightTheme: Theme = {
   accentTextDarkTertiary: opacify(24, colors.gray900),
 
   accentTextLightPrimary: colors.gray50,
-  accentTextLightSecondary: opacify(60, colors.gray50),
+  accentTextLightSecondary: opacify(72, colors.gray50),
   accentTextLightTertiary: opacify(12, colors.gray50),
 
   deepShadow:

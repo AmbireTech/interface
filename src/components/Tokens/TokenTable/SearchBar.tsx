@@ -76,19 +76,16 @@ export default function SearchBar() {
     <SearchBarContainer>
       <Trans
         render={({ translation }) => (
-          // <TraceEvent
-          //   events={[BrowserEvent.onFocus]}
-          //   name={EventName.EXPLORE_SEARCH_SELECTED}
-          //   element={ElementName.EXPLORE_SEARCH_INPUT}
-          // >
-          <SearchInput
-            type="search"
-            placeholder={`${translation}`}
-            id="searchBar"
-            autoComplete="off"
-            value={localFilterString}
-            onChange={({ target: { value } }) => setLocalFilterString(value)}
-          />
+
+            <SearchInput
+              data-cy="explore-tokens-search-input"
+              type="search"
+              placeholder={`${translation}`}
+              id="searchBar"
+              autoComplete="off"
+              value={localFilterString}
+              onChange={({ target: { value } }) => setLocalFilterString(value)}
+            />
           // </TraceEvent>
         )}
       >

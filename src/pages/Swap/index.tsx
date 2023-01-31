@@ -1,8 +1,19 @@
+/* eslint-disable import/no-unused-modules */
 import { Trans } from '@lingui/macro'
 // import { sendAnalyticsEvent, Trace, TraceEvent } from '@uniswap/analytics'
 // import { BrowserEvent, ElementName, EventName, PageName, SectionName } from '@uniswap/analytics-events'
+// import { sendAnalyticsEvent, Trace, TraceEvent } from '@uniswap/analytics'
+import {
+  //   BrowserEvent,
+  //   InterfaceElementName,
+  //   InterfaceEventName,
+  //   InterfacePageName,
+  InterfaceSectionName,
+  //   SwapEventName,
+} from '@uniswap/analytics-events'
 import { Trade } from '@uniswap/router-sdk'
 import { Currency, CurrencyAmount, Percent, Token, TradeType } from '@uniswap/sdk-core'
+import { UNIVERSAL_ROUTER_ADDRESS } from '@uniswap/universal-router-sdk'
 import { useWeb3React } from '@web3-react/core'
 import { sendEvent } from 'components/analytics'
 import PriceImpactWarning from 'components/swap/PriceImpactWarning'
@@ -11,9 +22,11 @@ import UnsupportedCurrencyFooter from 'components/swap/UnsupportedCurrencyFooter
 import TokenSafetyModal from 'components/TokenSafety/TokenSafetyModal'
 import { MouseoverTooltip } from 'components/Tooltip'
 import { isSupportedChain, SupportedChainId } from 'constants/chains'
+import { usePermit2Enabled } from 'featureFlags/flags/permit2'
 import { useCustomBestTrade } from 'hooks/customNetwork/useCustomBestTrade'
 import { useCustomSwapCallArguments } from 'hooks/customNetwork/useCustomSwapCallArguments'
 import { useBestTrade } from 'hooks/useBestTrade'
+import usePermit2Allowance, { AllowanceState } from 'hooks/usePermit2Allowance'
 import { useSwapCallArguments } from 'hooks/useSwapCallArguments'
 import { useSwapCallback } from 'hooks/useSwapCallback'
 import useTransactionDeadline from 'hooks/useTransactionDeadline'
@@ -21,15 +34,15 @@ import JSBI from 'jsbi'
 // import { formatSwapQuoteReceivedEventProperties } from 'lib/utils/analytics'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { ReactNode } from 'react'
-import { ArrowDown, CheckCircle, HelpCircle } from 'react-feather'
+import { ArrowDown, CheckCircle, HelpCircle, Info } from 'react-feather'
 import { useNavigate } from 'react-router-dom'
 import { Text } from 'rebass'
 import { useToggleWalletModal } from 'state/application/hooks'
 import { InterfaceTrade, SwapCallArgumentsHook, TradeHook, TradeState } from 'state/routing/types'
 import styled, { useTheme } from 'styled-components/macro'
+import invariant from 'tiny-invariant'
 import { currencyAmountToPreciseFloat, formatTransactionAmount } from 'utils/formatNumbers'
 
-import { ReactComponent as Switch } from '../../assets/svg/switch-ambire.svg'
 import AddressInputPanel from '../../components/AddressInputPanel'
 import { ButtonConfirmed, ButtonError, ButtonLight, ButtonPrimary } from '../../components/Button'
 import { GrayCard } from '../../components/Card'
@@ -201,7 +214,7 @@ export function BaseSwap(props: { useBestTradeHook: TradeHook; useSwapCallArgume
       urlLoadedTokens &&
       urlLoadedTokens
         .filter((token: Token) => {
-          return !Boolean(token.address in defaultTokens)
+          return !(token.address in defaultTokens)
         })
         .filter((token: Token) => {
           // Any token addresses that are loaded from the shorthands map do not need to show the import URL
@@ -222,7 +235,6 @@ export function BaseSwap(props: { useBestTradeHook: TradeHook; useSwapCallArgume
 
   // for expert mode
   const [isExpertMode] = useExpertModeManager()
-
   // swap state
   const { independentField, typedValue, recipient } = useSwapState()
   const {
@@ -255,17 +267,20 @@ export function BaseSwap(props: { useBestTradeHook: TradeHook; useSwapCallArgume
           },
     [independentField, parsedAmount, showWrap, trade]
   )
+  const fiatValueInput = useStablecoinValue(parsedAmounts[Field.INPUT])
+  const fiatValueOutput = useStablecoinValue(parsedAmounts[Field.OUTPUT])
 
   const [routeNotFound, routeIsLoading, routeIsSyncing] = useMemo(
     () => [!trade?.swaps, TradeState.LOADING === tradeState, TradeState.SYNCING === tradeState],
     [trade, tradeState]
   )
 
-  const fiatValueInput = useStablecoinValue(parsedAmounts[Field.INPUT])
-  const fiatValueOutput = useStablecoinValue(parsedAmounts[Field.OUTPUT])
+  const fiatValueTradeInput = useStablecoinValue(trade?.inputAmount)
+  const fiatValueTradeOutput = useStablecoinValue(trade?.outputAmount)
   const stablecoinPriceImpact = useMemo(
-    () => (routeIsSyncing ? undefined : computeFiatValuePriceImpact(fiatValueInput, fiatValueOutput)),
-    [fiatValueInput, fiatValueOutput, routeIsSyncing]
+    () =>
+      routeIsSyncing || !trade ? undefined : computeFiatValuePriceImpact(fiatValueTradeInput, fiatValueTradeOutput),
+    [fiatValueTradeInput, fiatValueTradeOutput, routeIsSyncing, trade]
   )
 
   const { onSwitchTokens, onCurrencySelection, onUserInput, onChangeRecipient } = useSwapActionHandlers()
@@ -320,14 +335,50 @@ export function BaseSwap(props: { useBestTradeHook: TradeHook; useSwapCallArgume
     currencies[Field.INPUT] && currencies[Field.OUTPUT] && parsedAmounts[independentField]?.greaterThan(JSBI.BigInt(0))
   )
 
+  const permit2Enabled = usePermit2Enabled()
+  const maximumAmountIn = useMemo(() => {
+    const maximumAmountIn = trade?.maximumAmountIn(allowedSlippage)
+    return maximumAmountIn?.currency.isToken ? (maximumAmountIn as CurrencyAmount<Token>) : undefined
+  }, [allowedSlippage, trade])
+  const allowance = usePermit2Allowance(
+    permit2Enabled
+      ? maximumAmountIn ??
+          (parsedAmounts[Field.INPUT]?.currency.isToken
+            ? (parsedAmounts[Field.INPUT] as CurrencyAmount<Token>)
+            : undefined)
+      : undefined,
+    permit2Enabled && chainId ? UNIVERSAL_ROUTER_ADDRESS(chainId) : undefined
+  )
+  const isApprovalLoading = allowance.state === AllowanceState.REQUIRED && allowance.isApprovalLoading
+  const [isAllowancePending, setIsAllowancePending] = useState(false)
+  const updateAllowance = useCallback(async () => {
+    invariant(allowance.state === AllowanceState.REQUIRED)
+    setIsAllowancePending(true)
+    try {
+      await allowance.approveAndPermit()
+      // sendAnalyticsEvent(InterfaceEventName.APPROVE_TOKEN_TXN_SUBMITTED, {
+      //   chain_id: chainId,
+      //   token_symbol: maximumAmountIn?.currency.symbol,
+      //   token_address: maximumAmountIn?.currency.address,
+      // })
+    } catch (e) {
+      console.error(e)
+    } finally {
+      setIsAllowancePending(false)
+    }
+  }, [allowance, chainId, maximumAmountIn?.currency.address, maximumAmountIn?.currency.symbol])
+
   // check whether the user has approved the router on the input token
-  const [approvalState, approveCallback] = useApproveCallbackFromTrade(trade, allowedSlippage)
+  const [approvalState, approveCallback] = useApproveCallbackFromTrade(
+    permit2Enabled ? undefined : trade,
+    allowedSlippage
+  )
   const transactionDeadline = useTransactionDeadline()
   const {
     state: signatureState,
     signatureData,
     gatherPermitSignature,
-  } = useERC20PermitFromTrade(trade, allowedSlippage, transactionDeadline)
+  } = useERC20PermitFromTrade(permit2Enabled ? undefined : trade, allowedSlippage, transactionDeadline)
 
   const [approvalPending, setApprovalPending] = useState<boolean>(false)
   const handleApprove = useCallback(async () => {
@@ -378,7 +429,8 @@ export function BaseSwap(props: { useBestTradeHook: TradeHook; useSwapCallArgume
     allowedSlippage,
     recipient,
     signatureData,
-    props.useSwapCallArgumentsHook
+    // props.useSwapCallArgumentsHook
+    allowance.state === AllowanceState.ALLOWED ? allowance.permitSignature : undefined
   )
 
   const handleSwap = useCallback(() => {
@@ -445,7 +497,6 @@ export function BaseSwap(props: { useBestTradeHook: TradeHook; useSwapCallArgume
   ])
 
   // errors
-  const [showInverted, setShowInverted] = useState<boolean>(false)
   const [swapQuoteReceivedDate, setSwapQuoteReceivedDate] = useState<Date | undefined>()
 
   // warnings on the greater of fiat value price impact and execution price impact
@@ -461,6 +512,7 @@ export function BaseSwap(props: { useBestTradeHook: TradeHook; useSwapCallArgume
   // never show if price impact is above threshold in non expert mode
   const showApproveFlow =
     false && // hide because of approve tx batching
+    !permit2Enabled &&
     !isArgentWallet &&
     !swapInputError &&
     (approvalState === ApprovalState.NOT_APPROVED ||
@@ -546,7 +598,7 @@ export function BaseSwap(props: { useBestTradeHook: TradeHook; useSwapCallArgume
   )
 
   return (
-    // <Trace page={PageName.SWAP_PAGE} shouldLogImpression>
+    // <Trace page={InterfacePageName.SWAP_PAGE} shouldLogImpression>
     <>
       <TokenSafetyModal
         isOpen={importTokensNotInDefault.length > 0 && !dismissTokenWarning}
@@ -557,7 +609,10 @@ export function BaseSwap(props: { useBestTradeHook: TradeHook; useSwapCallArgume
         showCancel={true}
       />
       <PageWrapper>
-        <SwapWrapper id="swap-page">
+        <SwapWrapper
+          // className={className}
+          id="swap-page"
+        >
           <SwapHeader allowedSlippage={allowedSlippage} />
           <ConfirmSwapModal
             isOpen={showConfirm}
@@ -572,13 +627,13 @@ export function BaseSwap(props: { useBestTradeHook: TradeHook; useSwapCallArgume
             swapErrorMessage={swapErrorMessage}
             onDismiss={handleConfirmDismiss}
             swapQuoteReceivedDate={swapQuoteReceivedDate}
-            fiatValueInput={fiatValueInput}
-            fiatValueOutput={fiatValueOutput}
+            fiatValueInput={fiatValueTradeInput}
+            fiatValueOutput={fiatValueTradeOutput}
           />
 
           <div style={{ display: 'relative' }}>
             <SwapSection>
-              {/* <Trace section={SectionName.CURRENCY_INPUT_PANEL}> */}
+              {/* <Trace section={InterfaceSectionName.CURRENCY_INPUT_PANEL}> */}
               <SwapCurrencyInputPanel
                 label={
                   independentField === Field.OUTPUT && !showWrap ? <Trans>From (at most)</Trans> : <Trans>From</Trans>
@@ -592,8 +647,7 @@ export function BaseSwap(props: { useBestTradeHook: TradeHook; useSwapCallArgume
                 onCurrencySelect={handleInputSelect}
                 otherCurrency={currencies[Field.OUTPUT]}
                 showCommonBases={true}
-                // id={SectionName.CURRENCY_INPUT_PANEL}
-                id="currency-input-panel"
+                id={InterfaceSectionName.CURRENCY_INPUT_PANEL}
                 loading={independentField === Field.OUTPUT && routeIsSyncing}
               />
               {/* </Trace> */}
@@ -601,8 +655,8 @@ export function BaseSwap(props: { useBestTradeHook: TradeHook; useSwapCallArgume
             <ArrowWrapper clickable={isSupportedChain(chainId)}>
               {/* <TraceEvent
                   events={[BrowserEvent.onClick]}
-                  name={EventName.SWAP_TOKENS_REVERSED}
-                  element={ElementName.SWAP_TOKENS_REVERSE_ARROW_BUTTON}
+                  name={SwapEventName.SWAP_TOKENS_REVERSED}
+                  element={InterfaceElementName.SWAP_TOKENS_REVERSE_ARROW_BUTTON}
                 > */}
               <ArrowContainer
                 onClick={() => {
@@ -611,22 +665,18 @@ export function BaseSwap(props: { useBestTradeHook: TradeHook; useSwapCallArgume
                 }}
                 color={theme.textPrimary}
               >
-                <Switch
-                  // size="16"
-                  color={
-                    currencies[Field.INPUT] && currencies[Field.OUTPUT]
-                      ? theme.deprecated_text1
-                      : theme.deprecated_text3
-                  }
+                <ArrowDown
+                  size="16"
+                  color={currencies[Field.INPUT] && currencies[Field.OUTPUT] ? theme.textPrimary : theme.textTertiary}
                 />
               </ArrowContainer>
               {/* </TraceEvent> */}
             </ArrowWrapper>
           </div>
-          <AutoColumn gap="12px">
+          <AutoColumn gap="md">
             <div>
               <OutputSwapSection showDetailsDropdown={showDetailsDropdown}>
-                {/* <Trace section={SectionName.CURRENCY_OUTPUT_PANEL}> */}
+                {/* <Trace section={InterfaceSectionName.CURRENCY_OUTPUT_PANEL}> */}
                 <SwapCurrencyInputPanel
                   value={formattedAmounts[Field.OUTPUT]}
                   onUserInput={handleTypeOutput}
@@ -641,8 +691,7 @@ export function BaseSwap(props: { useBestTradeHook: TradeHook; useSwapCallArgume
                   onCurrencySelect={handleOutputSelect}
                   otherCurrency={currencies[Field.INPUT]}
                   showCommonBases={true}
-                  // id={SectionName.CURRENCY_OUTPUT_PANEL}
-                  id="currency-output-panel"
+                  id={InterfaceSectionName.CURRENCY_OUTPUT_PANEL}
                   loading={independentField === Field.INPUT && routeIsSyncing}
                 />
                 {/* </Trace> */}
@@ -651,7 +700,7 @@ export function BaseSwap(props: { useBestTradeHook: TradeHook; useSwapCallArgume
                   <>
                     <AutoRow justify="space-between" style={{ padding: '0 1rem' }}>
                       <ArrowWrapper clickable={false}>
-                        <ArrowDown size="16" color={theme.deprecated_text2} />
+                        <ArrowDown size="16" color={theme.textSecondary} />
                       </ArrowWrapper>
                       <LinkStyledButton id="remove-recipient-button" onClick={() => onChangeRecipient(null)}>
                         <Trans>- Remove recipient</Trans>
@@ -667,8 +716,6 @@ export function BaseSwap(props: { useBestTradeHook: TradeHook; useSwapCallArgume
                     trade={trade}
                     syncing={routeIsSyncing}
                     loading={routeIsLoading}
-                    showInverted={showInverted}
-                    setShowInverted={setShowInverted}
                     allowedSlippage={allowedSlippage}
                   />
                 </DetailsSwapSection>
@@ -685,9 +732,9 @@ export function BaseSwap(props: { useBestTradeHook: TradeHook; useSwapCallArgume
               ) : !account ? (
                 // <TraceEvent
                 //   events={[BrowserEvent.onClick]}
-                //   name={EventName.CONNECT_WALLET_BUTTON_CLICKED}
+                //   name={InterfaceEventName.CONNECT_WALLET_BUTTON_CLICKED}
                 //   properties={{ received_swap_quote: getIsValidSwapQuote(trade, tradeState, swapInputError) }}
-                //   element={ElementName.CONNECT_WALLET_BUTTON}
+                //   element={InterfaceElementName.CONNECT_WALLET_BUTTON}
                 // >
                 <ButtonLight onClick={toggleWalletModal} fontWeight={600}>
                   <Trans>Connect Wallet</Trans>
@@ -723,19 +770,22 @@ export function BaseSwap(props: { useBestTradeHook: TradeHook; useSwapCallArgume
                       }
                     >
                       <AutoRow justify="space-between" style={{ flexWrap: 'nowrap' }} height="20px">
-                        <ThemedText.SubHeader width="100%" textAlign="center" color="white">
-                          {/* we need to shorten this string on mobile */}
-                          {approvalState === ApprovalState.APPROVED || signatureState === UseERC20PermitState.SIGNED ? (
+                        {/* we need to shorten this string on mobile */}
+                        {approvalState === ApprovalState.APPROVED || signatureState === UseERC20PermitState.SIGNED ? (
+                          <ThemedText.SubHeader width="100%" textAlign="center" color="textSecondary">
                             <Trans>You can now trade {currencies[Field.INPUT]?.symbol}</Trans>
-                          ) : (
+                          </ThemedText.SubHeader>
+                        ) : (
+                          <ThemedText.SubHeader width="100%" textAlign="center" color="white">
                             <Trans>Allow the Uniswap Protocol to use your {currencies[Field.INPUT]?.symbol}</Trans>
-                          )}
-                        </ThemedText.SubHeader>
+                          </ThemedText.SubHeader>
+                        )}
+
                         {approvalPending || approvalState === ApprovalState.PENDING ? (
                           <Loader stroke={theme.white} />
                         ) : (approvalSubmitted && approvalState === ApprovalState.APPROVED) ||
                           signatureState === UseERC20PermitState.SIGNED ? (
-                          <CheckCircle size="20" color={theme.deprecated_green1} />
+                          <CheckCircle size="20" color={theme.accentSuccess} />
                         ) : (
                           <MouseoverTooltip
                             text={
@@ -745,25 +795,24 @@ export function BaseSwap(props: { useBestTradeHook: TradeHook; useSwapCallArgume
                               </Trans>
                             }
                           >
-                            <HelpCircle size="20" color={theme.deprecated_white} style={{ marginLeft: '8px' }} />
+                            <HelpCircle size="20" color={theme.white} style={{ marginLeft: '8px' }} />
                           </MouseoverTooltip>
                         )}
                       </AutoRow>
                     </ButtonConfirmed>
                     <ButtonError
                       onClick={() => {
-                        // Show swap confirm always
-                        // if (isExpertMode) {
-                        //   handleSwap()
-                        // } else {
-                        setSwapState({
-                          tradeToConfirm: trade,
-                          attemptingTxn: false,
-                          swapErrorMessage: undefined,
-                          showConfirm: true,
-                          txHash: undefined,
-                        })
-                        // }
+                        if (isExpertMode) {
+                          handleSwap()
+                        } else {
+                          setSwapState({
+                            tradeToConfirm: trade,
+                            attemptingTxn: false,
+                            swapErrorMessage: undefined,
+                            showConfirm: true,
+                            txHash: undefined,
+                          })
+                        }
                       }}
                       width="100%"
                       id="swap-button"
@@ -788,35 +837,78 @@ export function BaseSwap(props: { useBestTradeHook: TradeHook; useSwapCallArgume
                     </ButtonError>
                   </AutoColumn>
                 </AutoRow>
+              ) : isValid && allowance.state === AllowanceState.REQUIRED ? (
+                <ButtonPrimary
+                  onClick={updateAllowance}
+                  disabled={isAllowancePending || isApprovalLoading}
+                  style={{ gap: 14 }}
+                >
+                  {isAllowancePending ? (
+                    <>
+                      <Loader size="20px" />
+                      <Trans>Approve in your wallet</Trans>
+                    </>
+                  ) : isApprovalLoading ? (
+                    <>
+                      <Loader size="20px" />
+                      <Trans>Approval pending</Trans>
+                    </>
+                  ) : (
+                    <>
+                      <div style={{ height: 20 }}>
+                        <MouseoverTooltip
+                          text={
+                            <Trans>
+                              Permission is required for Uniswap to swap each token. This will expire after one month
+                              for your security.
+                            </Trans>
+                          }
+                        >
+                          <Info size={20} />
+                        </MouseoverTooltip>
+                      </div>
+                      <Trans>Approve use of {currencies[Field.INPUT]?.symbol}</Trans>
+                    </>
+                  )}
+                </ButtonPrimary>
               ) : (
                 <ButtonError
                   onClick={() => {
-                    // Show swap confirm always
-                    // if (isExpertMode) {
-                    //   handleSwap()
-                    // } else {
-                    setSwapState({
-                      tradeToConfirm: trade,
-                      attemptingTxn: false,
-                      swapErrorMessage: undefined,
-                      showConfirm: true,
-                      txHash: undefined,
-                    })
-                    // }
+                    if (isExpertMode) {
+                      handleSwap()
+                    } else {
+                      setSwapState({
+                        tradeToConfirm: trade,
+                        attemptingTxn: false,
+                        swapErrorMessage: undefined,
+                        showConfirm: true,
+                        txHash: undefined,
+                      })
+                    }
                   }}
                   id="swap-button"
-                  disabled={!isValid || routeIsSyncing || routeIsLoading || priceImpactTooHigh || !!swapCallbackError}
-                  error={isValid && priceImpactSeverity > 2 && !swapCallbackError}
+                  disabled={
+                    !isValid ||
+                    routeIsSyncing ||
+                    routeIsLoading ||
+                    priceImpactTooHigh ||
+                    (permit2Enabled ? allowance.state !== AllowanceState.ALLOWED : Boolean(swapCallbackError))
+                  }
+                  error={
+                    isValid &&
+                    priceImpactSeverity > 2 &&
+                    (permit2Enabled ? allowance.state === AllowanceState.ALLOWED : !swapCallbackError)
+                  }
                 >
                   <Text fontSize={20} fontWeight={600}>
                     {swapInputError ? (
                       swapInputError
                     ) : routeIsSyncing || routeIsLoading ? (
                       <Trans>Swap</Trans>
-                    ) : priceImpactSeverity > 2 ? (
-                      <Trans>Swap Anyway</Trans>
                     ) : priceImpactTooHigh ? (
                       <Trans>Price Impact Too High</Trans>
+                    ) : priceImpactSeverity > 2 ? (
+                      <Trans>Swap Anyway</Trans>
                     ) : (
                       <Trans>Swap</Trans>
                     )}

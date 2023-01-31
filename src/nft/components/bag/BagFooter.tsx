@@ -2,35 +2,59 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { parseEther } from '@ethersproject/units'
 import { Trans } from '@lingui/macro'
 import { TraceEvent } from '@uniswap/analytics'
-import { BrowserEvent, ElementName, EventName } from '@uniswap/analytics-events'
+import { BrowserEvent, InterfaceElementName, NFTEventName } from '@uniswap/analytics-events'
+import { Currency } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
+import Column from 'components/Column'
 import Loader from 'components/Loader'
+import CurrencyLogo from 'components/Logo/CurrencyLogo'
+import Row from 'components/Row'
 import { SupportedChainId } from 'constants/chains'
-import { Box } from 'nft/components/Box'
-import { Column, Row } from 'nft/components/Flex'
-import { bodySmall } from 'nft/css/common.css'
+import { PayWithAnyTokenVariant, usePayWithAnyTokenFlag } from 'featureFlags/flags/payWithAnyToken'
+import { useCurrency } from 'hooks/Tokens'
 import { useBag } from 'nft/hooks/useBag'
+import { useTokenInput } from 'nft/hooks/useTokenInput'
 import { useWalletBalance } from 'nft/hooks/useWalletBalance'
 import { BagStatus } from 'nft/types'
 import { ethNumberStandardFormatter, formatWeiToDecimal } from 'nft/utils'
-import { PropsWithChildren, useMemo } from 'react'
-import { AlertTriangle } from 'react-feather'
+import { PropsWithChildren, useMemo, useReducer } from 'react'
+import { AlertTriangle, ChevronDown } from 'react-feather'
 import { useToggleWalletModal } from 'state/application/hooks'
-import styled from 'styled-components/macro'
+import styled, { useTheme } from 'styled-components/macro'
 import { ThemedText } from 'theme'
 import { switchChain } from 'utils/switchChain'
 
-import * as styles from './BagFooter.css'
+import { BagTokenSelectorModal } from './tokenSelector/BagTokenSelectorModal'
+
+const FooterContainer = styled.div`
+  padding: 0px 12px;
+`
 
 const Footer = styled.div`
   border-top: 1px solid ${({ theme }) => theme.backgroundOutline};
   color: ${({ theme }) => theme.textPrimary};
   display: flex;
   flex-direction: column;
-  margin-bottom: 8px;
-  padding: 12px 16px;
+  margin: 0px 16px 8px;
+  padding: 12px 0px;
   border-bottom-left-radius: 12px;
   border-bottom-right-radius: 12px;
+`
+
+const FooterHeader = styled(Column)<{ warningText?: boolean }>`
+  padding-top: 8px;
+  padding-bottom: ${({ warningText }) => (warningText ? '8px' : '20px')};
+`
+
+const CurrencyRow = styled(Row)<{ warningText?: boolean }>`
+  padding-top: 4px;
+  padding-bottom: ${({ warningText }) => (warningText ? '8px' : '20px')};
+  justify-content: space-between;
+  align-items: start;
+`
+
+const TotalColumn = styled(Column)`
+  text-align: end;
 `
 
 const WarningIcon = styled(AlertTriangle)`
@@ -47,6 +71,26 @@ const WarningText = styled(ThemedText.BodyPrimary)`
   text-align: center;
 `
 
+const CurrencyInput = styled(Row)`
+  gap: 8px;
+  cursor: pointer;
+`
+
+const PayButton = styled(Row)<{ disabled?: boolean }>`
+  background: ${({ theme }) => theme.accentAction};
+  color: ${({ theme }) => theme.accentTextLightPrimary};
+  font-weight: 600;
+  line-height: 24px;
+  font-size: 16px;
+  gap: 16px;
+  justify-content: center;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 0px;
+  opacity: ${({ disabled }) => (disabled ? 0.6 : 1)};
+  cursor: ${({ disabled }) => (disabled ? 'auto' : 'pointer')};
+`
+
 interface ActionButtonProps {
   disabled?: boolean
   onClick: () => void
@@ -54,9 +98,9 @@ interface ActionButtonProps {
 
 const ActionButton = ({ disabled, children, onClick }: PropsWithChildren<ActionButtonProps>) => {
   return (
-    <Row as="button" color="explicitWhite" className={styles.payButton} disabled={disabled} onClick={onClick}>
+    <PayButton disabled={disabled} onClick={onClick}>
       {children}
-    </Row>
+    </PayButton>
   )
 }
 
@@ -95,10 +139,16 @@ export const BagFooter = ({
   eventProperties,
 }: BagFooterProps) => {
   const toggleWalletModal = useToggleWalletModal()
+  const theme = useTheme()
   const { account, chainId, connector } = useWeb3React()
   const connected = Boolean(account && chainId)
+  const shouldUsePayWithAnyToken = usePayWithAnyTokenFlag() === PayWithAnyTokenVariant.Enabled
+  const inputCurrency = useTokenInput((state) => state.inputCurrency)
+  const setInputCurrency = useTokenInput((state) => state.setInputCurrency)
+  const defaultCurrency = useCurrency('ETH')
 
   const setBagExpanded = useBag((state) => state.setBagExpanded)
+  const [showTokenSelector, toggleTokenSelector] = useReducer((state) => !state, false)
 
   const { balance: balanceInEth } = useWalletBalance()
   const sufficientBalance = useMemo(() => {
@@ -147,29 +197,63 @@ export const BagFooter = ({
   }, [bagStatus, chainId, connected, connector, fetchAssets, setBagExpanded, sufficientBalance, toggleWalletModal])
 
   const isPending = PENDING_BAG_STATUSES.includes(bagStatus)
+  const activeCurrency = inputCurrency ?? defaultCurrency
 
   return (
-    <Column className={styles.footerContainer}>
+    <FooterContainer>
       <Footer>
-        <Column gap="4" paddingTop="8" paddingBottom="20">
-          <Row justifyContent="space-between">
-            <Box>
-              <ThemedText.HeadlineSmall>Total</ThemedText.HeadlineSmall>
-            </Box>
-            <Box>
+        {shouldUsePayWithAnyToken && (
+          <CurrencyRow>
+            <Column gap="xs">
+              <ThemedText.SubHeaderSmall>
+                <Trans>Pay with</Trans>
+              </ThemedText.SubHeaderSmall>
+              <CurrencyInput onClick={toggleTokenSelector}>
+                <CurrencyLogo currency={activeCurrency} size="24px" />
+                <ThemedText.HeadlineSmall fontWeight={500} lineHeight="24px">
+                  {activeCurrency?.symbol}
+                </ThemedText.HeadlineSmall>
+                <ChevronDown size={20} color={theme.textSecondary} />
+              </CurrencyInput>
+            </Column>
+            <TotalColumn gap="xs">
+              <ThemedText.SubHeaderSmall marginBottom="4px">
+                <Trans>Total</Trans>
+              </ThemedText.SubHeaderSmall>
               <ThemedText.HeadlineSmall>
-                {formatWeiToDecimal(totalEthPrice.toString())}&nbsp;ETH
+                {formatWeiToDecimal(totalEthPrice.toString())}&nbsp;{activeCurrency?.symbol ?? 'ETH'}
               </ThemedText.HeadlineSmall>
-            </Box>
-          </Row>
-          <Row justifyContent="flex-end" color="textSecondary" className={bodySmall}>
-            {`${ethNumberStandardFormatter(totalUsdPrice, true)}`}
-          </Row>
-        </Column>
+              <ThemedText.BodySmall color="textSecondary" lineHeight="20px">{`${ethNumberStandardFormatter(
+                totalUsdPrice,
+                true
+              )}`}</ThemedText.BodySmall>
+            </TotalColumn>
+          </CurrencyRow>
+        )}
+        {!shouldUsePayWithAnyToken && (
+          <FooterHeader gap="xs" warningText={!!warningText}>
+            <Row justify="space-between">
+              <div>
+                <ThemedText.HeadlineSmall>Total</ThemedText.HeadlineSmall>
+              </div>
+              <div>
+                <ThemedText.HeadlineSmall>
+                  {formatWeiToDecimal(totalEthPrice.toString())}&nbsp;ETH
+                </ThemedText.HeadlineSmall>
+              </div>
+            </Row>
+            <Row justify="flex-end">
+              <ThemedText.BodySmall color="textSecondary" lineHeight="20px">{`${ethNumberStandardFormatter(
+                totalUsdPrice,
+                true
+              )}`}</ThemedText.BodySmall>
+            </Row>
+          </FooterHeader>
+        )}
         <TraceEvent
           events={[BrowserEvent.onClick]}
-          name={EventName.NFT_BUY_BAG_PAY}
-          element={ElementName.NFT_BUY_BAG_PAY_BUTTON}
+          name={NFTEventName.NFT_BUY_BAG_PAY}
+          element={InterfaceElementName.NFT_BUY_BAG_PAY_BUTTON}
           properties={{ ...eventProperties }}
           shouldLogImpression={connected && !disabled}
         >
@@ -180,6 +264,16 @@ export const BagFooter = ({
           </ActionButton>
         </TraceEvent>
       </Footer>
-    </Column>
+      {showTokenSelector && (
+        <BagTokenSelectorModal
+          selectedCurrency={activeCurrency ?? undefined}
+          handleCurrencySelect={(currency: Currency) => {
+            setInputCurrency(currency)
+            toggleTokenSelector()
+          }}
+          overlayClick={toggleTokenSelector}
+        />
+      )}
+    </FooterContainer>
   )
 }

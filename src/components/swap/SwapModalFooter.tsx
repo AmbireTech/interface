@@ -1,5 +1,5 @@
 import { Trans } from '@lingui/macro'
-import { ElementName } from '@uniswap/analytics-events'
+import { InterfaceElementName } from '@uniswap/analytics-events'
 import { Currency, CurrencyAmount, Percent, Token, TradeType } from '@uniswap/sdk-core'
 import { ReactNode } from 'react'
 import { Text } from 'rebass'
@@ -118,8 +118,8 @@ export default function SwapModalFooter({
       <AutoRow>
         {/* <TraceEvent
           events={[BrowserEvent.onClick]}
-          element={ElementName.CONFIRM_SWAP_BUTTON}
-          name={EventName.SWAP_SUBMITTED_BUTTON_CLICKED}
+          element={InterfaceElementName.CONFIRM_SWAP_BUTTON}
+          name={SwapEventName.SWAP_SUBMITTED_BUTTON_CLICKED}
           properties={formatAnalyticsEventProperties({
             trade,
             hash,
@@ -133,11 +133,12 @@ export default function SwapModalFooter({
             fiatValueOutput,
           })}
         > */}
+
         <ButtonError
           onClick={onConfirm}
           disabled={disabledConfirm}
           style={{ margin: '10px 0 0 0' }}
-          id={ElementName.CONFIRM_SWAP_BUTTON}
+          id={InterfaceElementName.CONFIRM_SWAP_BUTTON}
         >
           <Text fontSize={20} fontWeight={500}>
             <Trans>Confirm Swap</Trans>

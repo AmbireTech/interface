@@ -30,7 +30,7 @@ const StyledInfoIcon = styled(Info)`
   height: 16px;
   width: 16px;
   margin-right: 4px;
-  color: ${({ theme }) => theme.deprecated_text3};
+  color: ${({ theme }) => theme.textTertiary};
 `
 
 const StyledCard = styled(OutlineCard)`
@@ -56,7 +56,7 @@ const StyledPolling = styled.div`
   margin-right: 2px;
   margin-left: 10px;
   align-items: center;
-  color: ${({ theme }) => theme.deprecated_text1};
+  color: ${({ theme }) => theme.textPrimary};
   transition: 250ms ease color;
 
   ${({ theme }) => theme.deprecated_mediaWidth.deprecated_upToMedium`
@@ -71,7 +71,7 @@ const StyledPollingDot = styled.div`
   min-width: 8px;
   border-radius: 50%;
   position: relative;
-  background-color: ${({ theme }) => theme.deprecated_bg2};
+  background-color: ${({ theme }) => theme.backgroundInteractive};
   transition: 250ms ease background-color;
 `
 
@@ -90,7 +90,7 @@ const Spinner = styled.div`
   border-top: 1px solid transparent;
   border-right: 1px solid transparent;
   border-bottom: 1px solid transparent;
-  border-left: 2px solid ${({ theme }) => theme.deprecated_text1};
+  border-left: 2px solid ${({ theme }) => theme.textPrimary};
   background: transparent;
   width: 14px;
   height: 14px;
@@ -105,30 +105,21 @@ interface SwapDetailsInlineProps {
   trade: InterfaceTrade<Currency, Currency, TradeType> | undefined
   syncing: boolean
   loading: boolean
-  showInverted: boolean
-  setShowInverted: React.Dispatch<React.SetStateAction<boolean>>
   allowedSlippage: Percent
 }
 
-export default function SwapDetailsDropdown({
-  trade,
-  syncing,
-  loading,
-  showInverted,
-  setShowInverted,
-  allowedSlippage,
-}: SwapDetailsInlineProps) {
+export default function SwapDetailsDropdown({ trade, syncing, loading, allowedSlippage }: SwapDetailsInlineProps) {
   const theme = useTheme()
   // const { chainId } = useWeb3React()
   const [showDetails, setShowDetails] = useState(false)
 
   return (
     <Wrapper style={{ marginTop: '0' }}>
-      <AutoColumn gap="8px" style={{ width: '100%', marginBottom: '-8px' }}>
+      <AutoColumn gap="sm" style={{ width: '100%', marginBottom: '-8px' }}>
         {/* <TraceEvent
           events={[BrowserEvent.onClick]}
-          name={EventName.SWAP_DETAILS_EXPANDED}
-          element={ElementName.SWAP_DETAILS_DROPDOWN}
+          name={SwapEventName.SWAP_DETAILS_EXPANDED}
+          element={InterfaceElementName.SWAP_DETAILS_DROPDOWN}
           shouldLogImpression={!showDetails}
         > */}
         <StyledHeaderRow onClick={() => setShowDetails(!showDetails)} disabled={!trade} open={showDetails}>
@@ -158,17 +149,13 @@ export default function SwapDetailsDropdown({
                   placement="bottom"
                   disableHover={showDetails}
                 >
-                  <StyledInfoIcon color={trade ? theme.deprecated_text3 : theme.deprecated_bg3} />
+                  <StyledInfoIcon color={trade ? theme.textTertiary : theme.deprecated_bg3} />
                 </MouseoverTooltipContent>
               </HideSmall>
             )}
             {trade ? (
               <LoadingOpacityContainer $loading={syncing}>
-                <TradePrice
-                  price={trade.executionPrice}
-                  showInverted={showInverted}
-                  setShowInverted={setShowInverted}
-                />
+                <TradePrice price={trade.executionPrice} />
               </LoadingOpacityContainer>
             ) : loading || syncing ? (
               <ThemedText.DeprecatedMain fontSize={14}>
@@ -178,25 +165,25 @@ export default function SwapDetailsDropdown({
           </RowFixed>
           <RowFixed>
             {/* {!trade?.gasUseEstimateUSD ||
-              showDetails ||
-              !chainId ||
-              !SUPPORTED_GAS_ESTIMATE_CHAIN_IDS.includes(chainId) ? null : (
-                <GasEstimateBadge
-                  trade={trade}
-                  loading={syncing || loading}
-                  showRoute={!showDetails}
-                  disableHover={showDetails}
-                />
-              )} */}
+            showDetails ||
+            !chainId ||
+            !SUPPORTED_GAS_ESTIMATE_CHAIN_IDS.includes(chainId) ? null : (
+              <GasEstimateBadge
+                trade={trade}
+                loading={syncing || loading}
+                showRoute={!showDetails}
+                disableHover={showDetails}
+              />
+            )} */}
             <RotatingArrow
-              stroke={trade ? theme.deprecated_text3 : theme.deprecated_bg3}
+              stroke={trade ? theme.textTertiary : theme.deprecated_bg3}
               open={Boolean(trade && showDetails)}
             />
           </RowFixed>
         </StyledHeaderRow>
         {/* </TraceEvent> */}
         <AnimatedDropdown open={showDetails}>
-          <AutoColumn gap="8px" style={{ padding: '0', paddingBottom: '8px' }}>
+          <AutoColumn gap="sm" style={{ padding: '0', paddingBottom: '8px' }}>
             {trade ? (
               <StyledCard>
                 <AdvancedSwapDetails trade={trade} allowedSlippage={allowedSlippage} syncing={syncing} />
