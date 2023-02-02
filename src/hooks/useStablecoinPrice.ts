@@ -18,6 +18,8 @@ const STABLECOIN_AMOUNT_OUT: { [chainId: number]: CurrencyAmount<Token> } = {
   [SupportedChainId.CELO]: CurrencyAmount.fromRawAmount(CUSD_CELO, 10_000e18),
 }
 
+// AMBIRETODO: set extra chains
+
 /**
  * Returns the price in USDC of the input currency
  * @param currency currency to compute the USDC price of

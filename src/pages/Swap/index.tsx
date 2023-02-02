@@ -62,7 +62,6 @@ import useENSAddress from '../../hooks/useENSAddress'
 import { useERC20PermitFromTrade, UseERC20PermitState } from '../../hooks/useERC20Permit'
 import useIsArgentWallet from '../../hooks/useIsArgentWallet'
 import { useIsSwapUnsupported } from '../../hooks/useIsSwapUnsupported'
-import { useStablecoinValue } from '../../hooks/useStablecoinPrice'
 import useWrapCallback, { WrapErrorText, WrapType } from '../../hooks/useWrapCallback'
 import { Field } from '../../state/swap/actions'
 import {
@@ -73,7 +72,6 @@ import {
 } from '../../state/swap/hooks'
 import { useExpertModeManager } from '../../state/user/hooks'
 import { LinkStyledButton, ThemedText } from '../../theme'
-import { computeFiatValuePriceImpact } from '../../utils/computeFiatValuePriceImpact'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
 import { computeRealizedPriceImpact, warningSeverity } from '../../utils/prices'
 import { supportedChainId } from '../../utils/supportedChainId'
@@ -267,21 +265,24 @@ export function BaseSwap(props: { useBestTradeHook: TradeHook; useSwapCallArgume
           },
     [independentField, parsedAmount, showWrap, trade]
   )
-  const fiatValueInput = useStablecoinValue(parsedAmounts[Field.INPUT])
-  const fiatValueOutput = useStablecoinValue(parsedAmounts[Field.OUTPUT])
+
+  // AMBIRETODO: enable it when its working
+  const fiatValueInput = undefined // useStablecoinValue(parsedAmounts[Field.INPUT])
+  const fiatValueOutput = undefined // useStablecoinValue(parsedAmounts[Field.OUTPUT])
 
   const [routeNotFound, routeIsLoading, routeIsSyncing] = useMemo(
     () => [!trade?.swaps, TradeState.LOADING === tradeState, TradeState.SYNCING === tradeState],
     [trade, tradeState]
   )
 
-  const fiatValueTradeInput = useStablecoinValue(trade?.inputAmount)
-  const fiatValueTradeOutput = useStablecoinValue(trade?.outputAmount)
-  const stablecoinPriceImpact = useMemo(
-    () =>
-      routeIsSyncing || !trade ? undefined : computeFiatValuePriceImpact(fiatValueTradeInput, fiatValueTradeOutput),
-    [fiatValueTradeInput, fiatValueTradeOutput, routeIsSyncing, trade]
-  )
+  const fiatValueTradeInput = undefined // useStablecoinValue(trade?.inputAmount)
+  const fiatValueTradeOutput = undefined // useStablecoinValue(trade?.outputAmount)
+  const stablecoinPriceImpact = undefined
+  // const stablecoinPriceImpact = useMemo(
+  //   () =>
+  //     routeIsSyncing || !trade ? undefined : computeFiatValuePriceImpact(fiatValueTradeInput, fiatValueTradeOutput),
+  //   [fiatValueTradeInput, fiatValueTradeOutput, routeIsSyncing, trade]
+  // )
 
   const { onSwitchTokens, onCurrencySelection, onUserInput, onChangeRecipient } = useSwapActionHandlers()
   const isValid = !swapInputError
@@ -366,7 +367,7 @@ export function BaseSwap(props: { useBestTradeHook: TradeHook; useSwapCallArgume
     } finally {
       setIsAllowancePending(false)
     }
-  }, [allowance, chainId, maximumAmountIn?.currency.address, maximumAmountIn?.currency.symbol])
+  }, [allowance])
 
   // check whether the user has approved the router on the input token
   const [approvalState, approveCallback] = useApproveCallbackFromTrade(

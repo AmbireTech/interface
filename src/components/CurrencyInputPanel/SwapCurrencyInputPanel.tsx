@@ -1,3 +1,4 @@
+/* eslint-disable import/no-unused-modules */
 import { Trans } from '@lingui/macro'
 import { Currency, CurrencyAmount, Percent, Token } from '@uniswap/sdk-core'
 import { Pair } from '@uniswap/v2-sdk'
@@ -21,13 +22,12 @@ import DoubleCurrencyLogo from '../DoubleLogo'
 import { Input as NumericalInput } from '../NumericalInput'
 import { RowBetween, RowFixed } from '../Row'
 import CurrencySearchModal from '../SearchModal/CurrencySearchModal'
-import { FiatValue } from './FiatValue'
 
 const InputPanel = styled.div<{ hideInput?: boolean }>`
   ${flexColumnNoWrap};
   position: relative;
   border-radius: 12px;
-  background-color: ${({ theme, hideInput }) => (hideInput ? 'transparent' : theme.background)};
+  background-color: ${({ theme, hideInput }) => (hideInput ? 'transparent' : 'transparent')};
   z-index: 1;
   width: ${({ hideInput }) => (hideInput ? '100%' : 'initial')};
   transition: height 1s ease;
@@ -49,9 +49,9 @@ const FixedContainer = styled.div`
 const Container = styled.div<{ hideInput: boolean }>`
   min-height: 69px;
   border-radius: 12px;
-  background-color: #2d314d;
+  background-color: transparent;
   width: ${({ hideInput }) => (hideInput ? '100%' : 'initial')};
-  opacity: 0.9;
+  opacity: 0.8;
   ${({ theme, hideInput }) =>
     `
     :focus,
@@ -303,7 +303,7 @@ export default function SwapCurrencyInputPanel({
           <FiatRow>
             <RowBetween>
               <LoadingOpacityContainer $loading={loading}>
-                <FiatValue fiatValue={fiatValue} priceImpact={priceImpact} isLoading={fiatValueIsLoading} />
+                {/* <FiatValue fiatValue={fiatValue} priceImpact={priceImpact} isLoading={fiatValueIsLoading} /> */}
               </LoadingOpacityContainer>
               {account ? (
                 <RowFixed style={{ height: '17px' }}>

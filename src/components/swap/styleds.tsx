@@ -31,10 +31,6 @@ export const SwapWrapper = styled.main`
   padding: 12px;
   z-index: ${Z_INDEX.deprecated_content};
   transition: transform 250ms ease;
-
-  &:hover {
-    border: 1px solid ${({ theme }) => theme.backgroundOutline};
-  }
 `
 
 export const ArrowWrapper = styled.div<{ clickable: boolean }>`
