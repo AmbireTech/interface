@@ -1,4 +1,6 @@
 import { Trans } from '@lingui/macro'
+import { TraceEvent } from '@uniswap/analytics'
+import { BrowserEvent, InterfaceElementName, SwapEventName } from '@uniswap/analytics-events'
 import { Currency, CurrencyAmount, Percent, Token } from '@uniswap/sdk-core'
 import { Pair } from '@uniswap/v2-sdk'
 import { useWeb3React } from '@web3-react/core'
@@ -27,7 +29,7 @@ const InputPanel = styled.div<{ hideInput?: boolean }>`
   ${flexColumnNoWrap};
   position: relative;
   border-radius: 12px;
-  background-color: ${({ theme, hideInput }) => (hideInput ? 'transparent' : theme.deprecated_bg2)};
+  background-color: ${({ theme, hideInput }) => (hideInput ? 'transparent' : theme.backgroundInteractive)};
   z-index: 1;
   width: ${({ hideInput }) => (hideInput ? '100%' : 'initial')};
   transition: height 1s ease;
@@ -39,7 +41,7 @@ const FixedContainer = styled.div`
   height: 100%;
   position: absolute;
   border-radius: 12px;
-  background-color: ${({ theme }) => theme.deprecated_bg2};
+  background-color: ${({ theme }) => theme.backgroundInteractive};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -48,6 +50,7 @@ const FixedContainer = styled.div`
 
 const Container = styled.div<{ hideInput: boolean; disabled: boolean }>`
   border-radius: 12px;
+  border: 1px solid ${({ theme }) => theme.backgroundSurface};
   background-color: #2d314d;
   width: ${({ hideInput }) => (hideInput ? '100%' : 'initial')};
   opacity: 0.9;
@@ -69,11 +72,11 @@ const CurrencySelect = styled(ButtonGray)<{
   disabled?: boolean
 }>`
   align-items: center;
-  background-color: transparent;
+  background-color: ${({ selected, theme }) => (selected ? theme.backgroundInteractive : theme.accentAction)};
   opacity: ${({ disabled }) => (!disabled ? 1 : 0.4)};
   box-shadow: ${({ selected }) => (selected ? 'none' : '0px 6px 10px rgba(0, 0, 0, 0.075)')};
   box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.075);
-  color: ${({ selected, theme }) => (selected ? theme.deprecated_text1 : theme.deprecated_white)};
+  color: ${({ selected, theme }) => (selected ? theme.textPrimary : theme.white)};
   cursor: pointer;
   border-radius: 12px;
   outline: none;
@@ -86,10 +89,10 @@ const CurrencySelect = styled(ButtonGray)<{
   padding: 0 8px;
   justify-content: space-between;
   margin-left: ${({ hideInput }) => (hideInput ? '0' : '12px')};
-
-  &:hover,
-  &:active {
-    background-color: ${({ theme }) => theme.stateOverlayHover};
+  // TODO: Ambire
+  :focus,
+  :hover {
+    background-color: ${({ selected, theme }) => (selected ? theme.deprecated_bg3 : darken(0.05, theme.accentAction))};
   }
 
   visibility: ${({ visible }) => (visible ? 'visible' : 'hidden')};
@@ -105,13 +108,13 @@ const InputRow = styled.div<{ selected: boolean }>`
 const LabelRow = styled.div`
   ${flexRowNoWrap};
   align-items: center;
-  color: ${({ theme }) => theme.deprecated_text1};
+  color: ${({ theme }) => theme.textPrimary};
   font-size: 0.75rem;
   line-height: 1rem;
   padding: 0 1rem 1rem;
   span:hover {
     cursor: pointer;
-    color: ${({ theme }) => darken(0.2, theme.deprecated_text2)};
+    color: ${({ theme }) => darken(0.2, theme.textSecondary)};
   }
 `
 
@@ -133,7 +136,7 @@ const StyledDropDown = styled(DropDown)<{ selected: boolean }>`
   height: 35%;
 
   path {
-    stroke: ${({ selected, theme }) => (selected ? theme.deprecated_text1 : theme.deprecated_white)};
+    stroke: ${({ selected, theme }) => (selected ? theme.textPrimary : theme.white)};
     stroke-width: 1.5px;
   }
 `
@@ -148,7 +151,7 @@ const StyledBalanceMax = styled.button<{ disabled?: boolean }>`
   background-color: ${({ theme }) => theme.deprecated_primary5};
   border: none;
   border-radius: 12px;
-  color: ${({ theme }) => theme.deprecated_primary1};
+  color: ${({ theme }) => theme.accentAction};
   cursor: pointer;
   font-size: 11px;
   font-weight: 500;
@@ -300,7 +303,7 @@ export default function CurrencyInputPanel({
                 <RowFixed style={{ height: '17px' }}>
                   <ThemedText.DeprecatedBody
                     onClick={onMax}
-                    color={theme.deprecated_text3}
+                    color={theme.textTertiary}
                     fontWeight={500}
                     fontSize={14}
                     style={{ display: 'inline', cursor: 'pointer' }}
@@ -314,16 +317,16 @@ export default function CurrencyInputPanel({
                     ) : null}
                   </ThemedText.DeprecatedBody>
                   {showMaxButton && selectedCurrencyBalance ? (
-                    // <TraceEvent
-                    //   events={[BrowserEvent.onClick]}
-                    //   name={EventName.SWAP_MAX_TOKEN_AMOUNT_SELECTED}
-                    //   element={ElementName.MAX_TOKEN_AMOUNT_BUTTON}
-                    // >
-                    <StyledBalanceMax onClick={onMax}>
-                      <Trans>MAX</Trans>
-                    </StyledBalanceMax>
-                  ) : // </TraceEvent>
-                  null}
+                    <TraceEvent
+                      events={[BrowserEvent.onClick]}
+                      name={SwapEventName.SWAP_MAX_TOKEN_AMOUNT_SELECTED}
+                      element={InterfaceElementName.MAX_TOKEN_AMOUNT_BUTTON}
+                    >
+                      <StyledBalanceMax onClick={onMax}>
+                        <Trans>MAX</Trans>
+                      </StyledBalanceMax>
+                    </TraceEvent>
+                  ) : null}
                 </RowFixed>
               ) : (
                 <span />

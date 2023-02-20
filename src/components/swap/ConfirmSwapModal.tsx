@@ -1,4 +1,6 @@
 import { Trans } from '@lingui/macro'
+import { Trace } from '@uniswap/analytics'
+import { InterfaceModalName } from '@uniswap/analytics-events'
 import { Trade } from '@uniswap/router-sdk'
 import { Currency, CurrencyAmount, Percent, Token, TradeType } from '@uniswap/sdk-core'
 import { ReactNode, useCallback, useMemo, useState } from 'react'
@@ -120,16 +122,16 @@ export default function ConfirmSwapModal({
   )
 
   return (
-    // <Trace modal={ModalName.CONFIRM_SWAP}>
-    <TransactionConfirmationModal
-      isOpen={isOpen}
-      onDismiss={onModalDismiss}
-      attemptingTxn={attemptingTxn}
-      hash={txHash}
-      content={confirmationContent}
-      pendingText={pendingText}
-      currencyToAdd={trade?.outputAmount.currency}
-    />
-    // </Trace>
+    <Trace modal={InterfaceModalName.CONFIRM_SWAP}>
+      <TransactionConfirmationModal
+        isOpen={isOpen}
+        onDismiss={onModalDismiss}
+        attemptingTxn={attemptingTxn}
+        hash={txHash}
+        content={confirmationContent}
+        pendingText={pendingText}
+        currencyToAdd={trade?.outputAmount.currency}
+      />
+    </Trace>
   )
 }

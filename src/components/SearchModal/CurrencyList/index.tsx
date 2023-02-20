@@ -1,3 +1,5 @@
+import { TraceEvent } from '@uniswap/analytics'
+import { BrowserEvent, InterfaceElementName, InterfaceEventName } from '@uniswap/analytics-events'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 import TokenSafetyIcon from 'components/TokenSafety/TokenSafetyIcon'
@@ -17,6 +19,7 @@ import CurrencyLogo from '../../Logo/CurrencyLogo'
 import Row, { RowFixed } from '../../Row'
 import { MouseoverTooltip } from '../../Tooltip'
 import { LoadingRows, MenuItem } from '../styleds'
+import * as styles from './index.css'
 
 function currencyKey(currency: Currency): string {
   return currency.isToken ? currency.address : 'ETHER'
@@ -45,7 +48,7 @@ const CurrencyName = styled(Text)`
 
 const Tag = styled.div`
   background-color: ${({ theme }) => theme.deprecated_bg3};
-  color: ${({ theme }) => theme.deprecated_text2};
+  color: ${({ theme }) => theme.textSecondary};
   font-size: 14px;
   border-radius: 4px;
   padding: 0.25rem 0.3rem 0.25rem 0.3rem;
@@ -57,7 +60,7 @@ const Tag = styled.div`
   margin-right: 4px;
 `
 
-export const WarningContainer = styled.div`
+const WarningContainer = styled.div`
   margin-left: 0.3em;
 `
 
@@ -126,55 +129,59 @@ export function CurrencyRow({
 
   // only show add or remove buttons if not on selected list
   return (
-    // <TraceEvent
-    //   events={[BrowserEvent.onClick, BrowserEvent.onKeyPress]}
-    //   name={EventName.TOKEN_SELECTED}
-    //   properties={{ is_imported_by_user: customAdded, ...eventProperties }}
-    //   element={ElementName.TOKEN_SELECTOR_ROW}
-    // >
-    <MenuItem
-      tabIndex={0}
-      style={style}
-      className={`token-item-${key}`}
-      onKeyPress={(e) => (!isSelected && e.key === 'Enter' ? onSelect(!!warning) : null)}
-      onClick={() => (isSelected ? null : onSelect(!!warning))}
-      disabled={isSelected}
-      selected={otherSelected}
-      dim={isBlockedToken}
+    <TraceEvent
+      events={[BrowserEvent.onClick, BrowserEvent.onKeyPress]}
+      name={InterfaceEventName.TOKEN_SELECTED}
+      properties={{ is_imported_by_user: customAdded, ...eventProperties }}
+      element={InterfaceElementName.TOKEN_SELECTOR_ROW}
     >
-      <Column>
-        <CurrencyLogo currency={currency} size="36px" style={{ opacity: isBlockedToken ? blockedTokenOpacity : '1' }} />
-      </Column>
-      <AutoColumn style={{ opacity: isBlockedToken ? blockedTokenOpacity : '1' }}>
-        <Row>
-          <CurrencyName title={currency.name}>{currency.name}</CurrencyName>
-          <WarningContainer>
-            <TokenSafetyIcon warning={warning} />
-          </WarningContainer>
-        </Row>
-        <ThemedText.DeprecatedDarkGray ml="0px" fontSize="12px" fontWeight={300}>
-          {currency.symbol}
-        </ThemedText.DeprecatedDarkGray>
-      </AutoColumn>
-      <Column>
-        <RowFixed style={{ justifySelf: 'flex-end' }}>
-          <TokenTags currency={currency} />
-        </RowFixed>
-      </Column>
-      {showCurrencyAmount ? (
-        <RowFixed style={{ justifySelf: 'flex-end' }}>
-          {balance ? <Balance balance={balance} /> : account ? <Loader /> : null}
-          {isSelected && <CheckIcon />}
-        </RowFixed>
-      ) : (
-        isSelected && (
+      <MenuItem
+        tabIndex={0}
+        style={style}
+        className={`token-item-${key}`}
+        onKeyPress={(e) => (!isSelected && e.key === 'Enter' ? onSelect(!!warning) : null)}
+        onClick={() => (isSelected ? null : onSelect(!!warning))}
+        disabled={isSelected}
+        selected={otherSelected}
+        dim={isBlockedToken}
+      >
+        <Column>
+          <CurrencyLogo
+            currency={currency}
+            size="36px"
+            style={{ opacity: isBlockedToken ? blockedTokenOpacity : '1' }}
+          />
+        </Column>
+        <AutoColumn style={{ opacity: isBlockedToken ? blockedTokenOpacity : '1' }}>
+          <Row>
+            <CurrencyName title={currency.name}>{currency.name}</CurrencyName>
+            <WarningContainer>
+              <TokenSafetyIcon warning={warning} />
+            </WarningContainer>
+          </Row>
+          <ThemedText.DeprecatedDarkGray ml="0px" fontSize="12px" fontWeight={300}>
+            {currency.symbol}
+          </ThemedText.DeprecatedDarkGray>
+        </AutoColumn>
+        <Column>
           <RowFixed style={{ justifySelf: 'flex-end' }}>
-            <CheckIcon />
+            <TokenTags currency={currency} />
           </RowFixed>
-        )
-      )}
-    </MenuItem>
-    // </TraceEvent>
+        </Column>
+        {showCurrencyAmount ? (
+          <RowFixed style={{ justifySelf: 'flex-end' }}>
+            {balance ? <Balance balance={balance} /> : account ? <Loader /> : null}
+            {isSelected && <CheckIcon />}
+          </RowFixed>
+        ) : (
+          isSelected && (
+            <RowFixed style={{ justifySelf: 'flex-end' }}>
+              <CheckIcon />
+            </RowFixed>
+          )
+        )}
+      </MenuItem>
+    </TraceEvent>
   )
 }
 
@@ -281,21 +288,34 @@ export default function CurrencyList({
     return currencyKey(currency)
   }, [])
 
-  return isLoading ? (
-    <FixedSizeList height={height} ref={fixedListRef as any} width="100%" itemData={[]} itemCount={10} itemSize={56}>
-      {LoadingRow}
-    </FixedSizeList>
-  ) : (
-    <FixedSizeList
-      height={height}
-      ref={fixedListRef as any}
-      width="100%"
-      itemData={itemData}
-      itemCount={itemData.length}
-      itemSize={56}
-      itemKey={itemKey}
-    >
-      {Row}
-    </FixedSizeList>
+  return (
+    <div style={{ paddingRight: '8px', paddingTop: '8px' }}>
+      {isLoading ? (
+        <FixedSizeList
+          className={styles.scrollbarStyle}
+          height={height}
+          ref={fixedListRef as any}
+          width="100%"
+          itemData={[]}
+          itemCount={10}
+          itemSize={56}
+        >
+          {LoadingRow}
+        </FixedSizeList>
+      ) : (
+        <FixedSizeList
+          className={styles.scrollbarStyle}
+          height={height}
+          ref={fixedListRef as any}
+          width="100%"
+          itemData={itemData}
+          itemCount={itemData.length}
+          itemSize={56}
+          itemKey={itemKey}
+        >
+          {Row}
+        </FixedSizeList>
+      )}
+    </div>
   )
 }

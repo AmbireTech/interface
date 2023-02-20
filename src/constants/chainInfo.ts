@@ -32,11 +32,12 @@ import {
   OPTIMISM_LIST,
 } from './lists'
 
+export const AVERAGE_L1_BLOCK_TIME = ms`12s`
+
 export enum NetworkType {
   L1,
   L2,
 }
-
 interface BaseChainInfo {
   readonly networkType: NetworkType
   readonly blockWaitMsBeforeWarning?: number
@@ -57,7 +58,7 @@ interface BaseChainInfo {
   readonly backgroundColor?: string
 }
 
-export interface L1ChainInfo extends BaseChainInfo {
+interface L1ChainInfo extends BaseChainInfo {
   readonly networkType: NetworkType.L1
   readonly defaultListUrl?: string
 }
@@ -69,7 +70,7 @@ export interface L2ChainInfo extends BaseChainInfo {
   readonly defaultListUrl: string
 }
 
-export type ChainInfoMap = { readonly [chainId: number]: L1ChainInfo | L2ChainInfo } & {
+type ChainInfoMap = { readonly [chainId: number]: L1ChainInfo | L2ChainInfo } & {
   readonly [chainId in SupportedL2ChainId]: L2ChainInfo
 } & { readonly [chainId in SupportedL1ChainId]: L1ChainInfo }
 
@@ -190,7 +191,7 @@ const CHAIN_INFO: ChainInfoMap = {
   [SupportedChainId.POLYGON]: {
     networkType: NetworkType.L1,
     blockWaitMsBeforeWarning: ms`10m`,
-    bridge: 'https://wallet.polygon.technology/bridge',
+    bridge: 'https://wallet.polygon.technology/login',
     docs: 'https://polygon.io/',
     explorer: 'https://polygonscan.com/',
     infoLink: 'https://info.uniswap.org/#/polygon/',
@@ -343,7 +344,7 @@ export function getChainInfo(chainId: any): any {
   return undefined
 }
 
-export const MAINNET_INFO = CHAIN_INFO[SupportedChainId.MAINNET]
+const MAINNET_INFO = CHAIN_INFO[SupportedChainId.MAINNET]
 export function getChainInfoOrDefault(chainId: number | undefined) {
   return getChainInfo(chainId) ?? MAINNET_INFO
 }

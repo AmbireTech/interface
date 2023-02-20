@@ -1,11 +1,12 @@
 import type { JsonRpcSigner, Web3Provider } from '@ethersproject/providers'
+import { addressesByNetwork, SupportedChainId } from '@looksrare/sdk'
 import { LOOKSRARE_MARKETPLACE_CONTRACT, X2Y2_TRANSFER_CONTRACT } from 'nft/queries'
 import { OPENSEA_CROSS_CHAIN_CONDUIT } from 'nft/queries/openSea'
 import { AssetRow, CollectionRow, ListingMarket, ListingRow, ListingStatus, WalletAsset } from 'nft/types'
 import { approveCollection, LOOKS_RARE_CREATOR_BASIS_POINTS, signListing } from 'nft/utils/listNfts'
 import { Dispatch } from 'react'
 
-export const updateStatus = ({
+const updateStatus = ({
   listing,
   newStatus,
   rows,
@@ -28,28 +29,18 @@ export const updateStatus = ({
 
 export async function approveCollectionRow(
   collectionRow: CollectionRow,
-  collectionsRequiringApproval: CollectionRow[],
-  setCollectionsRequiringApproval: Dispatch<CollectionRow[]>,
   signer: JsonRpcSigner,
-  looksRareAddress: string,
-  pauseAllRows: () => void
+  setCollectionStatusAndCallback: (
+    collection: CollectionRow,
+    status: ListingStatus,
+    callback?: () => Promise<void>
+  ) => void,
+  pauseAllRows?: () => void
 ) {
-  updateStatus({
-    listing: collectionRow,
-    newStatus: ListingStatus.SIGNING,
-    rows: collectionsRequiringApproval,
-    setRows: setCollectionsRequiringApproval as Dispatch<AssetRow[]>,
-    callback: () =>
-      approveCollectionRow(
-        collectionRow,
-        collectionsRequiringApproval,
-        setCollectionsRequiringApproval,
-        signer,
-        looksRareAddress,
-        pauseAllRows
-      ),
-  })
+  const callback = () => approveCollectionRow(collectionRow, signer, setCollectionStatusAndCallback, pauseAllRows)
+  setCollectionStatusAndCallback(collectionRow, ListingStatus.SIGNING, callback)
   const { marketplace, collectionAddress } = collectionRow
+  const addresses = addressesByNetwork[SupportedChainId.MAINNET]
   const spender =
     marketplace.name === 'OpenSea'
       ? OPENSEA_CROSS_CHAIN_CONDUIT
@@ -57,66 +48,48 @@ export async function approveCollectionRow(
       ? LOOKSRARE_MARKETPLACE_CONTRACT
       : marketplace.name === 'X2Y2'
       ? X2Y2_TRANSFER_CONTRACT
-      : looksRareAddress
-  await approveCollection(spender ?? '', collectionAddress, signer, (newStatus: ListingStatus) =>
-    updateStatus({
-      listing: collectionRow,
-      newStatus,
-      rows: collectionsRequiringApproval,
-      setRows: setCollectionsRequiringApproval as Dispatch<AssetRow[]>,
-    })
+      : addresses.TRANSFER_MANAGER_ERC721
+  !!collectionAddress &&
+    (await approveCollection(spender, collectionAddress, signer, (newStatus: ListingStatus) =>
+      setCollectionStatusAndCallback(collectionRow, newStatus, callback)
+    ))
+  if (
+    (collectionRow.status === ListingStatus.REJECTED || collectionRow.status === ListingStatus.FAILED) &&
+    pauseAllRows
   )
-  if (collectionRow.status === ListingStatus.REJECTED || collectionRow.status === ListingStatus.FAILED) pauseAllRows()
+    pauseAllRows()
 }
 
 export async function signListingRow(
   listing: ListingRow,
-  listings: ListingRow[],
-  setListings: Dispatch<ListingRow[]>,
   signer: JsonRpcSigner,
   provider: Web3Provider,
   getLooksRareNonce: () => number,
   setLooksRareNonce: (nonce: number) => void,
-  pauseAllRows: () => void
+  setListingStatusAndCallback: (listing: ListingRow, status: ListingStatus, callback?: () => Promise<void>) => void,
+  pauseAllRows?: () => void
 ) {
   const looksRareNonce = getLooksRareNonce()
-  updateStatus({
-    listing,
-    newStatus: ListingStatus.SIGNING,
-    rows: listings,
-    setRows: setListings as Dispatch<AssetRow[]>,
-    callback: () => {
-      return signListingRow(
-        listing,
-        listings,
-        setListings,
-        signer,
-        provider,
-        getLooksRareNonce,
-        setLooksRareNonce,
-        pauseAllRows
-      )
-    },
-  })
+  const callback = () => {
+    return signListingRow(
+      listing,
+      signer,
+      provider,
+      getLooksRareNonce,
+      setLooksRareNonce,
+      setListingStatusAndCallback,
+      pauseAllRows
+    )
+  }
+  setListingStatusAndCallback(listing, ListingStatus.SIGNING, callback)
   const { asset, marketplace } = listing
   const res = await signListing(marketplace, asset, signer, provider, looksRareNonce, (newStatus: ListingStatus) =>
-    updateStatus({
-      listing,
-      newStatus,
-      rows: listings,
-      setRows: setListings as Dispatch<AssetRow[]>,
-    })
+    setListingStatusAndCallback(listing, newStatus, callback)
   )
-  if (listing.status === ListingStatus.REJECTED) pauseAllRows()
-  else {
+  if (listing.status === ListingStatus.REJECTED && pauseAllRows) {
+    pauseAllRows()
+  } else {
     res && listing.marketplace.name === 'LooksRare' && setLooksRareNonce(looksRareNonce + 1)
-    const newStatus = res ? ListingStatus.APPROVED : ListingStatus.FAILED
-    updateStatus({
-      listing,
-      newStatus,
-      rows: listings,
-      setRows: setListings as Dispatch<AssetRow[]>,
-    })
   }
 }
 
@@ -127,12 +100,12 @@ export const getTotalEthValue = (sellAssets: WalletAsset[]) => {
       // LooksRare is a unique case where creator royalties are a flat 0.5% or 50 basis points
       const maxFee =
         maxListing.marketplace.fee +
-        (maxListing.marketplace.name === 'LooksRare' ? LOOKS_RARE_CREATOR_BASIS_POINTS : asset.basisPoints) / 100
+        (maxListing.marketplace.name === 'LooksRare' ? LOOKS_RARE_CREATOR_BASIS_POINTS : asset?.basisPoints ?? 0) / 100
       return total + (maxListing.price ?? 0) - (maxListing.price ?? 0) * (maxFee / 100)
     }
     return total
   }, 0)
-  return total ? Math.round(total * 100 + Number.EPSILON) / 100 : 0
+  return total ? Math.round(total * 10000 + Number.EPSILON) / 10000 : 0
 }
 
 export const getListings = (sellAssets: WalletAsset[]): [CollectionRow[], ListingRow[]] => {
@@ -162,6 +135,7 @@ export const getListings = (sellAssets: WalletAsset[]): [CollectionRow[], Listin
           name: asset.asset_contract.name,
           status: ListingStatus.DEFINED,
           collectionAddress: asset.asset_contract.address,
+          isVerified: asset.collectionIsVerified,
           marketplace,
         }
         newCollectionsToApprove.push(newCollectionRow)
@@ -171,7 +145,7 @@ export const getListings = (sellAssets: WalletAsset[]): [CollectionRow[], Listin
   return [newCollectionsToApprove, newListings]
 }
 
-export type ListingState = {
+type ListingState = {
   allListingsPending: boolean
   allListingsDefined: boolean
   allListingsApproved: boolean

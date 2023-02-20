@@ -1,377 +1,507 @@
-import clsx from 'clsx'
-import { OpacityHoverState } from 'components/Common'
-import { Box } from 'nft/components/Box'
-import { Portal } from 'nft/components/common/Portal'
-import { Row } from 'nft/components/Flex'
-import { BackArrowIcon, ChevronUpIcon, LightningBoltIcon, UniIcon } from 'nft/components/icons'
-import { Overlay, stopPropagation } from 'nft/components/modals/Overlay'
-import { vars } from 'nft/css/sprinkles.css'
-import { useIsMobile, useSendTransaction, useTransactionResponse } from 'nft/hooks'
-import { TxResponse, TxStateType } from 'nft/types'
-import {
-  fetchPrice,
-  formatEthPrice,
-  formatUsdPrice,
-  formatUSDPriceWithCommas,
-  generateTweetForPurchase,
-  getSuccessfulImageSize,
-  parseTransactionResponse,
-} from 'nft/utils'
-import { useEffect, useMemo, useRef, useState } from 'react'
-import { Upload } from 'react-feather'
-import styled from 'styled-components/macro'
-import { ExplorerDataType, getExplorerLink } from 'utils/getExplorerLink'
+import { style } from '@vanilla-extract/css'
+import { sprinkles, themeVars, vars } from 'nft/css/sprinkles.css'
 
-import * as styles from './TransactionCompleteModal.css'
+export const modalContainer = style([
+  sprinkles({
+    display: 'flex',
+    position: 'fixed',
+    height: 'full',
+    width: { sm: 'full', md: 'min' },
+    left: { sm: '0', md: '1/2' },
+    top: '0',
+    zIndex: 'modal',
+    overflow: 'scroll',
+    paddingY: '72',
+    paddingX: '12',
+  }),
+  {
+    flexDirection: 'column',
+    justifyContent: 'center',
+    gap: '24px',
+    '@media': {
+      'screen and (min-width: 656px)': {
+        marginLeft: '-320px',
+      },
+    },
+    '::-webkit-scrollbar': { display: 'none' },
+    scrollbarWidth: 'none',
+  },
+])
 
-const TWITTER_WIDTH = 560
-const TWITTER_HEIGHT = 480
+export const successModal = style([
+  sprinkles({
+    background: 'backgroundSurface',
+    borderRadius: '20',
+    display: 'flex',
+    flexWrap: 'wrap',
+    height: 'min',
+    position: 'relative',
+    width: { sm: 'full', md: 'min' },
+    paddingTop: { sm: '28', md: '28' },
+    paddingBottom: { sm: '28', md: '28' },
+  }),
+  {
+    boxShadow: vars.color.dropShadow,
+    boxSizing: 'border-box',
+    '@media': {
+      'screen and (min-width: 656px)': {
+        minWidth: '640px',
+      },
+    },
+  },
+])
 
-const UploadLink = styled.a`
-  position: absolute;
-  right: 32px;
-  top: 32px;
-  color: ${({ theme }) => theme.textSecondary};
-  cursor: pointer;
+export const uniLogo = style([
+  sprinkles({
+    position: 'absolute',
+    left: { sm: '12', md: '32' },
+    top: { sm: '16', md: '20' },
+  }),
+])
 
-  ${OpacityHoverState}
+export const title = style([
+  sprinkles({
+    fontWeight: 'bold',
+    color: 'textPrimary',
+    fontSize: '20',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    marginTop: '0',
+    marginBottom: { sm: '8', md: '4' },
+  }),
+  {
+    lineHeight: '25px',
+  },
+])
 
-  @media only screen and (max-width: ${({ theme }) => `${theme.breakpoint.sm}px`}) {
-    right: 12px;
-    top: 28px;
-  }
-`
+export const walletAddress = style([
+  sprinkles({
+    color: 'textSecondary',
+    fontSize: '10',
+    display: 'flex',
+    alignItems: 'center',
+    height: 'min',
+    right: '16',
+  }),
+  {
+    bottom: '42px',
+    marginTop: '-2px',
+    lineHeight: '13px',
+    letterSpacing: '0.04em',
+    textTransform: 'uppercase',
+  },
+])
 
-const TxCompleteModal = () => {
-  const [ethPrice, setEthPrice] = useState(3000)
-  const [showUnavailable, setShowUnavailable] = useState(false)
-  const txHash = useSendTransaction((state) => state.txHash)
-  const setTxState = useSendTransaction((state) => state.setState)
-  const txState = useSendTransaction((state) => state.state)
-  const transactionStateRef = useRef(txState)
-  const transactionResponse = useTransactionResponse((state) => state.transactionResponse)
-  const setTransactionResponse = useTransactionResponse((state) => state.setTransactionResponse)
-  const isMobile = useIsMobile()
-  const txHashUrl = getExplorerLink(1, txHash, ExplorerDataType.TRANSACTION)
-  const shouldShowModal = (txState === TxStateType.Success || txState === TxStateType.Failed) && txState
-  // const trace = useTrace({ modal: ModalName.NFT_TX_COMPLETE })
-  const {
-    nftsPurchased,
-    nftsNotPurchased,
-    showPurchasedModal,
-    showRefundModal,
-    totalPurchaseValue,
-    totalRefundValue,
-    totalUSDRefund,
-    txFeeFiat,
-  } = useMemo(() => {
-    return parseTransactionResponse(transactionResponse, ethPrice)
-  }, [transactionResponse, ethPrice])
+export const addressHash = style([
+  sprinkles({
+    color: 'textSecondary',
+    fontSize: '10',
+    fontWeight: 'normal',
+    marginTop: '4',
+  }),
+  {
+    lineHeight: '13px',
+    letterSpacing: '0.04em',
+  },
+])
 
-  const toggleShowUnavailable = () => {
-    setShowUnavailable(!showUnavailable)
-  }
+export const subHeading = style([
+  sprinkles({
+    color: 'textPrimary',
+    fontSize: '14',
+    width: 'full',
+    textAlign: 'center',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    marginTop: '0',
+    marginBottom: '20',
+  }),
+  {
+    lineHeight: '18px',
+  },
+])
 
-  function closeTxCompleteScreen() {
-    setTransactionResponse({} as TxResponse)
-    setTxState(TxStateType.New)
-  }
+export const successAssetsContainer = style([
+  sprinkles({
+    display: 'flex',
+    flexWrap: 'wrap',
+    width: 'full',
+    overflow: 'scroll',
+    justifyContent: 'center',
+  }),
+  {
+    height: 'min',
+    scrollbarWidth: 'none',
+    selectors: {
+      '&::-webkit-scrollbar': {
+        display: 'none',
+      },
+    },
+  },
+])
 
-  useEffect(() => {
-    fetchPrice().then((price) => {
-      setEthPrice(price ?? 0)
-    })
-  }, [])
+export const successAssetImage = style([
+  sprinkles({
+    borderRadius: '12',
+    flexShrink: '0',
+  }),
+  {
+    height: 'auto',
+    width: 'auto',
+    boxSizing: 'border-box',
+    objectFit: 'contain',
+  },
+])
 
-  useEffect(() => {
-    useSendTransaction.subscribe((state) => (transactionStateRef.current = state.state))
-  }, [])
+export const successAssetImageGrid = style([
+  sprinkles({
+    marginRight: { sm: '4', md: '8' },
+    marginBottom: { sm: '4', md: '8' },
+  }),
+])
 
-  const shareTweet = () => {
-    window.open(
-      generateTweetForPurchase(nftsPurchased, txHashUrl),
-      'newwindow',
-      `left=${(window.screen.width - TWITTER_WIDTH) / 2}, top=${
-        (window.screen.height - TWITTER_HEIGHT) / 2
-      }, width=${TWITTER_WIDTH}, height=${TWITTER_HEIGHT}`
-    )
-  }
+export const overflowFade = style({
+  backgroundImage: `linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, ${themeVars.colors.backgroundSurface} 100%)`,
+  width: '576px',
+  height: '20px',
+  marginLeft: '32px',
+  marginTop: '-20px',
+})
 
-  return (
-    <>
-      {shouldShowModal && (
-        <Portal>
-          <Overlay onClick={closeTxCompleteScreen} />
-          <Box className={styles.modalContainer} onClick={closeTxCompleteScreen}>
-            {/* Successfully purchased NFTs */}
-            {showPurchasedModal && (
-              // <Trace
-              //   name={EventName.NFT_BUY_BAG_SUCCEEDED}
-              //   properties={{
-              //     buy_quantity: nftsPurchased.length,
-              //     usd_value: parseFloat(formatEther(totalPurchaseValue)) * ethPrice,
-              //     transaction_hash: txHash,
-              //     ...formatAssetEventProperties(nftsPurchased),
-              //     ...trace,
-              //   }}
-              //   shouldLogImpression
-              // >
-              <Box className={styles.successModal} onClick={stopPropagation}>
-                <UniIcon color={vars.color.pink400} width="36" height="36" className={styles.uniLogo} />
-                <Box display="flex" flexWrap="wrap" width="full" height="min">
-                  <h1 className={styles.title}>Complete!</h1>
-                  <p className={styles.subHeading}>Uniswap has granted your wish!</p>
-                </Box>
-                <UploadLink onClick={shareTweet} target="_blank">
-                  <Upload size={24} strokeWidth={2} />
-                </UploadLink>
-                <Box
-                  className={styles.successAssetsContainer}
-                  style={{
-                    maxHeight: nftsPurchased.length > 32 ? (isMobile ? '172px' : '292px') : 'min-content',
-                  }}
-                >
-                  {[...nftsPurchased].map((nft, index) => (
-                    <img
-                      className={clsx(
-                        styles.successAssetImage,
-                        nftsPurchased.length > 1 && styles.successAssetImageGrid
-                      )}
-                      style={{
-                        maxHeight: `${getSuccessfulImageSize(nftsPurchased.length, isMobile)}px`,
-                        maxWidth: `${getSuccessfulImageSize(nftsPurchased.length, isMobile)}px`,
-                      }}
-                      src={nft.imageUrl}
-                      alt={nft.name}
-                      key={index}
-                    />
-                  ))}
-                </Box>
-                {nftsPurchased.length > 32 && <Box className={styles.overflowFade} />}
-                <Box
-                  display="flex"
-                  width="full"
-                  height="min"
-                  flexDirection="row"
-                  marginTop={{ sm: '20', md: '20' }}
-                  flexWrap={{ sm: 'wrap', md: 'nowrap' }}
-                  alignItems="center"
-                  paddingRight="40"
-                  paddingLeft="40"
-                  className={styles.bottomBar}
-                  justifyContent="space-between"
-                >
-                  <Row>
-                    <Box marginRight="16">
-                      {nftsPurchased.length} NFT{nftsPurchased.length === 1 ? '' : 's'}
-                    </Box>
-                    <Box>{formatEthPrice(totalPurchaseValue.toString())} ETH</Box>
-                  </Row>
-                  <a href={txHashUrl} target="_blank" rel="noreferrer" style={{ textDecoration: 'none' }}>
-                    <Box color="textSecondary" fontWeight="normal">
-                      View on Etherscan
-                    </Box>
-                  </a>
-                </Box>
-              </Box>
-              // </Trace>
-            )}
-            {/* NFTs that were not purchased ie Refunds */}
-            {showRefundModal &&
-              /* Showing both purchases & refunds */
-              (showPurchasedModal ? (
-                // <Trace
-                //   name={EventName.NFT_BUY_BAG_REFUNDED}
-                //   properties={{
-                //     buy_quantity: nftsPurchased.length,
-                //     fail_quantity: nftsNotPurchased.length,
-                //     refund_amount_usd: totalUSDRefund,
-                //     transaction_hash: txHash,
-                //     ...trace,
-                //   }}
-                //   shouldLogImpression
-                // >
-                <Box className={styles.mixedRefundModal} onClick={stopPropagation}>
-                  <Box
-                    height="full"
-                    display="inline-flex"
-                    flexWrap="wrap"
-                    width={{ sm: 'full', md: 'half' }}
-                    paddingRight={{ sm: '0', md: '32' }}
-                  >
-                    <LightningBoltIcon color="pink" />
-                    <p className={styles.subtitle}>Instant Refund</p>
-                    <p className={styles.interStd}>
-                      Uniswap returned{' '}
-                      <span style={{ fontWeight: '700' }}>{formatEthPrice(totalRefundValue.toString())} ETH</span> back
-                      to your wallet for unavailable items.
-                    </p>
-                    <Box
-                      display="flex"
-                      flexWrap="wrap"
-                      bottom="24"
-                      width="full"
-                      alignSelf="flex-end"
-                      position={{ sm: 'absolute', md: 'static' }}
-                    >
-                      <p className={styles.totalEthCost} style={{ marginBottom: '2px' }}>
-                        {formatEthPrice(totalRefundValue.toString())} ETH
-                      </p>
-                      <p className={styles.totalUsdRefund}>{formatUSDPriceWithCommas(totalUSDRefund)}</p>
-                      <p className={styles.totalEthCost} style={{ width: '100%' }}>
-                        for {nftsNotPurchased.length} unavailable item
-                        {nftsNotPurchased.length === 1 ? '' : 's'}.
-                      </p>
-                      <Box
-                        position={{ sm: 'absolute', md: 'relative' }}
-                        right={{ sm: '0', md: 'auto' }}
-                        bottom={{ sm: '0', md: 'auto' }}
-                        justifyContent={{ sm: 'flex-end', md: 'flex-start' }}
-                        textAlign={{ sm: 'right', md: 'left' }}
-                        flexShrink="0"
-                        marginRight={{ sm: '40', md: '24' }}
-                        width={{ sm: 'half', md: 'auto' }}
-                      >
-                        <a href={txHashUrl} target="_blank" rel="noreferrer" style={{ textDecoration: 'none' }}>
-                          <Box fontWeight="normal" marginTop="16" color="textSecondary" className={styles.totalEthCost}>
-                            View on Etherscan
-                          </Box>
-                        </a>
-                      </Box>
-                    </Box>
-                  </Box>
-                  <Box className={styles.refundAssetsContainer}>
-                    {nftsNotPurchased.map((nft, index) => (
-                      <Box display="flex" flexWrap="wrap" height="min" width="52" key={index}>
-                        <img className={styles.refundAssetImage} src={nft.imageUrl} alt={nft.name} key={index} />
-                      </Box>
-                    ))}
-                  </Box>
-                  <Box className={styles.refundOverflowFade} />
-                </Box>
-              ) : (
-                // </Trace>
-                // Only showing when all assets are unavailable
-                // <Trace
-                //   name={EventName.NFT_BUY_BAG_REFUNDED}
-                //   properties={{
-                //     buy_quantity: 0,
-                //     fail_quantity: nftsNotPurchased.length,
-                //     refund_amount_usd: totalUSDRefund,
-                //     ...trace,
-                //   }}
-                //   shouldLogImpression
-                // >
-                <Box className={styles.fullRefundModal} onClick={stopPropagation}>
-                  <Box marginLeft="auto" marginRight="auto" display="flex">
-                    {txState === TxStateType.Success ? (
-                      <>
-                        <LightningBoltIcon />
-                        <h1 className={styles.title}>Instant Refund</h1>
-                      </>
-                    ) : (
-                      <h1 className={styles.title}>Failed Transaction</h1>
-                    )}
-                  </Box>
-                  <p className={styles.bodySmall}>
-                    {txState === TxStateType.Success &&
-                      `Selected item${
-                        nftsPurchased.length === 1 ? ' is' : 's are'
-                      } no longer available. Uniswap instantly refunded you for this incomplete transaction. `}
-                    {formatUsdPrice(txFeeFiat)} was used for gas in attempt to complete this transaction. For support,
-                    please visit our <a href="https://discord.gg/FCfyBSbCU5">Discord</a>
-                  </p>
-                  <Box className={styles.allUnavailableAssets}>
-                    {nftsNotPurchased.length >= 3 && (
-                      <Box className={styles.toggleUnavailable} onClick={() => toggleShowUnavailable()}>
-                        {!showUnavailable && (
-                          <Box paddingLeft="20" paddingTop="8" paddingBottom="8">
-                            {nftsNotPurchased.slice(0, 3).map((asset, index) => (
-                              <img
-                                style={{ zIndex: 2 - index }}
-                                className={styles.unavailableAssetPreview}
-                                src={asset.imageUrl}
-                                alt={asset.name}
-                                key={index}
-                              />
-                            ))}
-                          </Box>
-                        )}
-                        <Box
-                          color={showUnavailable ? 'textPrimary' : 'textSecondary'}
-                          className={styles.unavailableText}
-                        >
-                          Unavailable
-                          <Box className={styles.unavailableItems}>
-                            {nftsNotPurchased.length} item{nftsNotPurchased.length === 1 ? '' : 's'}
-                          </Box>
-                        </Box>
-                        <ChevronUpIcon className={`${!showUnavailable && styles.chevronDown} ${styles.chevron}`} />
-                      </Box>
-                    )}
-                    {(showUnavailable || nftsNotPurchased.length < 3) &&
-                      nftsNotPurchased.map((asset, index) => (
-                        <Box
-                          backgroundColor="backgroundSurface"
-                          display="flex"
-                          padding="4"
-                          marginBottom="1"
-                          borderRadius="8"
-                          key={index}
-                        >
-                          <Box className={styles.assetContainer}>
-                            <img className={styles.fullRefundImage} src={asset.imageUrl} alt={asset.name} />
-                          </Box>
-                          <Box flexWrap="wrap" marginTop="4">
-                            <Box marginLeft="4" width="full" display="flex">
-                              <p className={styles.totalEthCost} style={{ marginBottom: '2px' }}>
-                                {formatEthPrice(
-                                  asset.updatedPriceInfo ? asset.updatedPriceInfo.ETHPrice : asset.priceInfo.ETHPrice
-                                )}{' '}
-                                ETH
-                              </p>
-                            </Box>
-                            <Box color="textPrimary" className={styles.totalUsdRefund}>
-                              {txState === TxStateType.Success ? 'Refunded' : asset.name}
-                            </Box>
-                          </Box>
-                        </Box>
-                      ))}
-                  </Box>
-                  {showUnavailable && <Box className={styles.fullRefundOverflowFade} />}
-                  <p className={styles.totalEthCost} style={{ marginBottom: '2px' }}>
-                    {formatEthPrice(totalRefundValue.toString())} ETH
-                  </p>
-                  <p className={styles.totalUsdRefund}>{formatUSDPriceWithCommas(totalUSDRefund)}</p>
-                  <Box className={styles.walletAddress} marginLeft="auto" marginRight="0">
-                    <a href={txHashUrl} target="_blank" rel="noreferrer">
-                      <Box className={styles.addressHash}>View on Etherscan</Box>
-                    </a>
-                  </Box>
-                  <p className={styles.totalEthCost}>
-                    for {nftsNotPurchased.length} unavailable item
-                    {nftsNotPurchased.length === 1 ? '' : 's'}.
-                  </p>
-                  <Box
-                    as="button"
-                    border="none"
-                    backgroundColor="genieBlue"
-                    cursor="pointer"
-                    className={styles.returnButton}
-                    type="button"
-                    onClick={() => closeTxCompleteScreen()}
-                  >
-                    <BackArrowIcon className={styles.fullRefundBackArrow} />
-                    Return to Marketplace
-                  </Box>
-                </Box>
-                // </Trace>
-              ))}
-          </Box>
-        </Portal>
-      )}
-    </>
-  )
-}
+export const totalEthCost = style([
+  sprinkles({
+    fontSize: '14',
+    color: 'textSecondary',
+    marginTop: '1',
+    marginBottom: '0',
+  }),
+  {
+    lineHeight: '18px',
+  },
+])
 
-export default TxCompleteModal
+export const bottomBar = style([
+  sprinkles({
+    color: 'textPrimary',
+    fontSize: '14',
+  }),
+])
+
+export const button = style([
+  sprinkles({
+    height: '40',
+    textAlign: 'center',
+    fontWeight: 'bold',
+    fontSize: '14',
+    color: 'textPrimary',
+    display: 'flex',
+    alignItems: 'center',
+    marginBottom: 'auto',
+    marginRight: 'auto',
+    bottom: { sm: '20', md: 'auto' },
+  }),
+  {
+    left: 'calc(50% - 107px)',
+    width: '214px',
+    lineHeight: '18px',
+    borderRadius: '100px',
+    marginTop: '15px',
+  },
+])
+
+export const mixedRefundModal = style([
+  sprinkles({
+    background: 'backgroundSurface',
+    borderRadius: '20',
+    display: 'flex',
+    flexWrap: 'wrap',
+    paddingTop: { sm: '24', md: '32' },
+    paddingRight: { sm: '16', md: '24' },
+    paddingLeft: { sm: '24', md: '32' },
+    height: 'min',
+    width: { sm: 'full', md: 'min' },
+    position: 'relative',
+    marginTop: '8',
+  }),
+  {
+    boxShadow: vars.color.dropShadow,
+    paddingBottom: '68px',
+    '@media': {
+      'screen and (min-width: 656px)': {
+        minWidth: '640px',
+        paddingBottom: '32px',
+      },
+    },
+  },
+])
+
+export const subtitle = style([
+  sprinkles({
+    color: 'textPrimary',
+    fontWeight: 'bold',
+    fontSize: '16',
+    marginLeft: '4',
+    marginRight: 'auto',
+    marginBottom: { sm: '0', md: 'auto' },
+  }),
+  {
+    lineHeight: '20px',
+    marginTop: '2px',
+  },
+])
+
+export const interStd = style([
+  sprinkles({
+    color: 'textPrimary',
+    fontSize: '14',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    marginTop: '10',
+    marginBottom: '16',
+    width: 'full',
+  }),
+  {
+    lineHeight: '18px',
+  },
+])
+
+export const totalUsdRefund = style([
+  sprinkles({
+    color: 'textSecondary',
+    fontSize: '12',
+    marginLeft: '4',
+  }),
+  {
+    lineHeight: '15px',
+    marginTop: '3px',
+    marginBottom: '2px',
+  },
+])
+
+export const refundAssetsContainer = style([
+  sprinkles({
+    height: { sm: 'min', md: 'full' },
+    width: { sm: 'full', md: 'half' },
+    flexWrap: 'wrap',
+    overflow: 'scroll',
+    flexDirection: 'row',
+    display: 'inline-flex',
+    paddingLeft: { md: '16' },
+  }),
+  {
+    maxHeight: '152px',
+    scrollbarWidth: 'none',
+    selectors: {
+      '&::-webkit-scrollbar': {
+        display: 'none',
+      },
+    },
+  },
+])
+
+export const refundAssetImage = style([
+  sprinkles({
+    height: '52',
+    width: '52',
+    borderRadius: '8',
+    marginRight: '4',
+    marginBottom: '1',
+  }),
+  {
+    boxSizing: 'border-box',
+    border: `2px solid ${themeVars.colors.backgroundSurface}`,
+    filter: 'grayscale(100%)',
+  },
+])
+
+export const refundOverflowFade = style([
+  sprinkles({
+    width: { sm: 'full', md: 'half' },
+    marginLeft: 'auto',
+    zIndex: '1',
+  }),
+  {
+    backgroundImage: `linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, ${themeVars.colors.backgroundSurface} 100%)`,
+    height: '30px',
+    marginRight: '18px',
+    marginTop: '-20px',
+  },
+])
+
+export const fullRefundModal = style([
+  sprinkles({
+    background: 'backgroundSurface',
+    borderRadius: '20',
+    display: 'flex',
+    flexWrap: 'wrap',
+    marginRight: 'auto',
+    textAlign: 'center',
+    marginLeft: { sm: 'auto', md: '100' },
+    padding: '32',
+    height: 'min',
+  }),
+  {
+    boxShadow: vars.color.dropShadow,
+    width: '344px',
+  },
+])
+
+export const returnButton = style([
+  sprinkles({
+    height: '40',
+    textAlign: 'center',
+    fontWeight: 'bold',
+    fontSize: '14',
+    color: 'explicitWhite',
+    backgroundColor: 'accentAction',
+    display: 'flex',
+    alignItems: 'center',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    marginTop: '10',
+  }),
+  {
+    width: '276px',
+    lineHeight: '18px',
+    borderRadius: '100px',
+  },
+])
+
+export const fullRefundBackArrow = style([
+  sprinkles({
+    fill: 'explicitWhite',
+    marginLeft: '12',
+    marginRight: '28',
+  }),
+])
+
+export const bodySmall = style([
+  sprinkles({
+    color: 'textPrimary',
+    fontSize: '14',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    marginTop: '4',
+  }),
+  {
+    marginBottom: '22px',
+    lineHeight: '18px',
+  },
+])
+
+export const allUnavailableAssets = style([
+  sprinkles({
+    width: 'full',
+  }),
+  {
+    overflow: 'auto',
+    maxHeight: '210px',
+    minHeight: '58px',
+  },
+])
+
+export const fullRefundOverflowFade = style({
+  backgroundImage: `linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, ${themeVars.colors.backgroundSurface} 100%)`,
+  width: '266px',
+  height: '20px',
+  marginTop: '-20px',
+  marginBottom: '20px',
+  position: 'relative',
+})
+
+export const toggleUnavailable = style([
+  sprinkles({
+    backgroundColor: 'backgroundSurface',
+    borderRadius: '8',
+    display: 'flex',
+    flexWrap: 'wrap',
+    marginTop: '1',
+    marginBottom: '1',
+    height: '52',
+    cursor: 'pointer',
+  }),
+])
+
+export const unavailableAssetPreview = style([
+  sprinkles({
+    borderRadius: '4',
+    height: '36',
+    width: '36',
+    position: 'relative',
+  }),
+  {
+    boxSizing: 'border-box',
+    border: `2px solid ${themeVars.colors.backgroundSurface}`,
+    marginLeft: '-16px',
+    filter: 'grayscale(100%)',
+  },
+])
+
+export const unavailableText = style([
+  sprinkles({
+    color: 'textSecondary',
+    fontWeight: 'normal',
+    fontSize: '14',
+    paddingTop: '8',
+    paddingBottom: '8',
+    paddingLeft: '12',
+  }),
+  {
+    fontStyle: 'normal',
+    lineHeight: '18px',
+  },
+])
+
+export const unavailableItems = style([
+  sprinkles({
+    fontWeight: 'normal',
+    fontSize: '12',
+    display: 'flex',
+  }),
+  {
+    fontStyle: 'normal',
+    lineHeight: '15px',
+  },
+])
+
+export const assetContainer = style({
+  height: '48px',
+  width: '48px',
+  flexShrink: '0',
+  marginRight: '4px',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+})
+
+export const fullRefundImage = style([
+  sprinkles({
+    borderRadius: '4',
+    height: 'auto',
+    maxHeight: '36',
+    width: 'auto',
+    maxWidth: '36',
+    objectFit: 'contain',
+  }),
+  {
+    boxSizing: 'border-box',
+    filter: 'grayscale(100%)',
+  },
+])
+
+export const chevron = style([
+  sprinkles({
+    marginBottom: 'auto',
+    marginLeft: '0',
+    marginRight: 'auto',
+    height: '20',
+    width: '20',
+  }),
+  {
+    marginTop: '7px',
+  },
+])
+
+export const chevronDown = style({
+  transform: 'rotate(180deg)',
+})

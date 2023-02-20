@@ -9,6 +9,8 @@ import { SerializedPair, SerializedToken } from './types'
 const currentTimestamp = () => new Date().getTime()
 
 export interface UserState {
+  fiatOnrampAcknowledgments: { renderCount: number; system: boolean; user: boolean }
+
   selectedWallet?: ConnectionType
 
   // the timestamp of the last updateVersion action
@@ -48,14 +50,9 @@ export interface UserState {
 
   timestamp: number
   URLWarningVisible: boolean
-  hideNFTPromoBanner: boolean // whether or not we should hide the nft explore promo banner
 
   // undefined means has not gone through A/B split yet
   showSurveyPopup: boolean | undefined
-
-  showDonationLink: boolean
-
-  hideNFTWelcomeModal: boolean
 }
 
 function pairKey(token0Address: string, token1Address: string) {
@@ -63,6 +60,7 @@ function pairKey(token0Address: string, token1Address: string) {
 }
 
 export const initialState: UserState = {
+  fiatOnrampAcknowledgments: { renderCount: 0, system: false, user: false },
   selectedWallet: undefined,
   matchesDarkMode: false,
   userDarkMode: null,
@@ -77,16 +75,19 @@ export const initialState: UserState = {
   pairs: {},
   timestamp: currentTimestamp(),
   URLWarningVisible: true,
-  hideNFTPromoBanner: false,
   showSurveyPopup: undefined,
-  showDonationLink: true,
-  hideNFTWelcomeModal: false,
 }
 
 const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
+    updateFiatOnrampAcknowledgments(
+      state,
+      { payload }: { payload: Partial<{ renderCount: number; user: boolean; system: boolean }> }
+    ) {
+      state.fiatOnrampAcknowledgments = { ...state.fiatOnrampAcknowledgments, ...payload }
+    },
     updateSelectedWallet(state, { payload: { wallet } }) {
       state.selectedWallet = wallet
     },
@@ -120,32 +121,12 @@ const userSlice = createSlice({
     updateHideClosedPositions(state, action) {
       state.userHideClosedPositions = action.payload.userHideClosedPositions
     },
-    updateShowSurveyPopup(state, action) {
-      state.showSurveyPopup = action.payload.showSurveyPopup
-    },
-    updateShowDonationLink(state, action) {
-      state.showDonationLink = action.payload.showDonationLink
-    },
-    updateHideNFTWelcomeModal(state, action) {
-      state.hideNFTWelcomeModal = action.payload.hideNFTWelcomeModal
-    },
-    updateShowNftPromoBanner(state, action) {
-      state.hideNFTPromoBanner = action.payload.hideNFTPromoBanner
-    },
     addSerializedToken(state, { payload: { serializedToken } }) {
       if (!state.tokens) {
         state.tokens = {}
       }
       state.tokens[serializedToken.chainId] = state.tokens[serializedToken.chainId] || {}
       state.tokens[serializedToken.chainId][serializedToken.address] = serializedToken
-      state.timestamp = currentTimestamp()
-    },
-    removeSerializedToken(state, { payload: { address, chainId } }) {
-      if (!state.tokens) {
-        state.tokens = {}
-      }
-      state.tokens[chainId] = state.tokens[chainId] || {}
-      delete state.tokens[chainId][address]
       state.timestamp = currentTimestamp()
     },
     addSerializedPair(state, { payload: { serializedPair } }) {
@@ -156,14 +137,6 @@ const userSlice = createSlice({
         const chainId = serializedPair.token0.chainId
         state.pairs[chainId] = state.pairs[chainId] || {}
         state.pairs[chainId][pairKey(serializedPair.token0.address, serializedPair.token1.address)] = serializedPair
-      }
-      state.timestamp = currentTimestamp()
-    },
-    removeSerializedPair(state, { payload: { chainId, tokenAAddress, tokenBAddress } }) {
-      if (state.pairs[chainId]) {
-        // just delete both keys if either exists
-        delete state.pairs[chainId][pairKey(tokenAAddress, tokenBAddress)]
-        delete state.pairs[chainId][pairKey(tokenBAddress, tokenAAddress)]
       }
       state.timestamp = currentTimestamp()
     },
@@ -206,22 +179,17 @@ const userSlice = createSlice({
 })
 
 export const {
-  updateSelectedWallet,
   addSerializedPair,
   addSerializedToken,
-  removeSerializedPair,
-  removeSerializedToken,
+  updateFiatOnrampAcknowledgments,
+  updateSelectedWallet,
   updateHideClosedPositions,
   updateMatchesDarkMode,
-  updateShowDonationLink,
-  updateShowSurveyPopup,
   updateUserClientSideRouter,
-  updateHideNFTWelcomeModal,
   updateUserDarkMode,
   updateUserDeadline,
   updateUserExpertMode,
   updateUserLocale,
   updateUserSlippageTolerance,
-  updateShowNftPromoBanner,
 } = userSlice.actions
 export default userSlice.reducer

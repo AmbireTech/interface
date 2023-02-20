@@ -1,5 +1,10 @@
 import { BaseVariant, FeatureFlag, featureFlagSettings, useUpdateFlag } from 'featureFlags'
-import { NftVariant, useNftFlag } from 'featureFlags/flags/nft'
+import { useFiatOnrampFlag } from 'featureFlags/flags/fiatOnramp'
+import { GqlRoutingVariant, useGqlRoutingFlag } from 'featureFlags/flags/gqlRouting'
+import { NftListV2Variant, useNftListV2Flag } from 'featureFlags/flags/nftListV2'
+import { PayWithAnyTokenVariant, usePayWithAnyTokenFlag } from 'featureFlags/flags/payWithAnyToken'
+import { Permit2Variant, usePermit2Flag } from 'featureFlags/flags/permit2'
+import { SwapWidgetVariant, useSwapWidgetFlag } from 'featureFlags/flags/swapWidget'
 import { TraceJsonRpcVariant, useTraceJsonRpcFlag } from 'featureFlags/flags/traceJsonRpc'
 import { useAtomValue, useUpdateAtom } from 'jotai/utils'
 import { Children, PropsWithChildren, ReactElement, ReactNode, useCallback, useState } from 'react'
@@ -163,7 +168,7 @@ function FeatureFlagGroup({ name, children }: PropsWithChildren<{ name: string }
   )
 }
 
-function FeatureFlagOption({ variant, featureFlag, value, label }: FeatureFlagProps) {
+function FeatureFlagOption({ variant, featureFlag, label }: FeatureFlagProps) {
   const updateFlag = useUpdateFlag()
   const [count, setCount] = useState(0)
   const featureFlags = useAtomValue(featureFlagSettings)
@@ -202,9 +207,42 @@ export default function FeatureFlagModal() {
           <X size={24} />
         </CloseButton>
       </Header>
-      <FeatureFlagGroup name="Phase 1">
-        <FeatureFlagOption variant={NftVariant} value={useNftFlag()} featureFlag={FeatureFlag.nft} label="NFTs" />
-      </FeatureFlagGroup>
+      <FeatureFlagOption
+        variant={Permit2Variant}
+        value={usePermit2Flag()}
+        featureFlag={FeatureFlag.permit2}
+        label="Permit 2 / Universal Router"
+      />
+      <FeatureFlagOption
+        variant={BaseVariant}
+        value={useFiatOnrampFlag()}
+        featureFlag={FeatureFlag.fiatOnramp}
+        label="Fiat on-ramp"
+      />
+      <FeatureFlagOption
+        variant={NftListV2Variant}
+        value={useNftListV2Flag()}
+        featureFlag={FeatureFlag.nftListV2}
+        label="NFT Listing Page v2"
+      />
+      <FeatureFlagOption
+        variant={PayWithAnyTokenVariant}
+        value={usePayWithAnyTokenFlag()}
+        featureFlag={FeatureFlag.payWithAnyToken}
+        label="Pay With Any Token"
+      />
+      <FeatureFlagOption
+        variant={SwapWidgetVariant}
+        value={useSwapWidgetFlag()}
+        featureFlag={FeatureFlag.swapWidget}
+        label="Swap Widget"
+      />
+      <FeatureFlagOption
+        variant={GqlRoutingVariant}
+        value={useGqlRoutingFlag()}
+        featureFlag={FeatureFlag.gqlRouting}
+        label="GraphQL NFT Routing"
+      />
       <FeatureFlagGroup name="Debug">
         <FeatureFlagOption
           variant={TraceJsonRpcVariant}

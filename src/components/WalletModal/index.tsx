@@ -1,17 +1,23 @@
 import { Trans } from '@lingui/macro'
 import { sendAnalyticsEvent, user } from '@uniswap/analytics'
-import { CustomUserProperties, EventName, WalletConnectionResult } from '@uniswap/analytics-events'
+import { CustomUserProperties, InterfaceEventName, WalletConnectionResult } from '@uniswap/analytics-events'
 import { useWeb3React } from '@web3-react/core'
 import { Connector } from '@web3-react/types'
 import { sendEvent } from 'components/analytics'
 import { AutoColumn } from 'components/Column'
 import { AutoRow } from 'components/Row'
 import { networkConnection } from 'connection'
-import { getConnection, getConnectionName, getIsCoinbaseWallet, getIsInjected, getIsMetaMask } from 'connection/utils'
-import { NftVariant, useNftFlag } from 'featureFlags/flags/nft'
+import {
+  getConnection,
+  getConnectionName,
+  getIsCoinbaseWallet,
+  getIsInjected,
+  getIsMetaMaskWallet,
+} from 'connection/utils'
 import usePrevious from 'hooks/usePrevious'
 import { useCallback, useEffect, useState } from 'react'
 import { ArrowLeft } from 'react-feather'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { updateConnectionError } from 'state/connection/reducer'
 import { useAppDispatch, useAppSelector } from 'state/hooks'
 import { updateSelectedWallet } from 'state/user/reducer'
@@ -25,7 +31,6 @@ import { useModalIsOpen, useToggleWalletModal } from '../../state/application/ho
 import { ApplicationModal } from '../../state/application/reducer'
 import { ExternalLink, ThemedText } from '../../theme'
 import AccountDetails from '../AccountDetails'
-import { LightCard } from '../Card'
 import Modal from '../Modal'
 import { CoinbaseWalletOption, OpenCoinbaseWalletOption } from './CoinbaseWalletOption'
 import { InjectedOption, InstallMetaMaskOption, MetaMaskOption } from './InjectedOption'
@@ -63,7 +68,7 @@ const HeaderRow = styled.div`
   padding: 1rem 1rem;
   font-weight: 600;
   size: 16px;
-  color: ${(props) => (props.color === 'blue' ? ({ theme }) => theme.deprecated_primary1 : 'inherit')};
+  color: ${(props) => (props.color === 'blue' ? ({ theme }) => theme.accentAction : 'inherit')};
   ${({ theme }) => theme.deprecated_mediaWidth.deprecated_upToMedium`
     padding: 1rem;
   `};
@@ -105,7 +110,7 @@ const OptionGrid = styled.div`
 
 const HoverText = styled.div`
   text-decoration: none;
-  color: ${({ theme }) => theme.deprecated_text1};
+  color: ${({ theme }) => theme.textPrimary};
   display: flex;
   align-items: center;
 
@@ -126,7 +131,7 @@ const sendAnalyticsEventAndUserInfo = (
   chainId: number | undefined,
   isReconnect: boolean
 ) => {
-  sendAnalyticsEvent(EventName.WALLET_CONNECT_TXN_COMPLETED, {
+  sendAnalyticsEvent(InterfaceEventName.WALLET_CONNECT_TXN_COMPLETED, {
     result: WalletConnectionResult.SUCCEEDED,
     wallet_address: account,
     wallet_type: walletType,
@@ -153,9 +158,11 @@ export default function WalletModal({
   const { connector, account, chainId } = useWeb3React()
   const previousAccount = usePrevious(account)
 
+  const location = useLocation()
+  const navigate = useNavigate()
+
   const [connectedWallets, addWalletToConnectedWallets] = useConnectedWallets()
 
-  const nftFlagEnabled = useNftFlag() === NftVariant.Enabled
   const [walletView, setWalletView] = useState(WALLET_VIEWS.ACCOUNT)
   const [lastActiveWalletAddress, setLastActiveWalletAddress] = useState<string | undefined>(account)
 
@@ -180,8 +187,11 @@ export default function WalletModal({
   useEffect(() => {
     if (account && account !== previousAccount && walletModalOpen) {
       toggleWalletModal()
+      if (location.pathname === '/') {
+        navigate('/swap')
+      }
     }
-  }, [account, previousAccount, toggleWalletModal, walletModalOpen])
+  }, [account, previousAccount, toggleWalletModal, walletModalOpen, location.pathname, navigate])
 
   useEffect(() => {
     if (pendingConnector && walletView !== WALLET_VIEWS.PENDING) {
@@ -200,7 +210,7 @@ export default function WalletModal({
   // When new wallet is successfully set by the user, trigger logging of Amplitude analytics event.
   useEffect(() => {
     if (account && account !== lastActiveWalletAddress) {
-      const walletType = getConnectionName(getConnection(connector).type, getIsMetaMask())
+      const walletType = getConnectionName(getConnection(connector).type)
       const isReconnect =
         connectedWallets.filter((wallet) => wallet.account === account && wallet.walletType === walletType).length > 0
       sendAnalyticsEventAndUserInfo(account, walletType, chainId, isReconnect)
@@ -232,9 +242,9 @@ export default function WalletModal({
         console.debug(`web3-react connection error: ${error}`)
         dispatch(updateConnectionError({ connectionType, error: error.message }))
 
-        sendAnalyticsEvent(EventName.WALLET_CONNECT_TXN_COMPLETED, {
+        sendAnalyticsEvent(InterfaceEventName.WALLET_CONNECT_TXN_COMPLETED, {
           result: WalletConnectionResult.FAILED,
-          wallet_type: getConnectionName(connectionType, getIsMetaMask()),
+          wallet_type: getConnectionName(connectionType),
         })
       }
     },
@@ -243,11 +253,11 @@ export default function WalletModal({
 
   function getOptions() {
     const isInjected = getIsInjected()
-    const isMetaMask = getIsMetaMask()
-    const isCoinbaseWallet = getIsCoinbaseWallet()
+    const hasMetaMaskExtension = getIsMetaMaskWallet()
+    const hasCoinbaseExtension = getIsCoinbaseWallet()
 
-    const isCoinbaseWalletBrowser = isMobile && isCoinbaseWallet
-    const isMetaMaskBrowser = isMobile && isMetaMask
+    const isCoinbaseWalletBrowser = isMobile && hasCoinbaseExtension
+    const isMetaMaskBrowser = isMobile && hasMetaMaskExtension
     const isInjectedMobileBrowser = isCoinbaseWalletBrowser || isMetaMaskBrowser
 
     let injectedOption
@@ -255,8 +265,8 @@ export default function WalletModal({
       if (!isMobile) {
         injectedOption = <InstallMetaMaskOption />
       }
-    } else if (!isCoinbaseWallet) {
-      if (isMetaMask) {
+    } else if (!hasCoinbaseExtension) {
+      if (hasMetaMaskExtension) {
         injectedOption = <MetaMaskOption tryActivation={tryActivation} />
       } else {
         injectedOption = <InjectedOption tryActivation={tryActivation} />
@@ -314,8 +324,8 @@ export default function WalletModal({
       )
     }
 
-    function getTermsOfService(nftFlagEnabled: boolean, walletView: string) {
-      if (nftFlagEnabled && walletView === WALLET_VIEWS.PENDING) return null
+    function getTermsOfService(walletView: string) {
+      if (walletView === WALLET_VIEWS.PENDING) return null
 
       const content = (
         <Trans>
@@ -324,18 +334,12 @@ export default function WalletModal({
           <ExternalLink href="https://uniswap.org/privacy-policy">Privacy Policy</ExternalLink>.
         </Trans>
       )
-      return nftFlagEnabled ? (
+      return (
         <AutoRow style={{ flexWrap: 'nowrap', padding: '4px 16px' }}>
           <ThemedText.BodySecondary fontSize={16} lineHeight="24px">
             {content}
           </ThemedText.BodySecondary>
         </AutoRow>
-      ) : (
-        <LightCard>
-          <AutoRow style={{ flexWrap: 'nowrap' }}>
-            <ThemedText.DeprecatedBody fontSize={12}>{content}</ThemedText.DeprecatedBody>
-          </AutoRow>
-        </LightCard>
       )
     }
 
@@ -356,7 +360,7 @@ export default function WalletModal({
               />
             )}
             {walletView !== WALLET_VIEWS.PENDING && <OptionGrid data-testid="option-grid">{getOptions()}</OptionGrid>}
-            {!pendingError && getTermsOfService(nftFlagEnabled, walletView)}
+            {!pendingError && getTermsOfService(walletView)}
           </AutoColumn>
         </ContentWrapper>
       </UpperSection>

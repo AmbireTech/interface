@@ -1,6 +1,9 @@
 export enum FeatureFlag {
-  favoriteTokens = 'favoriteTokens',
-  nft = 'nfts',
+  fiatOnramp = 'fiatOnramp',
   traceJsonRpc = 'traceJsonRpc',
-  multiNetworkBalances = 'multiNetworkBalances',
+  permit2 = 'permit2',
+  nftListV2 = 'nftListV2',
+  payWithAnyToken = 'payWithAnyToken',
+  swapWidget = 'swapWidget',
+  gqlRouting = 'gqlRouting',
 }

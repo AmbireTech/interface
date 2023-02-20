@@ -62,7 +62,7 @@ const getConsiderationItems = (
   creatorFee?: ConsiderationInputItem
 } => {
   const openSeaBasisPoints = OPENSEA_DEFAULT_FEE * INVERSE_BASIS_POINTS
-  const creatorFeeBasisPoints = asset.basisPoints
+  const creatorFeeBasisPoints = asset?.basisPoints ?? 0
   const sellerBasisPoints = INVERSE_BASIS_POINTS - openSeaBasisPoints - creatorFeeBasisPoints
 
   const openseaFee = price.mul(BigNumber.from(openSeaBasisPoints)).div(BigNumber.from(INVERSE_BASIS_POINTS)).toString()
@@ -76,7 +76,9 @@ const getConsiderationItems = (
     sellerFee: createConsiderationItem(sellerFee, signerAddress),
     openseaFee: createConsiderationItem(openseaFee, OPENSEA_FEE_ADDRESS),
     creatorFee:
-      creatorFeeBasisPoints > 0 ? createConsiderationItem(creatorFee, asset.asset_contract.payout_address) : undefined,
+      creatorFeeBasisPoints > 0
+        ? createConsiderationItem(creatorFee, asset?.asset_contract?.payout_address ?? '')
+        : undefined,
   }
 }
 
@@ -90,7 +92,7 @@ export async function approveCollection(
   // setApprovalForAll() method
   const ERC721Contract = new Contract(collectionAddress, ERC721, signer)
   const signerAddress = await signer.getAddress()
-  setStatus(ListingStatus.PENDING)
+
   try {
     const approved = await ERC721Contract.isApprovedForAll(signerAddress, operator)
     if (approved) {
@@ -128,7 +130,7 @@ export async function signListing(
 
   const signerAddress = await signer.getAddress()
   const listingPrice = asset.newListings?.find((listing) => listing.marketplace.name === marketplace.name)?.price
-  if (!listingPrice || !asset.expirationTime) return false
+  if (!listingPrice || !asset.expirationTime || !asset.asset_contract.address || !asset.tokenId) return false
   switch (marketplace.name) {
     case 'OpenSea':
       try {
@@ -158,15 +160,16 @@ export async function signListing(
         )
 
         const order = await executeAllActions()
+        setStatus(ListingStatus.PENDING)
         const res = await PostOpenSeaSellOrder(order)
-        if (res) setStatus(ListingStatus.APPROVED)
+        res ? setStatus(ListingStatus.APPROVED) : setStatus(ListingStatus.FAILED)
         return res
       } catch (error) {
         if (error.code === 4001) setStatus(ListingStatus.REJECTED)
         else setStatus(ListingStatus.FAILED)
         return false
       }
-    case 'LooksRare':
+    case 'LooksRare': {
       const addresses = addressesByNetwork[SupportedChainId.MAINNET]
       const currentTime = Math.round(Date.now() / 1000)
       const makerOrder: MakerOrder = {
@@ -226,21 +229,21 @@ export async function signListing(
           params: [],
         }
         const res = await createLooksRareOrder(payload)
-        if (res) setStatus(ListingStatus.APPROVED)
+        res ? setStatus(ListingStatus.APPROVED) : setStatus(ListingStatus.FAILED)
         return res
       } catch (error) {
         if (error.code === 4001) setStatus(ListingStatus.REJECTED)
         else setStatus(ListingStatus.FAILED)
         return false
       }
-
-    case 'X2Y2':
+    }
+    case 'X2Y2': {
       const orderItem: OfferItem = {
         price: parseEther(listingPrice.toString()),
         tokens: [
           {
             token: asset.asset_contract.address,
-            tokenId: BigNumber.from(parseFloat(asset.tokenId)),
+            tokenId: BigNumber.from(asset.tokenId),
           },
         ],
       }
@@ -260,14 +263,14 @@ export async function signListing(
         setStatus(ListingStatus.PENDING)
         // call server api
         const resp = await newX2Y2Order(payload)
-        if (resp) setStatus(ListingStatus.APPROVED)
+        resp ? setStatus(ListingStatus.APPROVED) : setStatus(ListingStatus.FAILED)
         return resp
       } catch (error) {
         if (error.code === 4001) setStatus(ListingStatus.REJECTED)
         else setStatus(ListingStatus.FAILED)
         return false
       }
-
+    }
     default:
       return false
   }
