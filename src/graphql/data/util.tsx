@@ -84,13 +84,14 @@ const URL_CHAIN_PARAM_TO_BACKEND: { [key: string]: Chain } = {
 export function validateUrlChainParam(chainName: string | undefined) {
   return chainName && URL_CHAIN_PARAM_TO_BACKEND[chainName] ? URL_CHAIN_PARAM_TO_BACKEND[chainName] : Chain.Ethereum
 }
-
+// TODO: Ambire
 export const CHAIN_NAME_TO_CHAIN_ID: { [key: string]: SupportedChainId } = {
   ETHEREUM: SupportedChainId.MAINNET,
   POLYGON: SupportedChainId.POLYGON,
   CELO: SupportedChainId.CELO,
   ARBITRUM: SupportedChainId.ARBITRUM_ONE,
   OPTIMISM: SupportedChainId.OPTIMISM,
+  // AVALANCHE: SupportedChainId.AVALANCHE,
 }
 
 export const BACKEND_CHAIN_NAMES: Chain[] = [Chain.Ethereum, Chain.Polygon, Chain.Optimism, Chain.Arbitrum, Chain.Celo]

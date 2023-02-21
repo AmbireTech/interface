@@ -7,18 +7,17 @@ import { IconWrapper } from 'components/Identicon/StatusIcon'
 import WalletDropdown from 'components/WalletDropdown'
 import { getConnection } from 'connection/utils'
 import { SupportedChainId } from 'constants/chains'
-// import { NavBarVariant, useNavBarFlag } from 'featureFlags/flags/navBar'
 import { useCustomBestTrade } from 'hooks/customNetwork/useCustomBestTrade'
 import { useBestTrade } from 'hooks/useBestTrade'
 import { Portal } from 'nft/components/common/Portal'
 import { useIsNftClaimAvailable } from 'nft/hooks/useIsNftClaimAvailable'
-// import { getIsValidSwapQuote } from 'pages/Swap'
+import { getIsValidSwapQuote } from 'pages/Swap'
 import { darken } from 'polished'
 import { useCallback, useMemo, useRef } from 'react'
 import { AlertTriangle, ChevronDown, ChevronUp } from 'react-feather'
 import { useAppSelector } from 'state/hooks'
 import { TradeHook } from 'state/routing/types'
-// import { useDerivedSwapInfo } from 'state/swap/hooks'
+import { useDerivedSwapInfo } from 'state/swap/hooks'
 import styled, { useTheme } from 'styled-components/macro'
 import { colors } from 'theme/colors'
 import { flexRowNoWrap } from 'theme/styles'
@@ -234,11 +233,11 @@ function Web3StatusInner() {
 function BaseWeb3StatusInner(props: { useBestTradeHook: TradeHook }) {
   const { account, connector, chainId, ENSName } = useWeb3React()
   const connectionType = getConnection(connector).type
-  // const {
-  //   trade: { state: tradeState, trade },
-  //   inputError: swapInputError,
-  // } = useDerivedSwapInfo(props.useBestTradeHook)
-  // const validSwapQuote = getIsValidSwapQuote(trade, tradeState, swapInputError)
+  const {
+    trade: { state: tradeState, trade },
+    inputError: swapInputError,
+  } = useDerivedSwapInfo(props.useBestTradeHook)
+  const validSwapQuote = getIsValidSwapQuote(trade, tradeState, swapInputError)
   const theme = useTheme()
   const toggleWalletDropdown = useToggleWalletDropdown()
   const handleWalletDropdownClick = useCallback(() => {
