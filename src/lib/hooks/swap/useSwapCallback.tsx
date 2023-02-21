@@ -8,9 +8,10 @@ import { FeeOptions } from '@uniswap/v3-sdk'
 import { useWeb3React } from '@web3-react/core'
 import useENS from 'hooks/useENS'
 import { SignatureData } from 'hooks/useERC20Permit'
+import { useSwapCallArguments } from 'hooks/useSwapCallArguments'
 import { ReactNode, useMemo } from 'react'
-import { SwapCallArgumentsHook } from 'state/routing/types'
 
+// import { SwapCallArgumentsHook } from 'state/routing/types'
 import useSendSwapTransaction from './useSendSwapTransaction'
 
 export enum SwapCallbackState {
@@ -35,13 +36,19 @@ interface UseSwapCallbackArgs {
 
 // returns a function that will execute a swap, if the parameters are all valid
 // and the user has approved the slippage adjusted input amount for the trade
-export function useSwapCallback(
-  { trade, allowedSlippage, recipientAddressOrName, signatureData, deadline, feeOptions }: UseSwapCallbackArgs,
-  useSwapCallArgumentsHook: SwapCallArgumentsHook
-): UseSwapCallbackReturns {
+export function useSwapCallback({
+  trade,
+  allowedSlippage,
+  recipientAddressOrName,
+  signatureData,
+  deadline,
+  feeOptions,
+}: UseSwapCallbackArgs): // useSwapCallArgumentsHook: SwapCallArgumentsHook
+UseSwapCallbackReturns {
   const { account, chainId, provider } = useWeb3React()
 
-  const swapCalls = useSwapCallArgumentsHook(
+  // const swapCalls = useSwapCallArgumentsHook(
+  const swapCalls = useSwapCallArguments(
     trade,
     allowedSlippage,
     recipientAddressOrName,
@@ -49,6 +56,7 @@ export function useSwapCallback(
     deadline,
     feeOptions
   )
+
   const { callback } = useSendSwapTransaction(account, chainId, provider, trade, swapCalls)
 
   const { address: recipientAddress } = useENS(recipientAddressOrName)

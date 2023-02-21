@@ -35,7 +35,7 @@ function toTxArgs(call: SwapCall, account: string) {
   }
 }
 
-export async function timeout(ms = 420) {
+async function timeout(ms = 420) {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
 

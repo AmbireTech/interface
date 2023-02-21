@@ -13,6 +13,7 @@ import { Currency, CurrencyAmount, Percent, Token, TradeType } from '@uniswap/sd
 import { UNIVERSAL_ROUTER_ADDRESS } from '@uniswap/universal-router-sdk'
 import { useWeb3React } from '@web3-react/core'
 import { sendEvent } from 'components/analytics'
+// import { NetworkAlert } from 'components/NetworkAlert/NetworkAlert'
 import PriceImpactWarning from 'components/swap/PriceImpactWarning'
 import SwapDetailsDropdown from 'components/swap/SwapDetailsDropdown'
 import UnsupportedCurrencyFooter from 'components/swap/UnsupportedCurrencyFooter'
@@ -940,7 +941,7 @@ export function BaseSwap(props: { useBestTradeHook: TradeHook; useSwapCallArgume
               </AutoColumn>
             </SwapWrapper>
           )}
-          <NetworkAlert />
+          {/* <NetworkAlert /> */}
         </PageWrapper>
         <SwitchLocaleLink />
         {!swapIsUnsupported ? null : (
