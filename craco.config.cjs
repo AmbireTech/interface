@@ -3,6 +3,7 @@
 const { VanillaExtractPlugin } = require('@vanilla-extract/webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const { DefinePlugin } = require('webpack')
+const WorkBoxPlugin = require('workbox-webpack-plugin')
 
 const commitHash = require('child_process').execSync('git rev-parse HEAD')
 
@@ -36,6 +37,12 @@ module.exports = {
         (plugin) => plugin instanceof MiniCssExtractPlugin
       )
       if (instanceOfMiniCssExtractPlugin !== undefined) instanceOfMiniCssExtractPlugin.options.ignoreOrder = true
+
+      const instanceOfWorkBoxPluginInjectManifest = webpackConfig.plugins.find(
+        (plugin) => plugin instanceof WorkBoxPlugin.InjectManifest
+      )
+      if (instanceOfWorkBoxPluginInjectManifest !== undefined)
+        instanceOfWorkBoxPluginInjectManifest.config.maximumFileSizeToCacheInBytes = 69 * 1024 * 1024
 
       // We're currently on Webpack 4.x that doesn't support the `exports` field in package.json.
       // See https://github.com/webpack/webpack/issues/9509.
