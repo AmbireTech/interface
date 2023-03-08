@@ -1,11 +1,16 @@
 import { Trans } from '@lingui/macro'
+// import { useWeb3React } from '@web3-react/core'
 import Web3Status from 'components/Web3Status'
+import { NftListV2Variant, useNftListV2Flag } from 'featureFlags/flags/nftListV2'
+// import { chainIdToBackendName } from 'graphql/data/util'
 import { useIsNftPage } from 'hooks/useIsNftPage'
 import { Box } from 'nft/components/Box'
 import { Row } from 'nft/components/Flex'
 import { UniIcon } from 'nft/components/icons'
+import { useProfilePageState } from 'nft/hooks'
+import { ProfilePageStateType } from 'nft/types'
 import { ReactNode } from 'react'
-import { NavLink, NavLinkProps, useLocation } from 'react-router-dom'
+import { NavLink, NavLinkProps, useLocation, useNavigate } from 'react-router-dom'
 import styled from 'styled-components/macro'
 
 import { Bag } from './Bag'
@@ -14,21 +19,11 @@ import { MenuDropdown } from './MenuDropdown'
 import { SearchBar } from './SearchBar'
 import * as styles from './style.css'
 
-const MobileBottomBar = styled.div`
-  position: fixed;
-  display: flex;
-  bottom: 0;
-  right: 0;
-  left: 0;
-  justify-content: space-between;
-  padding: 4px 8px;
-  height: 56px;
-  background: ${({ theme }) => theme.backgroundSurface};
-  border-top: 1px solid ${({ theme }) => theme.backgroundOutline};
-
-  @media screen and (min-width: ${({ theme }) => theme.breakpoint.md}px) {
-    display: none;
-  }
+const Nav = styled.nav`
+  padding: 20px 12px;
+  width: 100%;
+  height: ${({ theme }) => theme.navHeight}px;
+  z-index: 2;
 `
 
 interface MenuItemProps {
@@ -36,15 +31,17 @@ interface MenuItemProps {
   id?: NavLinkProps['id']
   isActive?: boolean
   children: ReactNode
+  dataTestId?: string
 }
 
-const MenuItem = ({ href, id, isActive, children }: MenuItemProps) => {
+const MenuItem = ({ href, dataTestId, id, isActive, children }: MenuItemProps) => {
   return (
     <NavLink
       to={href}
       className={isActive ? styles.activeMenuItem : styles.menuItem}
       id={id}
       style={{ textDecoration: 'none' }}
+      data-testid={dataTestId}
     >
       {children}
     </NavLink>
@@ -53,7 +50,6 @@ const MenuItem = ({ href, id, isActive, children }: MenuItemProps) => {
 
 export const PageTabs = () => {
   const { pathname } = useLocation()
-  // const nftFlag = useNftFlag()
   // const { chainId: connectedChainId } = useWeb3React()
   // const chainName = chainIdToBackendName(connectedChainId)
 
@@ -61,45 +57,52 @@ export const PageTabs = () => {
     pathname.startsWith('/pool') ||
     pathname.startsWith('/add') ||
     pathname.startsWith('/remove') ||
-    pathname.startsWith('/increase') ||
-    pathname.startsWith('/find')
+    pathname.startsWith('/increase')
 
   // const isNftPage = useIsNftPage()
 
   return (
-    <nav className={styles.nav}>
-      <Box display="flex" height="full" flexWrap="nowrap" alignItems="stretch">
-        <Row gap="8" display={{ sm: 'flex' }}>
-          <MenuItem href="/swap" isActive={pathname.startsWith('/swap')}>
-            <Trans>Swap</Trans>
-          </MenuItem>
-          {/* <MenuItem href={`/tokens/${chainName.toLowerCase()}`} isActive={pathname.startsWith('/tokens')}>
+    <>
+      <MenuItem href="/swap" isActive={pathname.startsWith('/swap')}>
+        <Trans>Swap</Trans>
+      </MenuItem>
+      {/* <MenuItem href={`/tokens/${chainName.toLowerCase()}`} isActive={pathname.startsWith('/tokens')}>
         <Trans>Tokens</Trans>
       </MenuItem> */}
-          {/* {nftFlag === NftVariant.Enabled && (
-        <MenuItem href="/nfts" isActive={pathname.startsWith('/nfts')}>
-          <Trans>NFTs</Trans>
-        </MenuItem>
-      )} */}
-          <MenuItem href="/pool" id="pool-nav-link" isActive={isPoolActive}>
-            <Trans>Pool</Trans>
-          </MenuItem>
-        </Row>
-      </Box>
-    </nav>
+      {/* <MenuItem dataTestId="nft-nav" href="/nfts" isActive={isNftPage}>
+        <Trans>NFTs</Trans>
+      </MenuItem> */}
+      <MenuItem href="/pool" id="pool-nav-link" isActive={isPoolActive}>
+        <Trans>Pool</Trans>
+      </MenuItem>
+    </>
   )
 }
 
 const Navbar = () => {
   const isNftPage = useIsNftPage()
+  const sellPageState = useProfilePageState((state) => state.state)
+  const isNftListV2 = useNftListV2Flag() === NftListV2Variant.Enabled
+  const navigate = useNavigate()
 
   return (
     <>
-      <nav className={styles.nav}>
-        <Box display="flex" height="full" flexWrap="nowrap" alignItems="stretch">
+      <Nav>
+        <Box display="flex" height="full" flexWrap="nowrap">
           <Box className={styles.leftSideContainer}>
-            <Box as="a" href="#/swap" className={styles.logoContainer}>
-              <UniIcon width="48" height="48" className={styles.logo} />
+            <Box className={styles.logoContainer}>
+              <UniIcon
+                width="48"
+                height="48"
+                data-testid="uniswap-logo"
+                className={styles.logo}
+                onClick={() => {
+                  navigate({
+                    pathname: '/',
+                    search: '?intro=true',
+                  })
+                }}
+              />
             </Box>
             {!isNftPage && (
               <Box display={{ sm: 'flex', lg: 'none' }}>
@@ -110,7 +113,7 @@ const Navbar = () => {
               <PageTabs />
             </Row>
           </Box>
-          <Box className={styles.middleContainer} alignItems="flex-start">
+          <Box className={styles.searchContainer}>
             <SearchBar />
           </Box>
           <Box className={styles.rightSideContainer}>
@@ -121,7 +124,7 @@ const Navbar = () => {
               <Box display={{ sm: 'none', lg: 'flex' }}>
                 <MenuDropdown />
               </Box>
-              {isNftPage && <Bag />}
+              {isNftPage && (!isNftListV2 || sellPageState !== ProfilePageStateType.LISTING) && <Bag />}
               {!isNftPage && (
                 <Box display={{ sm: 'none', lg: 'flex' }}>
                   <ChainSelector />
@@ -132,13 +135,7 @@ const Navbar = () => {
             </Row>
           </Box>
         </Box>
-      </nav>
-      <MobileBottomBar>
-        <PageTabs />
-        <Box marginY="4">
-          <MenuDropdown />
-        </Box>
-      </MobileBottomBar>
+      </Nav>
     </>
   )
 }

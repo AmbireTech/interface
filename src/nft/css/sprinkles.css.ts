@@ -37,7 +37,6 @@ const themeContractValues = {
 
   shadows: {
     menu: '',
-    genieBlue: '',
     elevation: '',
     tooltip: '',
     deep: '',
@@ -51,11 +50,6 @@ const themeContractValues = {
 }
 
 export type Theme = typeof themeContractValues
-
-type DeepPartial<T> = {
-  [P in keyof T]?: DeepPartial<T[P]>
-}
-export type ThemePartial = DeepPartial<Theme>
 
 export const themeVars = createGlobalThemeContract(themeContractValues, (_, path) => `genie-${path.join('-')}`)
 
@@ -82,6 +76,7 @@ const dimensions = {
   '56': '56px',
   '60': '60px',
   '64': '64px',
+  '68': '68px',
   '72': '72px',
   '80': '80px',
   '100': '100px',
@@ -157,7 +152,6 @@ const zIndices = {
 export const vars = createGlobalTheme(':root', {
   color: {
     ...themeVars.colors,
-    genieBlue: '#4C82FB',
     fallbackGradient: 'linear-gradient(270deg, #D1D5DB 0%, #F6F6F6 100%)',
     loadingBackground: '#24272e',
     dropShadow: '0px 4px 16px rgba(70, 115, 250, 0.4)',
@@ -167,7 +161,6 @@ export const vars = createGlobalTheme(':root', {
     orange: '#FA2C38',
     black: 'black',
     whitesmoke: '#F5F5F5',
-    blue: '#4C82FB',
     gray: '#CBCEDC',
     transculent: '#7F7F7F',
     transparent: 'transparent',
@@ -323,6 +316,7 @@ const layoutStyles = defineProperties({
     placeContent: flexAlignment,
     fontSize: vars.fontSize,
     fontWeight: vars.fontWeight,
+    lineHeight: vars.lineHeight,
     marginBottom: spacing,
     marginLeft: spacing,
     marginRight: spacing,
@@ -421,14 +415,11 @@ const unresponsiveProperties = defineProperties({
     overflowX: overflow,
     overflowY: overflow,
     boxShadow: { ...themeVars.shadows, none: 'none', dropShadow: vars.color.dropShadow },
-    lineHeight: vars.lineHeight,
     transition: vars.time,
     transitionDuration: vars.time,
     animationDuration: vars.time,
   },
 })
-
-export type UnresponsiveProperties = keyof typeof unresponsiveProperties
 
 export const sprinkles = createSprinkles(layoutStyles, colorStyles, unresponsiveProperties)
 export type Sprinkles = Parameters<typeof sprinkles>[0]

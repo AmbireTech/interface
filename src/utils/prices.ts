@@ -22,7 +22,7 @@ export function computeRealizedPriceImpact(trade: Trade<Currency, Currency, Trad
 }
 
 // computes realized lp fee as a percent
-export function computeRealizedLPFeePercent(trade: Trade<Currency, Currency, TradeType>): Percent {
+function computeRealizedLPFeePercent(trade: Trade<Currency, Currency, TradeType>): Percent {
   let percent: Percent
 
   // Since routes are either all v2 or all v3 right now, calculate separately
@@ -84,7 +84,7 @@ const IMPACT_TIERS = [
 
 type WarningSeverity = 0 | 1 | 2 | 3 | 4
 export function warningSeverity(priceImpact: Percent | undefined): WarningSeverity {
-  if (!priceImpact) return 4
+  if (!priceImpact) return 0
   let impact: WarningSeverity = IMPACT_TIERS.length as WarningSeverity
   for (const impactLevel of IMPACT_TIERS) {
     if (impactLevel.lessThan(priceImpact)) return impact

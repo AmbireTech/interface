@@ -1,4 +1,6 @@
 import { Trans } from '@lingui/macro'
+import { TraceEvent } from '@uniswap/analytics'
+import { BrowserEvent, InterfaceElementName, SwapEventName } from '@uniswap/analytics-events'
 import { Currency, CurrencyAmount, Percent, Token } from '@uniswap/sdk-core'
 import { Pair } from '@uniswap/v2-sdk'
 import { useWeb3React } from '@web3-react/core'
@@ -7,7 +9,7 @@ import { LoadingOpacityContainer, loadingOpacityMixin } from 'components/Loader/
 import CurrencyLogo from 'components/Logo/CurrencyLogo'
 import { isSupportedChain } from 'constants/chains'
 import { darken } from 'polished'
-import { ReactNode, useCallback, useState } from 'react'
+import { ReactNode, useCallback, useEffect, useState } from 'react'
 import { Lock } from 'react-feather'
 import styled, { useTheme } from 'styled-components/macro'
 import { flexColumnNoWrap, flexRowNoWrap } from 'theme/styles'
@@ -21,13 +23,12 @@ import DoubleCurrencyLogo from '../DoubleLogo'
 import { Input as NumericalInput } from '../NumericalInput'
 import { RowBetween, RowFixed } from '../Row'
 import CurrencySearchModal from '../SearchModal/CurrencySearchModal'
-import { FiatValue } from './FiatValue'
 
 const InputPanel = styled.div<{ hideInput?: boolean }>`
   ${flexColumnNoWrap};
   position: relative;
   border-radius: 12px;
-  background-color: ${({ theme, hideInput }) => (hideInput ? 'transparent' : theme.deprecated_bg2)};
+  background-color: ${({ theme, hideInput }) => (hideInput ? 'transparent' : theme.backgroundInteractive)};
   z-index: 1;
   width: ${({ hideInput }) => (hideInput ? '100%' : 'initial')};
   transition: height 1s ease;
@@ -72,7 +73,7 @@ const CurrencySelect = styled(ButtonGray)<{
   background-color: transparent;
   opacity: ${({ disabled }) => (!disabled ? 1 : 0.4)};
   box-shadow: none;
-  color: ${({ selected, theme }) => (selected ? theme.deprecated_text1 : theme.deprecated_white)};
+  color: ${({ selected, theme }) => (selected ? theme.textPrimary : theme.white)};
   cursor: pointer;
   border-radius: 12px;
   height: unset;
@@ -110,7 +111,7 @@ const LabelRow = styled.div`
 
   span:hover {
     cursor: pointer;
-    color: ${({ theme }) => darken(0.2, theme.deprecated_text2)};
+    color: ${({ theme }) => darken(0.2, theme.textSecondary)};
   }
 `
 
@@ -133,7 +134,7 @@ const StyledDropDown = styled(DropDown)<{ selected: boolean }>`
   margin-left: 8px;
 
   path {
-    stroke: ${({ selected, theme }) => (selected ? theme.deprecated_text1 : theme.deprecated_white)};
+    stroke: ${({ selected, theme }) => (selected ? theme.textPrimary : theme.white)};
     stroke-width: 2px;
   }
 `
@@ -221,6 +222,7 @@ export default function SwapCurrencyInputPanel({
   ...rest
 }: SwapCurrencyInputPanelProps) {
   const [modalOpen, setModalOpen] = useState(false)
+  const [fiatValueIsLoading, setFiatValueIsLoading] = useState(false)
   const { account, chainId } = useWeb3React()
   const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined)
   const theme = useTheme()
@@ -230,6 +232,10 @@ export default function SwapCurrencyInputPanel({
   }, [setModalOpen])
 
   const chainAllowed = isSupportedChain(chainId)
+
+  useEffect(() => {
+    !!value && !fiatValue ? setFiatValueIsLoading(true) : setFiatValueIsLoading(false)
+  }, [fiatValueIsLoading, value, fiatValue])
 
   return (
     <InputPanel id={id} hideInput={hideInput} {...rest}>
@@ -298,7 +304,7 @@ export default function SwapCurrencyInputPanel({
           <FiatRow>
             <RowBetween>
               <LoadingOpacityContainer $loading={loading}>
-                <FiatValue fiatValue={fiatValue} priceImpact={priceImpact} />
+                {/* <FiatValue fiatValue={fiatValue} priceImpact={priceImpact} isLoading={fiatValueIsLoading} /> */}
               </LoadingOpacityContainer>
               {account ? (
                 <RowFixed style={{ height: '17px' }}>
@@ -317,16 +323,16 @@ export default function SwapCurrencyInputPanel({
                     ) : null}
                   </ThemedText.DeprecatedBody>
                   {showMaxButton && selectedCurrencyBalance ? (
-                    // <TraceEvent
-                    //   events={[BrowserEvent.onClick]}
-                    //   name={EventName.SWAP_MAX_TOKEN_AMOUNT_SELECTED}
-                    //   element={ElementName.MAX_TOKEN_AMOUNT_BUTTON}
-                    // >
-                    <StyledBalanceMax onClick={onMax}>
-                      <Trans>Max</Trans>
-                    </StyledBalanceMax>
-                  ) : // </TraceEvent>
-                  null}
+                    <TraceEvent
+                      events={[BrowserEvent.onClick]}
+                      name={SwapEventName.SWAP_MAX_TOKEN_AMOUNT_SELECTED}
+                      element={InterfaceElementName.MAX_TOKEN_AMOUNT_BUTTON}
+                    >
+                      <StyledBalanceMax onClick={onMax}>
+                        <Trans>Max</Trans>
+                      </StyledBalanceMax>
+                    </TraceEvent>
+                  ) : null}
                 </RowFixed>
               ) : (
                 <span />

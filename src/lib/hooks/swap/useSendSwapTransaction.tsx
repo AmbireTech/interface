@@ -1,9 +1,6 @@
 import type { JsonRpcProvider, TransactionResponse } from '@ethersproject/providers'
 // eslint-disable-next-line no-restricted-imports
 import { t } from '@lingui/macro'
-// import { t, Trans } from '@lingui/macro'
-// import { sendAnalyticsEvent } from '@uniswap/analytics'
-// import { EventName } from '@uniswap/analytics-events'
 import { Trade } from '@uniswap/router-sdk'
 import { Currency, TradeType } from '@uniswap/sdk-core'
 import { useMemo } from 'react'
@@ -38,7 +35,7 @@ function toTxArgs(call: SwapCall, account: string) {
   }
 }
 
-export async function timeout(ms = 420) {
+async function timeout(ms = 420) {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
@@ -159,11 +156,11 @@ export default function useSendSwapTransaction(
         //   })
         //   .then((response) => {
         //     sendAnalyticsEvent(
-        //       EventName.SWAP_SIGNED,
+        //       SwapEventName.SWAP_SIGNED,
         //       formatSwapSignedAnalyticsEventProperties({ trade, txHash: response.hash })
         //     )
         //     if (calldata !== response.data) {
-        //       sendAnalyticsEvent(EventName.SWAP_MODIFIED_IN_WALLET, { txHash: response.hash })
+        //       sendAnalyticsEvent(SwapEventName.SWAP_MODIFIED_IN_WALLET, { txHash: response.hash })
         //       throw new InvalidSwapError(
         //         t`Your swap was modified through your wallet. If this was a mistake, please cancel immediately or risk losing your funds.`
         //       )

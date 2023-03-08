@@ -1,4 +1,6 @@
 import { Trans } from '@lingui/macro'
+import { TraceEvent } from '@uniswap/analytics'
+import { BrowserEvent, InterfaceElementName, InterfaceEventName } from '@uniswap/analytics-events'
 import searchIcon from 'assets/svg/search.svg'
 import xIcon from 'assets/svg/x.svg'
 import useDebounce from 'hooks/useDebounce'
@@ -28,17 +30,14 @@ const SearchInput = styled.input`
   padding-left: 40px;
   color: ${({ theme }) => theme.textSecondary};
   transition-duration: ${({ theme }) => theme.transition.duration.fast};
-
   :hover {
     background-color: ${({ theme }) => theme.backgroundSurface};
   }
-
   :focus {
     outline: none;
     background-color: ${({ theme }) => theme.backgroundSurface};
     border-color: ${({ theme }) => theme.accentActionSoft};
   }
-
   ::placeholder {
     color: ${({ theme }) => theme.textTertiary};
   }
@@ -52,7 +51,6 @@ const SearchInput = styled.input`
     background-size: ${ICON_SIZE} ${ICON_SIZE};
     cursor: pointer;
   }
-
   @media only screen and (max-width: ${MEDIUM_MEDIA_BREAKPOINT}) {
     width: 100%;
   }
@@ -76,20 +74,21 @@ export default function SearchBar() {
     <SearchBarContainer>
       <Trans
         render={({ translation }) => (
-          // <TraceEvent
-          //   events={[BrowserEvent.onFocus]}
-          //   name={EventName.EXPLORE_SEARCH_SELECTED}
-          //   element={ElementName.EXPLORE_SEARCH_INPUT}
-          // >
-          <SearchInput
-            type="search"
-            placeholder={`${translation}`}
-            id="searchBar"
-            autoComplete="off"
-            value={localFilterString}
-            onChange={({ target: { value } }) => setLocalFilterString(value)}
-          />
-          // </TraceEvent>
+          <TraceEvent
+            events={[BrowserEvent.onFocus]}
+            name={InterfaceEventName.EXPLORE_SEARCH_SELECTED}
+            element={InterfaceElementName.EXPLORE_SEARCH_INPUT}
+          >
+            <SearchInput
+              data-cy="explore-tokens-search-input"
+              type="search"
+              placeholder={`${translation}`}
+              id="searchBar"
+              autoComplete="off"
+              value={localFilterString}
+              onChange={({ target: { value } }) => setLocalFilterString(value)}
+            />
+          </TraceEvent>
         )}
       >
         Filter tokens

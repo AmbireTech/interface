@@ -4,7 +4,7 @@ import styled from 'styled-components/macro'
 import { escapeRegExp } from '../../utils'
 
 const StyledInput = styled.input<{ error?: boolean; fontSize?: string; align?: string }>`
-  color: ${({ error, theme }) => (error ? theme.deprecated_red1 : '#ebecff')};
+  color: ${({ error, theme }) => (error ? theme.accentFailure : '#ebecff')};
   width: 0;
   position: relative;
   font-weight: 400;

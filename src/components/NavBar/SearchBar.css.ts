@@ -111,16 +111,6 @@ export const searchBarInput = style([
   }),
 ])
 
-export const searchBarDropdown = style([
-  baseSearchStyle,
-  sprinkles({
-    borderBottomLeftRadius: '12',
-    borderBottomRightRadius: '12',
-    height: { sm: 'viewHeight', md: 'auto' },
-    borderTop: 'none',
-  }),
-])
-
 export const searchBarDropdownNft = style([
   baseSearchNftStyle,
   sprinkles({
@@ -243,16 +233,6 @@ export const visible = style([
     height: 'full',
   }),
 ])
-
-export const searchContentCentered = style({
-  '@media': {
-    [`screen and (min-width: ${breakpoints.lg}px)`]: {
-      transform: `translateX(${DESKTOP_NAVBAR_WIDTH / 4}px)`,
-      transition: `transform ${vars.time[125]}`,
-      transitionTimingFunction: 'ease-out',
-    },
-  },
-})
 
 export const searchContentLeftAlign = style({
   '@media': {

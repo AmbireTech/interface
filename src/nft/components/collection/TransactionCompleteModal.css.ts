@@ -5,7 +5,6 @@ export const modalContainer = style([
   sprinkles({
     display: 'flex',
     position: 'fixed',
-    flexWrap: 'wrap',
     height: 'full',
     width: { sm: 'full', md: 'min' },
     left: { sm: '0', md: '1/2' },
@@ -354,7 +353,7 @@ export const returnButton = style([
     fontWeight: 'bold',
     fontSize: '14',
     color: 'explicitWhite',
-    backgroundColor: 'genieBlue',
+    backgroundColor: 'accentAction',
     display: 'flex',
     alignItems: 'center',
     marginLeft: 'auto',
