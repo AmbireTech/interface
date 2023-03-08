@@ -38,7 +38,8 @@ export const BaseButton = styled(RebassButton)<BaseButtonProps>`
   text-align: center;
   border-radius: ${({ $borderRadius }) => $borderRadius ?? '12px'};
   outline: none;
-  border: 1px solid transparent;
+  // border: 1px solid transparent;
+  // TODO: Ambire
   color: ${({ theme }) => theme.textPrimary};
   text-decoration: none;
   display: flex;

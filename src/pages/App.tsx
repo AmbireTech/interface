@@ -27,16 +27,14 @@ import { getCLS, getFCP, getFID, getLCP, Metric } from 'web-vitals'
 
 import { useAnalyticsReporter } from '../components/analytics'
 import ErrorBoundary from '../components/ErrorBoundary'
-import { PageTabs } from '../components/NavBar'
-import NavBar from '../components/NavBar'
-import Polling from '../components/Polling'
+// import { PageTabs } from '../components/NavBar'
+// import Polling from '../components/Polling'
 import Popups from '../components/Popups'
 import { useIsExpertMode } from '../state/user/hooks'
 import DarkModeQueryParamReader from '../theme/components/DarkModeQueryParamReader'
 import AddLiquidity from './AddLiquidity'
 import { RedirectDuplicateTokenIds } from './AddLiquidity/redirects'
 import { RedirectDuplicateTokenIdsV2 } from './AddLiquidityV2/redirects'
-import Landing from './Landing'
 import MigrateV2 from './MigrateV2'
 import MigrateV2Pair from './MigrateV2/MigrateV2Pair'
 import NotFound from './NotFound'
@@ -215,17 +213,15 @@ export default function App() {
             environment: { tier: getEnvName() },
           }}
         >
-          <HeaderWrapper transparent={isHeaderTransparent}>
-            <NavBar />
-          </HeaderWrapper>
+          <HeaderWrapper transparent={isHeaderTransparent}>{/* <NavBar /> */}</HeaderWrapper>
           <BodyWrapper>
             <Popups />
-            <Polling />
+            {/* <Polling /> */}
             <TopLevelModals />
             <Suspense fallback={<Loader />}>
               {isLoaded ? (
                 <Routes>
-                  <Route path="/" element={<Landing />} />
+                  {/* <Route path="/" element={<Landing />} /> */}
 
                   <Route path="tokens" element={<Tokens />}>
                     <Route path=":chainName" />
@@ -272,6 +268,8 @@ export default function App() {
 
                   <Route path="migrate/v2" element={<MigrateV2 />} />
                   <Route path="migrate/v2/:address" element={<MigrateV2Pair />} />
+
+                  <Route path="*" element={<RedirectPathToSwapOnly />} />
 
                   <Route
                     path="/nfts"
@@ -323,7 +321,7 @@ export default function App() {
             </Suspense>
           </BodyWrapper>
           <MobileBottomBar>
-            <PageTabs />
+            {/* <PageTabs /> */}
             <Box marginY="4">
               <MenuDropdown />
             </Box>
