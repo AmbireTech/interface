@@ -40,7 +40,7 @@ const FixedContainer = styled.div`
   height: 100%;
   position: absolute;
   border-radius: 12px;
-  background-color: ${({ theme }) => 'transparent'};
+  background-color: ${() => 'transparent'};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -90,7 +90,7 @@ const CurrencySelect = styled(ButtonGray)<{
 
   &:hover,
   &:active {
-    background-color: ${({ theme, selected }) => theme.backgroundInteractive};
+    background-color: ${({ theme }) => theme.backgroundInteractive};
   }
 
   visibility: ${({ visible }) => (visible ? 'visible' : 'hidden')};
@@ -213,7 +213,7 @@ export default function SwapCurrencyInputPanel({
   disableNonToken,
   renderBalance,
   fiatValue,
-  priceImpact,
+  // priceImpact,
   hideBalance = false,
   pair = null, // used for double token logo
   hideInput = false,

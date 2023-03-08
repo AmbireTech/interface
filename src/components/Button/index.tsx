@@ -69,19 +69,19 @@ export const BaseButton = styled(RebassButton)<BaseButtonProps>`
 `
 
 export const ButtonPrimary = styled(BaseButton)<{ redesignFlag?: boolean }>`
-  background: ${({ theme }) => ambireBkg};
+  background: ${() => ambireBkg};
   font-size: ${({ redesignFlag }) => redesignFlag && '20px'};
   font-weight: ${({ redesignFlag }) => redesignFlag && '600'};
   padding: ${({ redesignFlag }) => redesignFlag && '16px'};
   color: ${({ theme, redesignFlag }) => (redesignFlag ? theme.accentTextLightPrimary : 'white')};
   &:focus {
-    background: ${({ theme }) => ambireBkgHover};
+    background: ${() => ambireBkgHover};
   }
   &:hover {
-    background: ${({ theme }) => ambireBkgHover};
+    background: ${() => ambireBkgHover};
   }
   &:active {
-    background: ${({ theme }) => ambireBkgHover};
+    background: ${() => ambireBkgHover};
   }
   &:disabled {
     opacity: 0.2;

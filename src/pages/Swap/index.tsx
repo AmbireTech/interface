@@ -1,3 +1,4 @@
+/* eslint-disable import/no-unused-modules */
 import { Trans } from '@lingui/macro'
 import { sendAnalyticsEvent, Trace, TraceEvent } from '@uniswap/analytics'
 import {
@@ -124,7 +125,7 @@ const SwapSection = styled.div`
 `
 
 const OutputSwapSection = styled(SwapSection)<{ showDetailsDropdown: boolean }>`
-  border-bottom: ${({ theme, showDetailsDropdown }) => (showDetailsDropdown ? `1px solid #1B2236` : 'none')};
+  border-bottom: ${({ showDetailsDropdown }) => (showDetailsDropdown ? `1px solid #1B2236` : 'none')};
   border-bottom-left-radius: ${({ showDetailsDropdown }) => showDetailsDropdown && '0'};
   border-bottom-right-radius: ${({ showDetailsDropdown }) => showDetailsDropdown && '0'};
 `
@@ -475,6 +476,7 @@ export function BaseSwap(props: { useBestTradeHook: TradeHook; useSwapCallArgume
         })
       })
       .catch((error) => {
+        console.error(error)
         // NOTE: let wallet show the errors
         // setSwapState({
         //   attemptingTxn: false,
