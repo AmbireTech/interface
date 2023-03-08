@@ -1,1 +1,0 @@
-{"version":3,"sources":["../node_modules/@uniswap/widgets/dist/locales/it-IT.js"],"names":["itIT","messages"],"mappings":"kIAAA,+CAEA,IAAIA,EAAK,CAACC,SAAS","file":"static/js/66.c0948575.chunk.js","sourcesContent":["/*eslint-disable*/\n\nvar itIT={messages:{}};\n\nexport { itIT as default };\n"],"sourceRoot":""}
