@@ -1,3 +1,4 @@
+/* eslint-disable import/no-unused-modules */
 import { Trade } from '@uniswap/router-sdk'
 import { Currency, CurrencyAmount, Percent, Price, Token, TradeType } from '@uniswap/sdk-core'
 import { NATIVE_CHAIN_ID } from 'constants/tokens'

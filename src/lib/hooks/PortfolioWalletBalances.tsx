@@ -1,3 +1,4 @@
+/* eslint-disable import/no-unused-modules */
 // import { CallStateResult } from 'lib/hooks/multicall'
 import { BigNumber } from '@ethersproject/bignumber'
 import { CallState, CallStateResult } from '@uniswap/redux-multicall'

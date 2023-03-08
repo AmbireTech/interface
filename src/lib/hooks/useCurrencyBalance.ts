@@ -1,3 +1,4 @@
+/* eslint-disable import/no-unused-modules */
 import { Interface } from '@ethersproject/abi'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
