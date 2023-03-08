@@ -1,7 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { Trade } from '@uniswap/router-sdk'
 import { Currency, Percent, TradeType } from '@uniswap/sdk-core'
-import { FeeOptions } from '@uniswap/v3-sdk'
 import { useWeb3React } from '@web3-react/core'
 import { SWAP_ROUTER_ADDRESSES } from 'constants/addresses'
 import {
@@ -31,8 +30,8 @@ export function useCustomSwapCallArguments(
   allowedSlippage: Percent,
   recipientAddressOrName: string | null | undefined,
   signatureData: SignatureData | null | undefined,
-  deadline: BigNumber | undefined,
-  feeOptions: FeeOptions | undefined
+  deadline: BigNumber | undefined
+  // feeOptions: FeeOptions | undefined
 ): SwapCall[] {
   const { account, chainId, provider } = useWeb3React()
 
