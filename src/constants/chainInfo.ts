@@ -1,3 +1,4 @@
+/* eslint-disable import/no-unused-modules */
 import avalancheLogo from 'assets/images/avalanche.png'
 import binanceLogo from 'assets/images/bnb-logo.png'
 import celoCircleLogoUrl from 'assets/images/celoCircle.png'

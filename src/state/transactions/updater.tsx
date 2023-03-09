@@ -1,26 +1,26 @@
+/* eslint-disable import/no-unused-modules */
 import { sendAnalyticsEvent } from '@uniswap/analytics'
 import { SwapEventName } from '@uniswap/analytics-events'
 import { Currency, Percent, TradeType } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 import { DEFAULT_TXN_DISMISS_MS, L2_TXN_DISMISS_MS } from 'constants/misc'
+import { useCustomBestTrade } from 'hooks/customNetwork/useCustomBestTrade'
+import { useBestTrade } from 'hooks/useBestTrade'
 import LibUpdater from 'lib/hooks/transactions/updater'
 import { formatPercentInBasisPointsNumber, formatToDecimal, getTokenAddress } from 'lib/utils/analytics'
 import { useCallback, useMemo } from 'react'
 import { useAppDispatch, useAppSelector } from 'state/hooks'
 import { InterfaceTrade } from 'state/routing/types'
+import { TradeHook } from 'state/routing/types'
 import { TransactionType } from 'state/transactions/types'
 import { computeRealizedPriceImpact } from 'utils/prices'
 
 import { L2_CHAIN_IDS } from '../../constants/chains'
+import { SupportedChainId } from '../../constants/chains'
 import { useDerivedSwapInfo } from '../../state/swap/hooks'
 import { useAddPopup } from '../application/hooks'
 import { checkedTransaction, finalizeTransaction } from './reducer'
 import { SerializableTransactionReceipt } from './types'
-
-import { useCustomBestTrade } from 'hooks/customNetwork/useCustomBestTrade'
-import { SupportedChainId } from '../../constants/chains'
-import { TradeHook } from 'state/routing/types'
-import { useBestTrade } from 'hooks/useBestTrade'
 
 interface AnalyticsEventProps {
   trade: InterfaceTrade<Currency, Currency, TradeType>
@@ -49,7 +49,7 @@ const formatAnalyticsEventProperties = ({ trade, hash, allowedSlippage, succeede
 })
 
 export function UpdaterDefault() {
-  return <BaseUpdater useBestTradeHook={useBestTrade}/>
+  return <BaseUpdater useBestTradeHook={useBestTrade} />
 }
 
 export function UpdaterCustom() {
@@ -78,7 +78,7 @@ export default function Updater() {
   return updaterComponent
 }
 
-export  function BaseUpdater(props: { useBestTradeHook: TradeHook }) {
+export function BaseUpdater(props: { useBestTradeHook: TradeHook }) {
   const { chainId } = useWeb3React()
   const addPopup = useAddPopup()
   // speed up popup dismisall time if on L2

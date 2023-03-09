@@ -1,7 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { Trade } from '@uniswap/router-sdk'
 import { Currency, Percent, TradeType } from '@uniswap/sdk-core'
-import { FeeOptions } from '@uniswap/v3-sdk'
 import { useWeb3React } from '@web3-react/core'
 import { SWAP_ROUTER_ADDRESSES } from 'constants/addresses'
 import {
@@ -11,13 +10,10 @@ import {
   useGetPairs,
 } from 'hooks/customNetwork/useCustomEntities'
 import useENS from 'hooks/useENS'
-import { SignatureData } from 'hooks/useERC20Permit'
+// import { SignatureData } from 'hooks/useERC20Permit'
 import { useMemo } from 'react'
 import { SwapCall } from 'state/routing/types'
-import { approveAmountAmbireWallet } from 'utils/approveAmountCalldata'
 import { convertDecimalToActualAmount } from 'utils/convertAmounts'
-
-import { ApprovalState, useApproveCallbackFromTrade } from '../useApproveCallback'
 
 /**
  * Returns the swap calls that can be used to make the trade
@@ -30,15 +26,15 @@ export function useCustomSwapCallArguments(
   trade: Trade<Currency, Currency, TradeType> | undefined,
   allowedSlippage: Percent,
   recipientAddressOrName: string | null | undefined,
-  signatureData: SignatureData | null | undefined,
-  deadline: BigNumber | undefined,
-  feeOptions: FeeOptions | undefined
+  // signatureData: SignatureData | null | undefined,
+  deadline: BigNumber | undefined
+  // feeOptions: FeeOptions | undefined
 ): SwapCall[] {
   const { account, chainId, provider } = useWeb3React()
 
   const { address: recipientAddress } = useENS(recipientAddressOrName)
   const recipient = recipientAddressOrName === null ? account : recipientAddress
-  const [approvalState] = useApproveCallbackFromTrade(trade as Trade<Currency, Currency, TradeType>, allowedSlippage)
+  // const [approvalState] = useApproveCallbackFromTrade(trade as Trade<Currency, Currency, TradeType>, allowedSlippage)
 
   const [inputCurrency, outputCurrency, amountString] = useMemo(() => {
     if (!trade) return [undefined, undefined, undefined]
@@ -81,16 +77,16 @@ export function useCustomSwapCallArguments(
     })
     const calldata = lib.getRouterCalldata(methodName, args)
 
-    if (lib.isTradeInputToken(bestTrade) && approvalState === ApprovalState.NOT_APPROVED) {
-      return [
-        approveAmountAmbireWallet(lib.getTradeMaxAmountIn(bestTrade, allowedSlippage), swapRouterAddress),
-        {
-          address: swapRouterAddress,
-          calldata,
-          value,
-        },
-      ]
-    }
+    // if (lib.isTradeInputToken(bestTrade) && approvalState === ApprovalState.NOT_APPROVED) {
+    //   return [
+    //     approveAmountAmbireWallet(lib.getTradeMaxAmountIn(bestTrade, allowedSlippage), swapRouterAddress),
+    //     {
+    //       address: swapRouterAddress,
+    //       calldata,
+    //       value,
+    //     },
+    //   ]
+    // }
 
     return [
       {
@@ -110,7 +106,7 @@ export function useCustomSwapCallArguments(
     recipient,
     // signatureData,
     trade,
-    approvalState,
+    // approvalState,
     bestTrade,
   ])
 }

@@ -3,7 +3,7 @@ import { MixedRouteSDK, Trade } from '@uniswap/router-sdk'
 import { Currency, CurrencyAmount, Percent, Token, TradeType } from '@uniswap/sdk-core'
 import { Route as V2Route } from '@uniswap/v2-sdk'
 import { FeeOptions, Route as V3Route } from '@uniswap/v3-sdk'
-import { SignatureData } from 'hooks/useERC20Permit'
+// import { SignatureData } from 'hooks/useERC20Permit'
 
 export enum TradeState {
   LOADING,
@@ -129,7 +129,7 @@ export type SwapCallArgumentsHook = (
   trade: Trade<Currency, Currency, TradeType> | undefined,
   allowedSlippage: Percent,
   recipientAddressOrName: string | null | undefined,
-  signatureData: SignatureData | null | undefined,
+  // signatureData: SignatureData | null | undefined,
   deadline: BigNumber | undefined,
   feeOptions: FeeOptions | undefined
 ) => SwapCall[]

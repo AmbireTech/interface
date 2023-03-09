@@ -25,10 +25,9 @@ import { isSupportedChain, SupportedChainId } from 'constants/chains'
 import { useSwapWidgetEnabled } from 'featureFlags/flags/swapWidget'
 import { useCustomBestTrade } from 'hooks/customNetwork/useCustomBestTrade'
 import { useCustomSwapCallArguments } from 'hooks/customNetwork/useCustomSwapCallArguments'
-import { useBestTrade } from 'hooks/useBestTrade'
 import useENSAddress from 'hooks/useENSAddress'
 import usePermit2Allowance, { AllowanceState } from 'hooks/usePermit2Allowance'
-import { useSwapCallArguments } from 'hooks/useSwapCallArguments'
+// import { useSwapCallArguments } from 'hooks/useSwapCallArguments'
 import { useSwapCallback } from 'hooks/useSwapCallback'
 import JSBI from 'jsbi'
 import { formatSwapQuoteReceivedEventProperties } from 'lib/utils/analytics'
@@ -152,9 +151,9 @@ function largerPercentValue(a?: Percent, b?: Percent) {
 
 const TRADE_STRING = 'SwapRouter'
 
-export function SwapDefault() {
-  return <BaseSwap useBestTradeHook={useBestTrade} useSwapCallArgumentsHook={useSwapCallArguments} />
-}
+// export function SwapDefault() {
+//   return <BaseSwap useBestTradeHook={useBestTrade} useSwapCallArgumentsHook={useSwapCallArguments} />
+// }
 
 export function SwapCustom() {
   return <BaseSwap useBestTradeHook={useCustomBestTrade} useSwapCallArgumentsHook={useCustomSwapCallArguments} />
@@ -163,7 +162,7 @@ export function SwapCustom() {
 export default function Swap() {
   const { chainId } = useWeb3React()
 
-  const swapComponent = <SwapDefault />
+  // const swapComponent = <SwapDefault />
   const swapComponentCustom = <SwapCustom />
 
   if (
@@ -179,7 +178,7 @@ export default function Swap() {
     return swapComponentCustom
   }
 
-  return swapComponent
+  return swapComponentCustom
 }
 
 export function BaseSwap(props: { useBestTradeHook: TradeHook; useSwapCallArgumentsHook: SwapCallArgumentsHook }) {
