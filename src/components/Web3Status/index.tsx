@@ -1,4 +1,4 @@
-import { Trans } from '@lingui/macro'
+import { t, Trans } from '@lingui/macro'
 import { sendAnalyticsEvent, TraceEvent } from '@uniswap/analytics'
 import { BrowserEvent, InterfaceElementName, InterfaceEventName } from '@uniswap/analytics-events'
 import { useWeb3React } from '@web3-react/core'
@@ -276,6 +276,7 @@ function BaseWeb3StatusInner(props: { useBestTradeHook: TradeHook }) {
     const chevronProps = {
       ...CHEVRON_PROPS,
       color: theme.textSecondary,
+      'aria-label': walletIsOpen ? t`Close wallet connection options` : t`Open wallet connection options`,
     }
 
     return (
@@ -285,7 +286,7 @@ function BaseWeb3StatusInner(props: { useBestTradeHook: TradeHook }) {
         pending={hasPendingTransactions}
         isClaimAvailable={isClaimAvailable}
       >
-        {!hasPendingTransactions && <StatusIcon size={24} connectionType={connectionType} />}
+        {!hasPendingTransactions && <StatusIcon enableInfotips={true} size={24} connectionType={connectionType} />}
         {hasPendingTransactions ? (
           <RowBetween>
             <Text>
@@ -306,6 +307,7 @@ function BaseWeb3StatusInner(props: { useBestTradeHook: TradeHook }) {
       ...CHEVRON_PROPS,
       color: theme.accentAction,
       'data-testid': 'navbar-wallet-dropdown',
+      'aria-label': walletIsOpen ? t`Close wallet connection options` : t`Open wallet connection options`,
     }
     return (
       <TraceEvent
