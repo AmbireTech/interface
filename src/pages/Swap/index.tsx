@@ -24,7 +24,7 @@ import Widget from 'components/Widget'
 import { isSupportedChain, SupportedChainId } from 'constants/chains'
 import { useSwapWidgetEnabled } from 'featureFlags/flags/swapWidget'
 import { useCustomBestTrade } from 'hooks/customNetwork/useCustomBestTrade'
-import { useCustomSwapCallArguments } from 'hooks/customNetwork/useCustomSwapCallArguments'
+import { useBestTrade } from 'hooks/useBestTrade'
 import useENSAddress from 'hooks/useENSAddress'
 import usePermit2Allowance, { AllowanceState } from 'hooks/usePermit2Allowance'
 // import { useSwapCallArguments } from 'hooks/useSwapCallArguments'
@@ -38,7 +38,7 @@ import { ArrowDown, Info } from 'react-feather'
 import { useNavigate } from 'react-router-dom'
 import { Text } from 'rebass'
 import { useToggleWalletModal } from 'state/application/hooks'
-import { InterfaceTrade, SwapCallArgumentsHook, TradeHook, TradeState } from 'state/routing/types'
+import { InterfaceTrade, TradeHook, TradeState } from 'state/routing/types'
 import styled, { useTheme } from 'styled-components/macro'
 import invariant from 'tiny-invariant'
 import { currencyAmountToPreciseFloat, formatTransactionAmount } from 'utils/formatNumbers'
@@ -119,7 +119,7 @@ const SwapSection = styled.div`
 `
 
 const OutputSwapSection = styled(SwapSection)<{ showDetailsDropdown: boolean }>`
-  border-bottom: ${({ theme, showDetailsDropdown }) => (showDetailsDropdown ? `1px solid #1B2236` : 'none')};
+  border-bottom: ${({ showDetailsDropdown }) => (showDetailsDropdown ? `1px solid #1B2236` : 'none')};
   border-bottom-left-radius: ${({ showDetailsDropdown }) => showDetailsDropdown && '0'};
   border-bottom-right-radius: ${({ showDetailsDropdown }) => showDetailsDropdown && '0'};
 `
@@ -151,12 +151,12 @@ function largerPercentValue(a?: Percent, b?: Percent) {
 
 const TRADE_STRING = 'SwapRouter'
 
-// export function SwapDefault() {
-//   return <BaseSwap useBestTradeHook={useBestTrade} useSwapCallArgumentsHook={useSwapCallArguments} />
-// }
+export function SwapDefault() {
+  return <BaseSwap useBestTradeHook={useBestTrade} />
+}
 
 export function SwapCustom() {
-  return <BaseSwap useBestTradeHook={useCustomBestTrade} useSwapCallArgumentsHook={useCustomSwapCallArguments} />
+  return <BaseSwap useBestTradeHook={useCustomBestTrade} />
 }
 
 export default function Swap() {
@@ -181,7 +181,7 @@ export default function Swap() {
   return swapComponentCustom
 }
 
-export function BaseSwap(props: { useBestTradeHook: TradeHook; useSwapCallArgumentsHook: SwapCallArgumentsHook }) {
+export function BaseSwap(props: { useBestTradeHook: TradeHook }) {
   const navigate = useNavigate()
   const { account, chainId } = useWeb3React()
   const loadedUrlParams = useDefaultsFromURLSearch()
