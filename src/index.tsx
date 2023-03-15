@@ -1,7 +1,7 @@
 import '@reach/dialog/styles.css'
 import 'inter-ui'
 import 'polyfills'
-import 'integrations'
+import 'tracing'
 
 // import 'components/analytics'
 import { ApolloProvider } from '@apollo/client'
