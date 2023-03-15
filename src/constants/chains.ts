@@ -79,6 +79,23 @@ export const CHAIN_IDS_TO_NAMES = {
   [SupportedChainId.KUCOIN]: 'kucoin',
 }
 
+export enum SupportedPermit2ChainId {
+  MAINNET = 1,
+  GOERLI = 5,
+
+  ARBITRUM_ONE = 42161,
+  ARBITRUM_GOERLI = 421613,
+
+  OPTIMISM = 10,
+  OPTIMISM_GOERLI = 420,
+
+  POLYGON = 137,
+  POLYGON_MUMBAI = 80001,
+
+  CELO = 42220,
+  CELO_ALFAJORES = 44787,
+}
+
 /**
  * Array of all the supported chain IDs
  */
@@ -88,6 +105,10 @@ export const ALL_SUPPORTED_CHAIN_IDS: SupportedChainId[] = Object.values(Support
 
 export function isSupportedChain(chainId: number | null | undefined): chainId is SupportedChainId {
   return !!chainId && !!SupportedChainId[chainId]
+}
+
+export function isSupportedPermit2Chain(chainId: number | null | undefined): chainId is SupportedPermit2ChainId {
+  return !!chainId && !!SupportedPermit2ChainId[chainId]
 }
 
 export const SUPPORTED_GAS_ESTIMATE_CHAIN_IDS = [

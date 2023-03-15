@@ -21,7 +21,7 @@ import UnsupportedCurrencyFooter from 'components/swap/UnsupportedCurrencyFooter
 import TokenSafetyModal from 'components/TokenSafety/TokenSafetyModal'
 import { MouseoverTooltip } from 'components/Tooltip'
 import Widget from 'components/Widget'
-import { isSupportedChain, SupportedChainId } from 'constants/chains'
+import { isSupportedChain, isSupportedPermit2Chain, SupportedChainId } from 'constants/chains'
 import { useSwapWidgetEnabled } from 'featureFlags/flags/swapWidget'
 import { useCustomBestTrade } from 'hooks/customNetwork/useCustomBestTrade'
 import { useBestTrade } from 'hooks/useBestTrade'
@@ -162,7 +162,7 @@ export function SwapCustom() {
 export default function Swap() {
   const { chainId } = useWeb3React()
 
-  // const swapComponent = <SwapDefault />
+  const swapComponent = <SwapDefault />
   const swapComponentCustom = <SwapCustom />
 
   if (
@@ -178,7 +178,7 @@ export default function Swap() {
     return swapComponentCustom
   }
 
-  return swapComponentCustom
+  return swapComponent
 }
 
 export function BaseSwap(props: { useBestTradeHook: TradeHook }) {
@@ -342,7 +342,7 @@ export function BaseSwap(props: { useBestTradeHook: TradeHook }) {
       (parsedAmounts[Field.INPUT]?.currency.isToken
         ? (parsedAmounts[Field.INPUT] as CurrencyAmount<Token>)
         : undefined),
-    isSupportedChain(chainId) ? UNIVERSAL_ROUTER_ADDRESS(chainId) : undefined
+    isSupportedPermit2Chain(chainId) ? UNIVERSAL_ROUTER_ADDRESS(chainId) : undefined
   )
   const isApprovalLoading = allowance.state === AllowanceState.REQUIRED && allowance.isApprovalLoading
   const [isAllowancePending, setIsAllowancePending] = useState(false)
