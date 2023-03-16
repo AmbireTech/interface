@@ -5,6 +5,10 @@ const INFURA_KEY = process.env.REACT_APP_INFURA_KEY
 if (typeof INFURA_KEY === 'undefined') {
   throw new Error(`REACT_APP_INFURA_KEY must be a defined environment variable`)
 }
+const QUICKNODE_RPC_URL = process.env.REACT_APP_BNB_RPC_URL
+if (typeof QUICKNODE_RPC_URL === 'undefined') {
+  throw new Error(`REACT_APP_BNB_RPC_URL must be a defined environment variable`)
+}
 
 /**
  * Fallback JSON-RPC endpoints.
@@ -16,7 +20,7 @@ if (typeof INFURA_KEY === 'undefined') {
  *
  * These "Safe" URLs are listed first, followed by other fallback URLs, which are taken from chainlist.org.
  */
-export const FALLBACK_URLS: { [key in SupportedChainId]: string[] } = {
+export const FALLBACK_URLS = {
   [SupportedChainId.MAINNET]: [
     // "Safe" URLs
     'https://api.mycryptoapi.com/eth',
@@ -74,6 +78,18 @@ export const FALLBACK_URLS: { [key in SupportedChainId]: string[] } = {
     // "Safe" URLs
     `https://alfajores-forno.celo-testnet.org`,
   ],
+  [SupportedChainId.BNB]: [
+    // "Safe" URLs
+    'https://endpoints.omniatech.io/v1/bsc/mainnet/public',
+    'https://bsc-mainnet.gateway.pokt.network/v1/lb/6136201a7bad1500343e248d',
+    'https://1rpc.io/bnb',
+    'https://bsc-dataseed3.binance.org',
+    'https://bsc-dataseed2.defibit.io',
+    'https://bsc-dataseed1.ninicoin.io',
+    'https://binance.nodereal.io',
+    'https://bsc-dataseed4.defibit.io',
+    'https://rpc.ankr.com/bsc',
+  ],
   [SupportedChainId.AVALANCHE]: ['https://rpc.ankr.com/avalanche'],
   [SupportedChainId.BINANCE]: ['https://bsc-dataseed1.binance.org'],
   [SupportedChainId.MOONBEAM]: ['https://rpc.api.moonbeam.network'],
@@ -88,7 +104,7 @@ export const FALLBACK_URLS: { [key in SupportedChainId]: string[] } = {
  * Known JSON-RPC endpoints.
  * These are the URLs used by the interface when there is not another available source of chain data.
  */
-export const RPC_URLS: { [key in SupportedChainId]: string[] } = {
+export const RPC_URLS = {
   [SupportedChainId.MAINNET]: [
     `https://unufri-ethereum.adex.network/v3/${INFURA_KEY}`,
     // `https://mainnet.infura.io/v3/${INFURA_KEY}`,
@@ -126,6 +142,7 @@ export const RPC_URLS: { [key in SupportedChainId]: string[] } = {
   ],
   [SupportedChainId.CELO]: FALLBACK_URLS[SupportedChainId.CELO],
   [SupportedChainId.CELO_ALFAJORES]: FALLBACK_URLS[SupportedChainId.CELO_ALFAJORES],
+  [SupportedChainId.BNB]: [QUICKNODE_RPC_URL, ...FALLBACK_URLS[SupportedChainId.BNB]],
   [SupportedChainId.AVALANCHE]: ['https://api.avax.network/ext/bc/C/rpc', ...FALLBACK_URLS[SupportedChainId.AVALANCHE]],
   [SupportedChainId.BINANCE]: ['https://bsc-dataseed1.ninicoin.io', ...FALLBACK_URLS[SupportedChainId.BINANCE]],
   [SupportedChainId.MOONBEAM]: ['https://moonbeam.public.blastapi.io', ...FALLBACK_URLS[SupportedChainId.MOONBEAM]],

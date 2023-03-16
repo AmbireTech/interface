@@ -1,3 +1,4 @@
+/* eslint-disable import/no-unused-modules */
 import { QueryResult } from '@apollo/client'
 import { SupportedChainId } from 'constants/chains'
 import { NATIVE_CHAIN_ID, nativeOnChain, WRAPPED_NATIVE_CURRENCY } from 'constants/tokens'
@@ -103,6 +104,7 @@ export const CHAIN_NAME_TO_CHAIN_ID: { [key: string]: SupportedChainId } = {
   CELO: SupportedChainId.CELO,
   ARBITRUM: SupportedChainId.ARBITRUM_ONE,
   OPTIMISM: SupportedChainId.OPTIMISM,
+  BNB: SupportedChainId.BNB,
   // AVALANCHE: SupportedChainId.AVALANCHE,
 }
 

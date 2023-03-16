@@ -91,6 +91,7 @@ export const colors = {
   networkOptimismSoft: 'rgba(255, 4, 32, 0.16)',
   networkPolygon: '#A457FF',
   networkArbitrum: '#28A0F0',
+  networkBsc: '#F0B90B',
   networkPolygonSoft: 'rgba(164, 87, 255, 0.16)',
   networkEthereumSoft: 'rgba(98, 126, 234, 0.16)',
 }
@@ -108,6 +109,7 @@ const commonTheme = {
   chain_10: colors.networkOptimism,
   chain_137: colors.networkPolygon,
   chain_42: colors.networkArbitrum,
+  chain_56: colors.networkBsc,
   chain_420: colors.networkOptimism,
   chain_42161: colors.networkArbitrum,
   chain_421613: colors.networkArbitrum,
@@ -115,6 +117,7 @@ const commonTheme = {
   chain_137_background: colors.purple900,
   chain_10_background: colors.red900,
   chain_42161_background: colors.blue900,
+  chain_56_background: colors.networkBsc,
 
   deepShadow:
     '8px 12px 20px rgba(51, 53, 72, 0.04), 4px 6px 12px rgba(51, 53, 72, 0.02), 4px 4px 8px rgba(51, 53, 72, 0.04);',

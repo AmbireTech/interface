@@ -549,6 +549,7 @@ export function BaseSwap(props: { useBestTradeHook: TradeHook }) {
             />
           ) : (
             <SwapWrapper
+              chainId={chainId}
               // className={className}
               id="swap-page"
             >

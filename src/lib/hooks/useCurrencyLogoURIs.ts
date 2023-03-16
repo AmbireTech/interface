@@ -6,6 +6,7 @@ import { isAddress } from 'utils'
 import EthereumLogo from '../../assets/images/ethereum-logo.png'
 import AvaxLogo from '../../assets/svg/avalanche-avax-logo.svg'
 import BinanceLogo from '../../assets/svg/bnb-logo.svg'
+import BnbLogo from '../../assets/svg/bnb-logo.svg'
 import CeloLogo from '../../assets/svg/celo_logo.svg'
 import FantomLogo from '../../assets/svg/fantom-logo.svg'
 import GnosisLogo from '../../assets/svg/gnosis-logo.svg'
@@ -22,6 +23,7 @@ type Network =
   | 'arbitrum'
   | 'optimism'
   | 'polygon'
+  | 'smartchain'
   | 'avalanche'
   | 'binance'
   | 'moonbeam'
@@ -43,6 +45,8 @@ export function chainIdToNetworkName(networkId: SupportedChainId): Network {
       return 'polygon'
     case SupportedChainId.AVALANCHE:
       return 'avalanche'
+    case SupportedChainId.BNB:
+      return 'smartchain'
     case SupportedChainId.BINANCE:
       return 'binance'
     case SupportedChainId.MOONBEAM:
@@ -67,6 +71,8 @@ export function getNativeLogoURI(chainId: SupportedChainId = SupportedChainId.MA
     case SupportedChainId.POLYGON:
     case SupportedChainId.POLYGON_MUMBAI:
       return MaticLogo
+    case SupportedChainId.BNB:
+      return BnbLogo
     case SupportedChainId.CELO:
     case SupportedChainId.CELO_ALFAJORES:
       return CeloLogo
@@ -93,7 +99,12 @@ export function getNativeLogoURI(chainId: SupportedChainId = SupportedChainId.MA
 
 function getTokenLogoURI(address: string, chainId: SupportedChainId = SupportedChainId.MAINNET): string | void {
   const networkName = chainIdToNetworkName(chainId)
-  const networksWithUrls = [SupportedChainId.ARBITRUM_ONE, SupportedChainId.MAINNET, SupportedChainId.OPTIMISM]
+  const networksWithUrls = [
+    SupportedChainId.ARBITRUM_ONE,
+    SupportedChainId.MAINNET,
+    SupportedChainId.OPTIMISM,
+    SupportedChainId.BNB,
+  ]
   if (networksWithUrls.includes(chainId)) {
     return `https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/${networkName}/assets/${address}/logo.png`
   }

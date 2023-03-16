@@ -1,6 +1,7 @@
 /* eslint-disable import/no-unused-modules */
 import avalancheLogo from 'assets/images/avalanche.png'
 import binanceLogo from 'assets/images/bnb-logo.png'
+import bnbCircleLogoUrl from 'assets/images/bnbCircle.png'
 import celoCircleLogoUrl from 'assets/images/celoCircle.png'
 import ethereumLogoUrl from 'assets/images/ethereum-logo.png'
 import fantomLogo from 'assets/images/fantom-ftm-logo.png'
@@ -11,6 +12,7 @@ import moonriverLogo from 'assets/images/moonriver-logo.png'
 // import optimismCircleLogoUrl from 'assets/images/optimismCircle.png'
 import polygonCircleLogoUrl from 'assets/images/polygonCircle.png'
 import { default as arbitrumCircleLogoUrl, default as arbitrumLogoUrl } from 'assets/svg/arbitrum_logo.svg'
+import bnbLogo from 'assets/svg/bnb-logo.svg'
 import celoLogo from 'assets/svg/celo_logo.svg'
 import kuCoinLogo from 'assets/svg/kucoin-logo.svg'
 import optimismLogoUrl from 'assets/svg/optimistic_ethereum.svg'
@@ -31,6 +33,7 @@ import {
   MOONBEAM_BEAMSWAP_LIST,
   MOONRIVER_SUSHI_SWAP_LIST,
   OPTIMISM_LIST,
+  PLASMA_BNB_LIST,
 } from './lists'
 
 export const AVERAGE_L1_BLOCK_TIME = ms`12s`
@@ -190,7 +193,7 @@ const CHAIN_INFO: ChainInfoMap = {
     bridge: 'https://www.portalbridge.com/#/transfer',
     docs: 'https://docs.celo.org/',
     explorer: 'https://celoscan.io/',
-    infoLink: 'https://info.uniswap.org/#/celo',
+    infoLink: 'https://info.uniswap.org/#/celo/',
     label: 'Celo',
     logoUrl: celoLogo,
     circleLogoUrl: celoCircleLogoUrl,
@@ -203,7 +206,7 @@ const CHAIN_INFO: ChainInfoMap = {
     bridge: 'https://www.portalbridge.com/#/transfer',
     docs: 'https://docs.celo.org/',
     explorer: 'https://alfajores-blockscout.celo-testnet.org/',
-    infoLink: 'https://info.uniswap.org/#/celo',
+    infoLink: 'https://info.uniswap.org/#/celo/',
     label: 'Celo Alfajores',
     logoUrl: celoLogo,
     nativeCurrency: { name: 'Celo', symbol: 'CELO', decimals: 18 },
@@ -220,6 +223,21 @@ const CHAIN_INFO: ChainInfoMap = {
     color: darkTheme.chain_10,
     backgroundColor: darkTheme.chain_10_background,
     defaultListUrl: AVAX_TRADER_JOE_LIST,
+  },
+  [SupportedChainId.BNB]: {
+    networkType: NetworkType.L1,
+    blockWaitMsBeforeWarning: ms`10m`,
+    bridge: 'https://cbridge.celer.network/1/56',
+    docs: 'https://docs.bnbchain.org/',
+    explorer: 'https://bscscan.com/',
+    infoLink: 'https://info.uniswap.org/#/bnb/',
+    label: 'BNB Chain',
+    logoUrl: bnbLogo,
+    circleLogoUrl: bnbCircleLogoUrl,
+    nativeCurrency: { name: 'BNB', symbol: 'BNB', decimals: 18 },
+    defaultListUrl: PLASMA_BNB_LIST,
+    color: darkTheme.chain_56,
+    backgroundColor: darkTheme.chain_56_background,
   },
   [SupportedChainId.BINANCE]: {
     networkType: NetworkType.L1,

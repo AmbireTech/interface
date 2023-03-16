@@ -22,6 +22,8 @@ export enum SupportedChainId {
   CELO = 42220,
   CELO_ALFAJORES = 44787,
 
+  BNB = 56,
+
   AVALANCHE = 43114,
   BINANCE = 56,
   MOONBEAM = 1284,
@@ -48,6 +50,8 @@ export enum USDCSupportedChainId {
   CELO = 42220,
   CELO_ALFAJORES = 44787,
 
+  BNB = 56,
+
   AVALANCHE = 43114,
   MOONBEAM = 1284,
   BINANCE = 56,
@@ -69,6 +73,7 @@ export const CHAIN_IDS_TO_NAMES = {
   [SupportedChainId.ARBITRUM_GOERLI]: 'arbitrum_goerli',
   [SupportedChainId.OPTIMISM]: 'optimism',
   [SupportedChainId.OPTIMISM_GOERLI]: 'optimism_goerli',
+  [SupportedChainId.BNB]: 'bnb',
   [SupportedChainId.AVALANCHE]: 'avalanche',
   [SupportedChainId.BINANCE]: 'binance',
   [SupportedChainId.MOONBEAM]: 'moonbeam',
@@ -117,6 +122,7 @@ export const SUPPORTED_GAS_ESTIMATE_CHAIN_IDS = [
   SupportedChainId.CELO,
   SupportedChainId.OPTIMISM,
   SupportedChainId.ARBITRUM_ONE,
+  SupportedChainId.BNB,
   // SupportedChainId.AVALANCHE, ?
   // SupportedChainId.BINANCE, ?
   // SupportedChainId.MOONBEAM, ?
@@ -134,6 +140,7 @@ export const UNSUPPORTED_V2POOL_CHAIN_IDS = [
   SupportedChainId.POLYGON,
   SupportedChainId.OPTIMISM,
   SupportedChainId.ARBITRUM_ONE,
+  SupportedChainId.BNB,
   SupportedChainId.ARBITRUM_GOERLI,
 ] as const
 
@@ -156,6 +163,7 @@ export const L1_CHAIN_IDS = [
   SupportedChainId.POLYGON_MUMBAI,
   SupportedChainId.CELO,
   SupportedChainId.CELO_ALFAJORES,
+  SupportedChainId.BNB,
   SupportedChainId.AVALANCHE,
   SupportedChainId.BINANCE,
   SupportedChainId.MOONBEAM,
