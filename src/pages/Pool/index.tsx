@@ -11,7 +11,7 @@ import { SwitchLocaleLink } from 'components/SwitchLocaleLink'
 import { isSupportedChain } from 'constants/chains'
 import { useV3Positions } from 'hooks/useV3Positions'
 import { useMemo } from 'react'
-import { AlertTriangle, BookOpen, ChevronDown, ChevronsRight, Inbox, Layers, PlusCircle } from 'react-feather'
+import { AlertTriangle, BookOpen, ChevronDown, ChevronsRight, Inbox, Layers } from 'react-feather'
 import { Link } from 'react-router-dom'
 import { useToggleWalletModal } from 'state/application/hooks'
 import { useUserHideClosedPositions } from 'state/user/hooks'
@@ -227,16 +227,6 @@ export default function Pool() {
     {
       content: (
         <PoolMenuItem>
-          <Trans>Create a pool</Trans>
-          <PlusCircle size={16} />
-        </PoolMenuItem>
-      ),
-      link: '/add/ETH',
-      external: false,
-    },
-    {
-      content: (
-        <PoolMenuItem>
           <Trans>Migrate</Trans>
           <ChevronsRight size={16} />
         </PoolMenuItem>
@@ -251,7 +241,7 @@ export default function Pool() {
           <Layers size={16} />
         </PoolMenuItem>
       ),
-      link: '/pool/v2',
+      link: '/pools/v2',
       external: false,
     },
     {
@@ -261,7 +251,7 @@ export default function Pool() {
           <BookOpen size={16} />
         </PoolMenuItem>
       ),
-      link: 'https://docs.uniswap.org/',
+      link: 'https://support.uniswap.org/hc/en-us/categories/8122334631437-Providing-Liquidity-',
       external: true,
     },
   ]

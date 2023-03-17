@@ -4,7 +4,7 @@ import { Trans } from '@lingui/macro'
 import Web3Status from 'components/Web3Status'
 // import { chainIdToBackendName } from 'graphql/data/util'
 // import { useIsNftPage } from 'hooks/useIsNftPage'
-import { useIsPoolPage } from 'hooks/useIsPoolPage'
+import { useIsPoolsPage } from 'hooks/useIsPoolsPage'
 import { Box } from 'nft/components/Box'
 import { Row } from 'nft/components/Flex'
 import { UniIcon } from 'nft/components/icons'
@@ -51,7 +51,7 @@ export const PageTabs = () => {
   // const { chainId: connectedChainId } = useWeb3React()
   // const chainName = chainIdToBackendName(connectedChainId)
 
-  const isPoolActive = useIsPoolPage()
+  const isPoolActive = useIsPoolsPage()
   // const isNftPage = useIsNftPage()
 
   return (
@@ -65,8 +65,8 @@ export const PageTabs = () => {
       {/* <MenuItem dataTestId="nft-nav" href="/nfts" isActive={isNftPage}>
         <Trans>NFTs</Trans>
       </MenuItem> */}
-      <MenuItem href="/pool" id="pool-nav-link" isActive={isPoolActive}>
-        <Trans>Pool</Trans>
+      <MenuItem href="/pools" dataTestId="pool-nav-link" isActive={isPoolActive}>
+        <Trans>Pools</Trans>
       </MenuItem>
     </>
   )
