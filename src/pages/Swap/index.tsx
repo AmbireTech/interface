@@ -65,6 +65,11 @@ import { maxAmountSpend } from '../../utils/maxAmountSpend'
 import { computeRealizedPriceImpact, warningSeverity } from '../../utils/prices'
 import { supportedChainId } from '../../utils/supportedChainId'
 
+const UnsupportedChains: { [key: number]: string } = {
+  66: 'OKS',
+  11155111: 'SEPOLIA',
+}
+
 const ArrowContainer = styled.div`
   display: inline-block;
   display: inline-flex;
@@ -544,6 +549,14 @@ export function BaseSwap(props: { useBestTradeHook: TradeHook; useSwapCallArgume
   const showDetailsDropdown = Boolean(
     !showWrap && userHasSpecifiedInputOutput && (trade || routeIsLoading || routeIsSyncing)
   )
+
+  if (chainId && UnsupportedChains[chainId]) {
+    return (
+      <PageWrapper>
+        <SwapWrapper id="swap-page">{`Swap on ${UnsupportedChains[chainId]} is currently not supported.`}</SwapWrapper>
+      </PageWrapper>
+    )
+  }
 
   return (
     // <Trace page={PageName.SWAP_PAGE} shouldLogImpression>
