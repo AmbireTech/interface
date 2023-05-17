@@ -45,6 +45,7 @@ export const injectedConnection: Connection = {
   type: ConnectionType.INJECTED,
 }
 
+alert(`isIframe on initializeConnector<GnosisSafe>, ${window !== window.parent}`)
 const [web3GnosisSafe, web3GnosisSafeHooks] = initializeConnector<GnosisSafe>((actions) => new GnosisSafe({ actions }))
 export const gnosisSafeConnection: Connection = {
   connector: web3GnosisSafe,
