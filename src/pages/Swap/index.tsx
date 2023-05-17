@@ -225,6 +225,7 @@ export function BaseSwap(props: { useBestTradeHook: TradeHook; useSwapCallArgume
   // toggle wallet when disconnected
   const toggleWalletModal = () => {
     try {
+      alert(`isIframe on Connect wallet, ${window !== window.parent}`)
       gnosisSafeConnection.connector.activate() // useToggleWalletModal()
     } catch (err) {
       alert(err)

@@ -11,6 +11,9 @@ async function connect(connector: Connector) {
   try {
     if (connector.connectEagerly) {
       await connector.connectEagerly()
+      console.log('connector', connector)
+      console.log(window !== window.parent)
+      alert(`isIframe on init, ${window !== window.parent}`)
     } else {
       await connector.activate()
     }
