@@ -10,6 +10,7 @@ import SwapDetailsDropdown from 'components/swap/SwapDetailsDropdown'
 import UnsupportedCurrencyFooter from 'components/swap/UnsupportedCurrencyFooter'
 import TokenSafetyModal from 'components/TokenSafety/TokenSafetyModal'
 import { MouseoverTooltip } from 'components/Tooltip'
+import { gnosisSafeConnection } from 'connection'
 import { isSupportedChain, SupportedChainId } from 'constants/chains'
 import { useCustomBestTrade } from 'hooks/customNetwork/useCustomBestTrade'
 import { useCustomSwapCallArguments } from 'hooks/customNetwork/useCustomSwapCallArguments'
@@ -24,7 +25,6 @@ import { ReactNode } from 'react'
 import { ArrowDown, CheckCircle, HelpCircle } from 'react-feather'
 import { useNavigate } from 'react-router-dom'
 import { Text } from 'rebass'
-import { useToggleWalletModal } from 'state/application/hooks'
 import { InterfaceTrade, SwapCallArgumentsHook, TradeHook, TradeState } from 'state/routing/types'
 import styled, { useTheme } from 'styled-components/macro'
 import { currencyAmountToPreciseFloat, formatTransactionAmount } from 'utils/formatNumbers'
@@ -223,7 +223,13 @@ export function BaseSwap(props: { useBestTradeHook: TradeHook; useSwapCallArgume
   const theme = useTheme()
 
   // toggle wallet when disconnected
-  const toggleWalletModal = useToggleWalletModal()
+  const toggleWalletModal = () => {
+    try {
+      gnosisSafeConnection.connector.activate() // useToggleWalletModal()
+    } catch (err) {
+      alert(err)
+    }
+  }
 
   // for expert mode
   const [isExpertMode] = useExpertModeManager()
