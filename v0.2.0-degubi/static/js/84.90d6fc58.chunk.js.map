@@ -1,0 +1,1 @@
+{"version":3,"sources":["../node_modules/@uniswap/widgets/dist/locales/zh-TW.js"],"names":["zhTW","messages"],"mappings":"kIAAA,+CAEA,IAAIA,EAAK,CAACC,SAAS","file":"static/js/84.90d6fc58.chunk.js","sourcesContent":["/*eslint-disable*/\n\nvar zhTW={messages:{}};\n\nexport { zhTW as default };\n"],"sourceRoot":""}

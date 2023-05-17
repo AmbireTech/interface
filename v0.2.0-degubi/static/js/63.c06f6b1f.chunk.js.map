@@ -1,0 +1,1 @@
+{"version":3,"sources":["../node_modules/@uniswap/widgets/dist/locales/he-IL.js"],"names":["heIL","messages"],"mappings":"kIAAA,+CAEA,IAAIA,EAAK,CAACC,SAAS","file":"static/js/63.c06f6b1f.chunk.js","sourcesContent":["/*eslint-disable*/\n\nvar heIL={messages:{}};\n\nexport { heIL as default };\n"],"sourceRoot":""}

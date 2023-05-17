@@ -1,0 +1,1 @@
+{"version":3,"sources":["../node_modules/@uniswap/widgets/dist/locales/no-NO.js"],"names":["noNO","messages"],"mappings":"kIAAA,+CAEA,IAAIA,EAAK,CAACC,SAAS","file":"static/js/70.2ba9f774.chunk.js","sourcesContent":["/*eslint-disable*/\n\nvar noNO={messages:{}};\n\nexport { noNO as default };\n"],"sourceRoot":""}

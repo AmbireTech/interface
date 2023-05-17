@@ -1,0 +1,1 @@
+{"version":3,"sources":["../node_modules/@uniswap/widgets/dist/locales/pt-PT.js"],"names":["ptPT","messages"],"mappings":"kIAAA,+CAEA,IAAIA,EAAK,CAACC,SAAS","file":"static/js/74.2ace9e7f.chunk.js","sourcesContent":["/*eslint-disable*/\n\nvar ptPT={messages:{}};\n\nexport { ptPT as default };\n"],"sourceRoot":""}

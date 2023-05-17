@@ -1,0 +1,1 @@
+{"version":3,"sources":["../node_modules/@uniswap/widgets/dist/locales/tr-TR.js"],"names":["trTR","messages"],"mappings":"kIAAA,+CAEA,IAAIA,EAAK,CAACC,SAAS","file":"static/js/80.ed1b2176.chunk.js","sourcesContent":["/*eslint-disable*/\n\nvar trTR={messages:{}};\n\nexport { trTR as default };\n"],"sourceRoot":""}

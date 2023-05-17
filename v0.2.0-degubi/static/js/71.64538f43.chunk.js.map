@@ -1,0 +1,1 @@
+{"version":3,"sources":["../node_modules/@uniswap/widgets/dist/locales/pl-PL.js"],"names":["plPL","messages"],"mappings":"kIAAA,+CAEA,IAAIA,EAAK,CAACC,SAAS","file":"static/js/71.64538f43.chunk.js","sourcesContent":["/*eslint-disable*/\n\nvar plPL={messages:{}};\n\nexport { plPL as default };\n"],"sourceRoot":""}

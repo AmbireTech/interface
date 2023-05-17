@@ -1,0 +1,1 @@
+{"version":3,"sources":["../node_modules/@uniswap/widgets/dist/locales/sv-SE.js"],"names":["svSE","messages"],"mappings":"kIAAA,+CAEA,IAAIA,EAAK,CAACC,SAAS","file":"static/js/78.18d329f1.chunk.js","sourcesContent":["/*eslint-disable*/\n\nvar svSE={messages:{}};\n\nexport { svSE as default };\n"],"sourceRoot":""}

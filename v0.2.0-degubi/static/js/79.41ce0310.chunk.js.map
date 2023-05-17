@@ -1,0 +1,1 @@
+{"version":3,"sources":["../node_modules/@uniswap/widgets/dist/locales/sw-TZ.js"],"names":["swTZ","messages"],"mappings":"kIAAA,+CAEA,IAAIA,EAAK,CAACC,SAAS","file":"static/js/79.41ce0310.chunk.js","sourcesContent":["/*eslint-disable*/\n\nvar swTZ={messages:{}};\n\nexport { swTZ as default };\n"],"sourceRoot":""}

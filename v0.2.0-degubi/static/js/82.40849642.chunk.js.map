@@ -1,0 +1,1 @@
+{"version":3,"sources":["../node_modules/@uniswap/widgets/dist/locales/vi-VN.js"],"names":["viVN","messages"],"mappings":"kIAAA,+CAEA,IAAIA,EAAK,CAACC,SAAS","file":"static/js/82.40849642.chunk.js","sourcesContent":["/*eslint-disable*/\n\nvar viVN={messages:{}};\n\nexport { viVN as default };\n"],"sourceRoot":""}

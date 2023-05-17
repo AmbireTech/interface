@@ -1,0 +1,1 @@
+{"version":3,"sources":["../node_modules/@uniswap/widgets/dist/locales/ro-RO.js"],"names":["roRO","messages"],"mappings":"kIAAA,+CAEA,IAAIA,EAAK,CAACC,SAAS","file":"static/js/75.9d66ac66.chunk.js","sourcesContent":["/*eslint-disable*/\n\nvar roRO={messages:{}};\n\nexport { roRO as default };\n"],"sourceRoot":""}
