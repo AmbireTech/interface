@@ -3,7 +3,7 @@ import { getConnection } from 'connection/utils'
 import { useMemo } from 'react'
 import { useAppSelector } from 'state/hooks'
 
-const SELECTABLE_WALLETS = [ConnectionType.INJECTED] // [ConnectionType.INJECTED, ConnectionType.COINBASE_WALLET, ConnectionType.WALLET_CONNECT]
+// const SELECTABLE_WALLETS = [ConnectionType.INJECTED] // [ConnectionType.INJECTED, ConnectionType.COINBASE_WALLET, ConnectionType.WALLET_CONNECT]
 
 export default function useOrderedConnections() {
   const selectedWallet = useAppSelector((state) => state.user.selectedWallet)
@@ -23,5 +23,6 @@ export default function useOrderedConnections() {
     // orderedConnectionTypes.push(ConnectionType.NETWORK)
 
     return orderedConnectionTypes.map(getConnection)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedWallet])
 }
