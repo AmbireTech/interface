@@ -68,6 +68,7 @@ import { supportedChainId } from '../../utils/supportedChainId'
 const UnsupportedChains: { [key: number]: string } = {
   66: 'OKS',
   11155111: 'SEPOLIA',
+  8453: 'BASE',
 }
 
 const ArrowContainer = styled.div`
