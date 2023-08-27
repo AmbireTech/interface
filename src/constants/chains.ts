@@ -28,6 +28,7 @@ export enum SupportedChainId {
   ANDROMEDA = 1088,
   GNOSIS = 100,
   KUCOIN = 321,
+  BASE = 8453,
 }
 
 export enum USDCSupportedChainId {
@@ -57,6 +58,7 @@ export enum USDCSupportedChainId {
   ANDROMEDA = 1088,
   GNOSIS = 100,
   KUCOIN = 321,
+  BASE = 8453,
 }
 
 export const CHAIN_IDS_TO_NAMES = {
@@ -81,6 +83,7 @@ export const CHAIN_IDS_TO_NAMES = {
   [SupportedChainId.ANDROMEDA]: 'andromeda',
   [SupportedChainId.GNOSIS]: 'gnosis',
   [SupportedChainId.KUCOIN]: 'kucoin',
+  [SupportedChainId.BASE]: 'base',
 }
 
 /**
@@ -100,6 +103,7 @@ export const SUPPORTED_GAS_ESTIMATE_CHAIN_IDS = [
   SupportedChainId.CELO,
   SupportedChainId.OPTIMISM,
   SupportedChainId.ARBITRUM_ONE,
+  SupportedChainId.BASE,
   // SupportedChainId.AVALANCHE, ?
   // SupportedChainId.BINANCE, ?
   // SupportedChainId.MOONBEAM, ?
@@ -117,6 +121,16 @@ export const UNSUPPORTED_V2POOL_CHAIN_IDS = [
   SupportedChainId.POLYGON,
   SupportedChainId.OPTIMISM,
   SupportedChainId.ARBITRUM_ONE,
+  SupportedChainId.CELO,
+  SupportedChainId.BASE,
+  SupportedChainId.AVALANCHE,
+  SupportedChainId.BINANCE,
+  SupportedChainId.MOONBEAM,
+  SupportedChainId.MOONRIVER,
+  SupportedChainId.FANTOM,
+  SupportedChainId.ANDROMEDA,
+  SupportedChainId.GNOSIS,
+  SupportedChainId.KUCOIN,
 ]
 
 export const TESTNET_CHAIN_IDS = [
@@ -164,6 +178,7 @@ export const L2_CHAIN_IDS = [
   SupportedChainId.ARBITRUM_RINKEBY,
   SupportedChainId.OPTIMISM,
   SupportedChainId.OPTIMISM_GOERLI,
+  SupportedChainId.BASE,
 ] as const
 
 export type SupportedL2ChainId = typeof L2_CHAIN_IDS[number]

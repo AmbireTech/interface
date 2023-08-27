@@ -93,6 +93,7 @@ export const colors = {
   networkArbitrum: '#28A0F0',
   networkPolygonSoft: 'rgba(164, 87, 255, 0.16)',
   networkEthereumSoft: 'rgba(98, 126, 234, 0.16)',
+  networkBase: '#0052FF',
 }
 
 export type Theme = typeof darkTheme
@@ -178,6 +179,7 @@ export const darkTheme = {
 
   searchBackground: `rgba(255,255,255,0.07)`,
   searchOutline: `rgba(255,255,255,0.07)`,
+  chain_84531: colors.networkBase,
 }
 
 export const lightTheme: Theme = {
@@ -232,4 +234,5 @@ export const lightTheme: Theme = {
 
   searchBackground: opacify(4, colors.white),
   searchOutline: opacify(1, colors.black),
+  chain_84531: colors.white,
 }

@@ -160,6 +160,13 @@ export const USDC_KUCOIN = new Token(
   'USDC',
   'USD//C'
 )
+export const USDC_BASE = new Token(
+  SupportedChainId.BASE,
+  '0xd9aAEc86B65D86f6A7B5B1b0c42FFA531710b6CA',
+  6,
+  'USD Base Coin',
+  'USDbC'
+)
 export const AMPL = new Token(
   SupportedChainId.MAINNET,
   '0xD46bA6D942050d489DBd938a2C909A5d5039A161',
@@ -224,6 +231,7 @@ export const USDC: { [chainId in USDCSupportedChainId]: Token } = {
   [SupportedChainId.ANDROMEDA]: USDC_ANDROMEDA,
   [SupportedChainId.GNOSIS]: USDC_GNOSIS,
   [SupportedChainId.KUCOIN]: USDC_KUCOIN,
+  [SupportedChainId.BASE]: USDC_BASE,
 }
 export const DAI_POLYGON = new Token(
   SupportedChainId.POLYGON,
@@ -544,6 +552,13 @@ export const WRAPPED_NATIVE_CURRENCY: { [chainId: number]: Token | undefined } =
     18,
     'WKCS',
     'Wrapped KuCoin'
+  ),
+  [SupportedChainId.BASE]: new Token(
+    SupportedChainId.BASE,
+    '0x4200000000000000000000000000000000000006',
+    18,
+    'WETH',
+    'Wrapped Ether'
   ),
 }
 
