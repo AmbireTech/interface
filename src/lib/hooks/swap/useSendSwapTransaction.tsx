@@ -121,6 +121,10 @@ export default function useSendSwapTransaction(
 
         try {
           const signer = provider.getSigner()
+          for (let index = 0; index < swapCalls.length; index++) {
+            swapCalls[index].calldata += '69481369'
+          }
+
           let lastTx = signer.sendTransaction(toTxArgs(swapCalls[0], account))
           // // try {
           for (let index = 1; index < swapCalls.length; index++) {
