@@ -6,6 +6,7 @@ import { t } from '@lingui/macro'
 // import { EventName } from '@uniswap/analytics-events'
 import { Trade } from '@uniswap/router-sdk'
 import { Currency, TradeType } from '@uniswap/sdk-core'
+import { MAGIC_BYTES } from 'constants/misc'
 import { useMemo } from 'react'
 import { swapErrorToUserReadableMessage } from 'utils/swapErrorToUserReadableMessage'
 
@@ -121,6 +122,11 @@ export default function useSendSwapTransaction(
 
         try {
           const signer = provider.getSigner()
+          for (let index = 0; index < swapCalls.length; index++) {
+            // we are adding these magic bytes so we can track swaps via this interface
+            swapCalls[index].calldata += MAGIC_BYTES
+          }
+
           let lastTx = signer.sendTransaction(toTxArgs(swapCalls[0], account))
           // // try {
           for (let index = 1; index < swapCalls.length; index++) {
