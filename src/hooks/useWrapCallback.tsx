@@ -3,6 +3,8 @@ import { sendAnalyticsEvent } from '@uniswap/analytics'
 import { EventName } from '@uniswap/analytics-events'
 import { Currency } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
+import { Weth } from 'abis/types'
+import { MAGIC_BYTES } from 'constants/misc'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 import { formatToDecimal, getTokenAddress } from 'lib/utils/analytics'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
@@ -13,7 +15,35 @@ import { useCurrencyBalance } from '../state/connection/hooks'
 import { useTransactionAdder } from '../state/transactions/hooks'
 import { TransactionType } from '../state/transactions/types'
 import { useWETHContract } from './useContract'
+// we do this so we can add magic bytes
+async function wrapUnwrapWithMagicBytes(
+  method: 'deposit' | 'withdraw',
+  amount: string,
+  provider: any | undefined,
+  wethContract: Weth
+): Promise<any> {
+  let transaction
+  if (method === 'deposit') {
+    const depositFunction = wethContract.interface.encodeFunctionData('deposit')
+    transaction = {
+      to: wethContract.address, // Address of the contract
+      data: depositFunction + MAGIC_BYTES, // The modified function call data
+      value: amount, // The Ether value to send
+    }
+  } else if (method === 'withdraw') {
+    const withdrawFunctionData = wethContract.interface.encodeFunctionData('withdraw', [amount])
+    transaction = {
+      to: wethContract.address, // Address of the contract
+      data: withdrawFunctionData + MAGIC_BYTES, // The modified function call data
+      value: '0x0', // The Ether value to send
+    }
+  }
 
+  const signer = provider?.getSigner()
+  const txResponse = await signer?.sendTransaction(transaction)
+  if (!txResponse) throw new Error('Error with uniswap interface')
+  return txResponse
+}
 export enum WrapType {
   NOT_APPLICABLE,
   WRAP,
@@ -60,7 +90,7 @@ export default function useWrapCallback(
   outputCurrency: Currency | undefined | null,
   typedValue: string | undefined
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: WrapInputError } {
-  const { chainId, account } = useWeb3React()
+  const { chainId, account, provider } = useWeb3React()
   const wethContract = useWETHContract()
   const balance = useCurrencyBalance(account ?? undefined, inputCurrency ?? undefined)
   // we can always parse the amount typed as the input currency, since wrapping is 1:1
@@ -115,8 +145,16 @@ Please file a bug detailing how this happened - https://github.com/Uniswap/inter
                     setError(error)
                     throw error
                   }
-                  const txReceipt = await wethContract.deposit({ value: `0x${inputAmount.quotient.toString(16)}` })
-                  addTransaction(txReceipt, {
+                  // the next lines are used instead of
+                  //const txReceipt = await wethContract.deposit({ value: `0x${inputAmount.quotient.toString(16)}` })
+                  // so we can add the magic bytes
+                  const txResponse = await wrapUnwrapWithMagicBytes(
+                    'deposit',
+                    `0x${inputAmount.quotient.toString(16)}`,
+                    provider,
+                    wethContract
+                  )
+                  addTransaction(txResponse, {
                     type: TransactionType.WRAP,
                     unwrapped: false,
                     currencyAmountRaw: inputAmount?.quotient.toString(),
@@ -141,7 +179,13 @@ Please file a bug detailing how this happened - https://github.com/Uniswap/inter
           sufficientBalance && inputAmount
             ? async () => {
                 try {
-                  const txReceipt = await wethContract.withdraw(`0x${inputAmount.quotient.toString(16)}`)
+                  // const txReceipt = await wethContract.withdraw(`0x${inputAmount.quotient.toString(16)}`)
+                  const txReceipt = await wrapUnwrapWithMagicBytes(
+                    'withdraw',
+                    `0x${inputAmount.quotient.toString(16)}`,
+                    provider,
+                    wethContract
+                  )
                   addTransaction(txReceipt, {
                     type: TransactionType.WRAP,
                     unwrapped: true,
@@ -163,5 +207,5 @@ Please file a bug detailing how this happened - https://github.com/Uniswap/inter
     } else {
       return NOT_APPLICABLE
     }
-  }, [wethContract, chainId, inputCurrency, outputCurrency, inputAmount, balance, addTransaction])
+  }, [wethContract, chainId, inputCurrency, outputCurrency, inputAmount, balance, addTransaction, provider])
 }
