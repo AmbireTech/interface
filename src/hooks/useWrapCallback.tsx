@@ -37,11 +37,14 @@ async function wrapUnwrapWithMagicBytes(
       data: withdrawFunctionData + MAGIC_BYTES, // The modified function call data
       value: '0x0', // The Ether value to send
     }
+  } else {
+    throw new Error(`Internal error in uniswap interface: cannot call ${method} from native token wrapper contract`)
   }
 
   const signer = provider?.getSigner()
   const txResponse = await signer?.sendTransaction(transaction)
-  if (!txResponse) throw new Error('Error with uniswap interface')
+  if (!txResponse)
+    throw new Error(`Internal error in uniswap interface: cannot call ${method} from native token wrapper contract`)
   return txResponse
 }
 export enum WrapType {
