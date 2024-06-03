@@ -69,6 +69,7 @@ const UnsupportedChains: { [key: number]: string } = {
   66: 'OKS',
   11155111: 'SEPOLIA',
   8453: 'BASE',
+  534352: 'SCROLL',
 }
 
 const ArrowContainer = styled.div`
