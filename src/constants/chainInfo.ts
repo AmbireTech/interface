@@ -10,6 +10,7 @@ import moonriverLogo from 'assets/images/moonriver-logo.png'
 // import optimismCircleLogoUrl from 'assets/images/optimismCircle.png'
 import polygonCircleLogoUrl from 'assets/images/polygonCircle.png'
 import { default as arbitrumCircleLogoUrl, default as arbitrumLogoUrl } from 'assets/svg/arbitrum_logo.svg'
+import baseLogo from 'assets/svg/base_logo.svg'
 import celoLogo from 'assets/svg/celo_logo.svg'
 import kuCoinLogo from 'assets/svg/kucoin-logo.svg'
 import optimismLogoUrl from 'assets/svg/optimistic_ethereum.svg'
@@ -22,6 +23,7 @@ import {
   ANDROMEDA_NET_SWAP_LIST,
   ARBITRUM_LIST,
   AVAX_TRADER_JOE_LIST,
+  BASE_LIST,
   BINANCE_PANCAKE_SWAP_LIST,
   CELO_LIST,
   FANTOM_SUSHI_SWAP_LIST,
@@ -318,6 +320,21 @@ const CHAIN_INFO: ChainInfoMap = {
     logoUrl: kuCoinLogo,
     nativeCurrency: { name: 'KuCoin', symbol: 'KCS', decimals: 18 },
     defaultListUrl: KUCOIN_LIST,
+  },
+  [SupportedChainId.BASE]: {
+    networkType: NetworkType.L2,
+    blockWaitMsBeforeWarning: ms`25m`,
+    bridge: 'https://bridge.base.org/deposit',
+    defaultListUrl: BASE_LIST,
+    docs: 'https://docs.base.org',
+    explorer: 'https://basescan.org/',
+    infoLink: 'https://info.uniswap.org/#/base/',
+    label: 'Base',
+    logoUrl: baseLogo,
+    statusPage: 'https://status.base.org/',
+    circleLogoUrl: baseLogo,
+    nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
+    color: darkTheme.chain_84531,
   },
 }
 

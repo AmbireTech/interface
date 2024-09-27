@@ -6,6 +6,7 @@ import { ArrowUpRight } from 'react-feather'
 import { useDarkModeManager } from 'state/user/hooks'
 import styled from 'styled-components/macro'
 import { ExternalLink, HideSmall } from 'theme'
+import { colors } from 'theme/colors'
 
 import { AutoRow } from '../Row'
 
@@ -44,6 +45,7 @@ const SHOULD_SHOW_ALERT = {
   [SupportedChainId.POLYGON_MUMBAI]: true,
   [SupportedChainId.CELO]: true,
   [SupportedChainId.CELO_ALFAJORES]: true,
+  [SupportedChainId.BASE]: true,
 }
 
 export type NetworkAlertChains = keyof typeof SHOULD_SHOW_ALERT
@@ -68,6 +70,8 @@ const BG_COLORS_BY_DARK_MODE_AND_CHAIN_ID: {
       'radial-gradient(285% 8200% at 30% 50%, rgba(40, 160, 240, 0.01) 0%, rgba(219, 255, 0, 0) 100%),radial-gradient(75% 75% at 0% 0%, rgba(150, 190, 220, 0.05) 0%, rgba(33, 114, 229, 0.05) 100%), hsla(0, 0%, 100%, 0.05)',
     [SupportedChainId.ARBITRUM_RINKEBY]:
       'radial-gradient(285% 8200% at 30% 50%, rgba(40, 160, 240, 0.05) 0%, rgba(219, 255, 0, 0) 100%),radial-gradient(75% 75% at 0% 0%, rgba(150, 190, 220, 0.05) 0%, rgba(33, 114, 229, 0.1) 100%), hsla(0, 0%, 100%, 0.05)',
+    [SupportedChainId.BASE]:
+      'radial-gradient(100% 100% at 50% 0%, rgba(10, 41, 75, 0.7) 0%, rgba(0, 82, 255, .1) 40%, rgba(0, 82, 255, 0) 100%), rgb(13, 14, 14);',
   },
   light: {
     [SupportedChainId.POLYGON]:
@@ -86,6 +90,8 @@ const BG_COLORS_BY_DARK_MODE_AND_CHAIN_ID: {
       'radial-gradient(285% 8200% at 30% 50%, rgba(40, 160, 240, 0.1) 0%, rgba(219, 255, 0, 0) 100%),radial-gradient(circle at top left, hsla(206, 50%, 75%, 0.01), hsla(215, 79%, 51%, 0.12)), hsla(0, 0%, 100%, 0.1)',
     [SupportedChainId.ARBITRUM_RINKEBY]:
       'radial-gradient(285% 8200% at 30% 50%, rgba(40, 160, 240, 0.1) 0%, rgba(219, 255, 0, 0) 100%),radial-gradient(circle at top left, hsla(206, 50%, 75%, 0.01), hsla(215, 79%, 51%, 0.12)), hsla(0, 0%, 100%, 0.1)',
+    [SupportedChainId.BASE]:
+      'radial-gradient(100% 100% at 50% 0%, rgba(0, 82, 255, 0.20) 0%, rgba(0, 82, 255, 0.08) 40.0%, rgba(252, 255, 82, 0.00) 100%), rgb(255, 255, 255)',
   },
 }
 
@@ -145,6 +151,7 @@ const TEXT_COLORS: { [chainId in NetworkAlertChains]: string } = {
   [SupportedChainId.OPTIMISM_GOERLI]: '#ff3856',
   [SupportedChainId.ARBITRUM_ONE]: '#0490ed',
   [SupportedChainId.ARBITRUM_RINKEBY]: '#0490ed',
+  [SupportedChainId.BASE]: colors.networkBase,
 }
 
 function shouldShowAlert(chainId: number | undefined): chainId is NetworkAlertChains {

@@ -29,6 +29,7 @@ import {
   USDC_ANDROMEDA,
   USDC_ARBITRUM,
   USDC_AVALANCHE,
+  USDC_BASE,
   USDC_BINANCE,
   USDC_FANTOM,
   USDC_GNOSIS,
@@ -240,6 +241,11 @@ export const COMMON_BASES: ChainCurrencyList = {
     nativeOnChain(SupportedChainId.KUCOIN),
     USDC_KUCOIN,
     WRAPPED_NATIVE_CURRENCY[SupportedChainId.KUCOIN] as Token,
+  ],
+  [SupportedChainId.BASE]: [
+    nativeOnChain(SupportedChainId.BASE),
+    WRAPPED_NATIVE_CURRENCY[SupportedChainId.BASE] as Token,
+    USDC_BASE,
   ],
 }
 

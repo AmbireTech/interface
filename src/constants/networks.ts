@@ -95,6 +95,7 @@ export const FALLBACK_URLS: { [key in SupportedChainId]: string[] } = {
   [SupportedChainId.ANDROMEDA]: ['https://andromeda.metis.io/?owner=1088'],
   [SupportedChainId.GNOSIS]: ['https://rpc.ankr.com/gnosis'],
   [SupportedChainId.KUCOIN]: ['https://rpc-mainnet.kcc.network'],
+  [SupportedChainId.BASE]: ['https://rpc.ankr.com/base'],
 }
 
 /**
@@ -167,4 +168,5 @@ export const RPC_URLS: { [key in SupportedChainId]: string[] } = {
   [SupportedChainId.ANDROMEDA]: ['wss://andromeda-ws.metis.io', ...FALLBACK_URLS[SupportedChainId.ANDROMEDA]],
   [SupportedChainId.GNOSIS]: ['wss://rpc.gnosischain.com/wss', ...FALLBACK_URLS[SupportedChainId.GNOSIS]],
   [SupportedChainId.KUCOIN]: FALLBACK_URLS[SupportedChainId.KUCOIN],
+  [SupportedChainId.BASE]: FALLBACK_URLS[SupportedChainId.BASE],
 }

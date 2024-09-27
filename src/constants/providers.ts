@@ -79,4 +79,5 @@ export const RPC_PROVIDERS: { [key in SupportedChainId]: StaticJsonRpcProvider }
   [SupportedChainId.ANDROMEDA]: new AppJsonRpcProvider(SupportedChainId.ANDROMEDA),
   [SupportedChainId.GNOSIS]: new AppJsonRpcProvider(SupportedChainId.GNOSIS),
   [SupportedChainId.KUCOIN]: new AppJsonRpcProvider(SupportedChainId.KUCOIN),
+  [SupportedChainId.BASE]: new AppJsonRpcProvider(SupportedChainId.BASE),
 }
